@@ -7,66 +7,84 @@ title: "Physalia courses outline"
 All lecture materials will be available here.
 
 - 01: Introductions and course outline
-    - [Slides]
+    - [Slides](slides/Introduction.html)
 
-    - [Practical work](https://ueabio.github.io/data-sci-v1/introduction-to-r-and-rstudio.html)
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/introduction-to-r-and-rstudio.html)
 
 - 02: Using R
     - [Slides](slides/Intro_02.html)
     
-    - [Practical work](https://ueabio.github.io/data-sci-v1/basic-programming.html)
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/basic-programming.html)
 
 - 03: Working with data
     - [Slides](slides/Data_wrangling_03.html)
 
-    - [Practical work 1](https://ueabio.github.io/data-sci-v1/loading-data.html)
-    - [Practical work 2](https://ueabio.github.io/data-sci-v1/data-wrangling-part-one.html)
-    - [Practical work 3](https://ueabio.github.io/data-sci-v1/data-wrangling-part-two.html)
+    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/loading-data.html)
+    - [Practical work 2](https://philip-leftwich.github.io/physalia-stats-intro/data-wrangling-part-one.html)
+    - [Practical work 3](https://philip-leftwich.github.io/physalia-stats-intro/data-wrangling-part-two.html)
     
 - 04: Data Visualisation
     - [Slides](slides/ggplot.html)
     
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/data-visualisation-with-ggplot2.html)
+    
 - 05: Reproducible Reports
     - [Slides](slides/Reproducible_reports_06.html)
     
-- 06: Functional programming
-    - [Slides](slides/Functional-programming.html)
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/markdown.html)
+    
 
-- 07: Descriptive statistics
+- 06: Descriptive statistics
     - [Slides: Central tendency and spread](slides/Descriptive_statistics_05.html)
-
     - [Slides: Association](slides/Association_05a.html)
 
-    - [Practical work](https://ueabio.github.io/data-sci-v1/data-insights-part-one.html)
+    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/data-insights-part-one.html)
+    - [Practical work 2](https://philip-leftwich.github.io/physalia-stats-intro/data-insights-part-two.html)
 
-
-- 08: Confidence intervals
+- 07: Confidence intervals
     - [Slides](slides/Confidence_intervals.html)
+    
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/introduction-to-statistics.html)
 
-- 09: Hypothesis testing
+- 08: Hypothesis testing
     - [Slides: P-values](slides/Probability.html)
     - [Slides: Type 1 and Type 2 errors](slides/Error_rates.html)
+    
+    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/introduction-to-linear-models.html)
+    
 
-- 10: T-tests
+- 09: T-tests
     - [Slides](slides/t-tests.html)
+    
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/testing.html)
   
-- 11: Intro to linear models
+- 10: Intro to linear models
     - [Slides: Regression](slides/Linear-Regression.html) 
     
-- 12: ANOVA
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/regression.html)    
+    
+- 11: ANOVA
     - [Slides](slides/ANOVA.html)
+    
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/anova.html)
   
-- 13: Multivariate models
+- 12: Multivariate models
     - [Slides: Complex models](slides/Complex_models.html)
     - [Slides: Checking and refining models](slides/Refining models.html)
+    
+    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/multivariate-linear-models.html)
+    - [Practical work 2](https://philip-leftwich.github.io/physalia-stats-intro/complex-models.html)
      
       
-- 14: Generalised linear models
-
+- 13: Generalised linear models
   - [Slides: Introduction to Generalised Linear Models](slides/Generalized-Linear-Models.html)
-
   - [Slides: Binomial and Poisson distributions](slides/Generalized-Linear-Models-Part-2.html)
+  
+  - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/generalized-linear-models.html)
 
 
+- 14: Functional programming
+    - [Slides](slides/Functional-programming.html)
 
+    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/functions-and-iteration.html)
     

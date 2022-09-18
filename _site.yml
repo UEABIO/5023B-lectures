@@ -1,8 +1,8 @@
-name: 5023Y slides
+name: Physalia slides
 output_dir: '.'
 navbar:
-  title: 5023Y slides
-  right: 
+  title: Intro to stats slides
+  right:
   - text: Reading
     href: reading.html
   - text: About
