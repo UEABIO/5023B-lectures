@@ -1,0 +1,85 @@
+---
+title: "ANOVA"
+subtitle: ""
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(rstatix)
+library(palmerpenguins)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+---
+class: center
+
+# ANalysis Of VAriance (ANOVA)
+
+ANOVAs use information about variances, but the main goal of analysis is comparison of MEANS (don’t let the name mix you up - more on this later).
+
+
+**ANOVA is an omnibus test** – it tests for significant differences between any means in the study
+
+**ANOVA is just a special case of the linear model**
+
+---
+
+## ANOVA Hypotheses:
+
+**Null Hypothesis (H0):** All means are equal (in other words, all groups are from populations with the same mean)
+
+**Alternative Hypothesis (HA):** At least two group means are NOT equal (that means that just two could be different, or they could ALL be different)
+
+
+---
+
+## One-way ANOVA (single factor)
+
+What does this one-way/single-factor refer to? 
+
+There is a **single factor** (*variable*), with at least 3 **levels**, where we are trying to compare means across the different levels of that factor.
+
+
+
+

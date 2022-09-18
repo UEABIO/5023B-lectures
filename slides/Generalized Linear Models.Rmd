@@ -1,0 +1,461 @@
+---
+title: "GLM"
+subtitle: "Intro to Generalized Linear Models"
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(rstatix)
+library(palmerpenguins)
+library(here)
+library(performance)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+---
+class: center, middle
+
+.left-code[
+
+* **Generalized** Linear Models
+
+* Separating the mean from the error distribution
+
+* Maximum Likelihood
+
+* Modelling non-linear data
+
+]
+
+.right-plot[
+
+```{r, echo = FALSE, out.width="110%", fig.alt = "Linear regression is everywhere"}
+knitr::include_graphics("images/linear_regression_everywhere.jpg")
+```
+]
+
+
+---
+
+## Recap OLS
+
+```{r, echo = FALSE, out.width="70%", fig.alt = "OLS fits a line to produce the smallest amount of SSE"}
+
+knitr::include_graphics("images/Sum of squares.png")
+
+```
+
+---
+## Recap OLS
+
+$$
+\LARGE{\hat{y_i} = a + bx}
+$$
+where:
+
+$\hat{y_i}$ = value estimated by the regression
+
+$a$ is the intercept (value of y when x = 0)
+
+$b$ is the slope of the regression line
+
+$x$ is the value of the explanatory variable
+
+
+---
+
+## Recap OLS
+
+$$
+\LARGE{y_i = a + bx+\epsilon}
+$$
+
+### Where:
+
+$y_i$ is the **observed** value of the response variable
+
+$a$ is the intercept (value of y when x = 0)
+
+$b$ is the slope of the regression line
+
+$x$ is the value of the explanatory variable
+
+$\epsilon$ is the value of the residual error
+
+---
+
+## OLS assumptions
+
+
+.right-plot[
+```{r, echo = FALSE, out.width="100%", fig.alt = "Outline of a hypothetical regression"}
+
+knitr::include_graphics("images/ols_assumption.png")
+
+```
+]
+
+--
+
+.left-code[
+
+* Linear relationship
+
+* Homogeneity of variance
+
+* Normal distribution of residual variance
+
+* Independent predictors
+
+
+]
+
+---
+
+## Generalized Linear Models
+
+A **Generalized** Linear Model is more flexible than a standard linear model because it allows us to separate the **error distribution** from the estimate of the **mean**
+
+There are three components in a generalized linear model:
+
+1. Linear Predictor – the equation of the slope and intercept
+
+2. Link function – literally links the linear predictor to the mean (like an internal transformation)
+
+3. Error distribution – so far we have always assumed Gaussian (Normal distribution) but can be others e.g Poisson, Binomial etc. 
+
+
+---
+
+## Generalized Linear Models
+
+.pull-left[
+
+**OLS Linear Model**
+
+```{r, echo = FALSE, out.width="100%", fig.cap = "Linear model equation includes mean estimate and error as a single equation"}
+
+knitr::include_graphics("images/linear_equation.png")
+
+```
+
+]
+
+--
+
+.pull-right[
+
+**Generalized Linear Model**
+
+```{r, echo = FALSE, out.width="100%", fig.cap = "GLM models the estimate of the mean as a separate equation to estimates of the error distribution"}
+
+knitr::include_graphics("images/glm equation.png")
+
+```
+
+]
+
+---
+
+```{r, echo = FALSE}
+fruitfly <- readRDS(here::here("data", "fruitfly.rds"))
+
+```
+
+
+```{r}
+lm(longevity ~ type + thorax, data = fruitfly) %>% 
+  broom::tidy()
+```
+
+
+```{r}
+glm(longevity ~ type + thorax, data = fruitfly, family= gaussian(link = "identity")) %>% 
+  broom::tidy()
+```
+
+
+
+---
+
+## What's the difference between transforming the data and using a link function?
+
+```{r, echo = FALSE}
+
+set.seed(55)
+n <- 50
+x <-  seq(0, 1, length.out = n) #pollution levels
+
+gamma <- -3.2 #effect of polluted reefs
+alpha <- 4 #intercept = mean at 'zero' pollution
+yexp <- alpha*exp(gamma*x)
+
+yobs_pois <- rpois(n, yexp)
+yobsplus <- yobs_pois+0.1
+
+```
+
+```{r, out.width = "50%"}
+lsmodel1 <- lm(yobsplus ~ x)
+MASS::boxcox(lsmodel1)
+
+```
+
+---
+
+```{r}
+model1 <- glm(yobsplus ~ x, family = gaussian(link = "log"))
+broom::tidy(model1)
+```
+
+
+```{r}
+model2 <- glm(log(yobsplus) ~ x, family = gaussian(link = "identity"))
+broom::tidy(model2)
+```
+
+---
+.pull-left[
+
+
+```{r, out.width = "110%"}
+model1 %>% 
+  check_model()
+
+```
+
+]
+
+.pull-right[
+
+```{r,out.width = "110%"}
+model2 %>% 
+  check_model()
+
+```
+
+]
+
+---
+
+## Maximum Likelihood
+
+Maximum likelihood is a method that determined the values for the parameters of a model.
+
+The values are chosen such that they *maximise* the *likelihood* that the process described by the model produced the observed data. 
+
+
+$$
+\LARGE{L(Y|\theta)}
+$$
+
+where:
+
+$L$ = Likelihood
+
+$\theta$ = unknown parameter
+
+---
+
+## Maximum Likelihood
+
+As an example let's assume we are fitting our data using a model describing a Gaussian (normal) distribution.
+
+$$
+\LARGE{L(data;\mu,\sigma)}
+$$
+A Gaussian distribution has two parameters. The mean $\mu$ and the standard deviation $\sigma$. Different values of these two parameters will result in different regression lines/fits to the data. 
+
+They will also produce different *likelihood curves*. 
+
+We want to know which combinations of mean and standard deviation produce the curve where we are *most likely* to observe all of the data points. 
+
+---
+
+## Maximum Likelihood
+
+.right-plot[
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "The 10 data points and possible Gaussian distributions from which the data were drawn. f1 is normally distributed with mean 10 and variance 2.25 (variance is equal to the square of the standard deviation), this is also denoted f1 ∼ N (10, 2.25). f2 ∼ N (10, 9), f3 ∼ N (10, 0.25) and f4 ∼ N (8, 2.25). The goal of maximum likelihood is to find the parameter values that give the distribution that maximise the probability of observing the data."}
+
+knitr::include_graphics("images/likelihood_curve.png")
+
+```
+]
+
+.left-code[
+
+When the model can be explained by least squares, the outcome of the maximum likelihood will be identical. Both are designed to minimise error. 
+
+Maximum likelihoods can solve a wider range of probability distributions, but are difficult to solve by hand in the same way as OLS, as they use these iterative methods. 
+]
+---
+
+## GLM summary
+
+```{r}
+fly_glm <- glm(longevity ~ type + thorax, data = fruitfly, family= gaussian(link = "identity")) 
+
+summary(fly_glm)
+
+```
+
+The GLM summary output, while mostly identical to the LM as the following differences:
+
+* Deviance
+
+* Dispersion, AIC & Fisher Scoring 
+
+---
+
+## Deviance
+
+A generalized linear model can be characterised in terms of two types of deviance:
+
+1. The **null deviance**, which is a measure of the overall variability in the response variable:
+
+$\Large{Dev_{null}=2(LnL_{saturated}-LnL_{null})}$
+
+2. The **residual deviance**, which is a measure of the variability in the response variable that remains unexplained by the proposed model (equivalent to Sum of Square Errors):
+
+$\Large{Dev_{residual}=2(LnL_{saturated}-LnL_{proposed})}$
+
+In the previous example we had:
+
+**Null deviance**: 38253 with df = 124
+
+**Residual deviance**: 15211 with df = 121
+
+---
+
+## Chi square distribution
+
+.right-plot[
+```{r, echo = FALSE, out.width="100%", fig.alt = "The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter."}
+
+knitr::include_graphics("images/deviance_explained.png")
+
+```
+
+]
+
+.left-code[
+
+**Null deviance**: 38253 with df = 124
+
+**Residual deviance**: 15211 with df = 121
+
+We can compare these values: 
+
+$\chi^2=Null~deviance–Residual~deviance$
+
+$\chi^2$ = 38253-15211
+
+$\chi^2$ = 23042
+
+With 3 predictors ${\chi^2}_3=23042;~p<0.001$
+
+]
+---
+
+## Model simplification
+
+Changes in deviance also follow the *Chi-square statistic* with *k* degrees of freedom.
+
+$$
+\chi^2= Proposed~model~deviance – Reduced~model~deviance
+$$
+
+
+.pull-left[
+```{r}
+drop1(fly_glm, test = "F")%>% 
+  as_tibble()
+
+```
+]
+
+.pull-right[
+
+```{r}
+drop1(fly_glm, test = "Chi") %>% 
+  as_tibble()
+
+```
+]
+
+The models are clearly the same, *but* F-tests for models where we estimate variance independently of the mean are a better choice for hypothesis testing. We will use chi-square distributions when using alternative error distributions e.g. Poisson & Binomial.
+
+---
+
+## AIC: Akaike Information Criterion
+
+A quantitative way to compare regression models.
+
+**Unlike likelihood ratio test it CAN be used on non-nested models**
+
+Takes into account how well the model predicts the data, while penalising it for increasing complexity
+
+We want a descriptive model that balances prediction and complexiy, and is given by the model with the **lowest AIC value**
+
+$\Large{AIC=2k-2Ln(L)}$
+
+where:
+
+$k$ is the number of parameters
+
+$L$ is maximum likelihood
+
+---
+
+## Other outputs
+
+###Dispersion
+
+Indicates whether the distribution is wide or narrow
+
+###Fisher score
+
+A verbose output of how many iterations were required to resolve the model. A high number indicates the model may be having trouble converging (could be mis-specified)
+

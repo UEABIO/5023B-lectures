@@ -1,0 +1,390 @@
+---
+title: "Refining models"
+subtitle: "Model checks and refinement"
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(rstatix)
+library(palmerpenguins)
+library(ggpubr)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+
+---
+
+## How do I know my model is a good fit?
+
+
+###1. Statistics are no substitute for judgment
+
+Have a clear hypothesis for why variables are being included (and whether they might interact)
+
+###2. Check assumptions & diagnostics
+
+A model with poor diagnostics is a bad fit for the data – confidence intervals and p values will not be robust. 
+---
+
+## Model checks
+
+* Diagnostic plots
+
+* Multicollinearity
+
+* Omitted Variable Bias
+
+* Irrelevant variables
+
+* Hypothesis testing for model simplification
+
+
+
+```{r, echo = F}
+
+lsmodel1 <- lm(bill_length_mm ~ 
+              bill_depth_mm +
+              body_mass_g + 
+              species + 
+              species:bill_depth_mm, #<<
+            data = penguins)
+
+```
+
+---
+
+### Residual Linearity
+
+```{r, eval = F}
+library(performance)
+
+check_model(lsmodel1)
+
+```
+
+.left-code[
+
+The first two plots analyze the linearity of the residuals (in-sample model error) versus the fitted values. We want to make sure that our model is error is relatively flat - e.g. our model has equal amounts of error across the fitted range.
+
+
+We can see that when our model predictions >50 there is larger error than <50. We may want to inspect this, but there is also clearly less data at this high value range.
+
+
+
+]
+
+.right-plot[
+
+```{r, echo = F}
+library(performance)
+
+check_model(lsmodel1, check = c("linearity", "homogeneity"))
+
+```
+
+]
+
+---
+
+## Collinearity and High Leverage
+
+The next two plots analyze for collinearity and high leverage points. 
+
+.left-code[
+**Collinearity** is when features are highly correlated, which can throw off simple regression models. However, when we are using interaction terms - we *expect* these to be highly correlated with main effects. So use your common sense. 
+
+**High Leverage Points** are observations that deviate far from the average. These can skew the predictions for linear models, and removal or model adjustment may be necessary.
+
+]
+
+.right-plot[
+
+```{r, echo = F}
+
+
+check_model(lsmodel1, check = c("vif", "outliers"))
+
+```
+
+]
+
+
+---
+
+## Normality of Residuals
+
+.left-code[
+The last two plots analyze for the normality of residuals, which is how the model error is distributed.
+
+If the distributions are skewed, this can indicate problems with the model.
+
+**Quantile-Quantile Plot**: We can see that several points towards the end of the quantile plot do not fall along the straight-line. 
+
+**Normal density Plot**: The residuals fit a very nice normal distribution
+
+]
+
+.right-plot[
+
+```{r, echo = F}
+
+
+check_model(lsmodel1, check = c("qq", "normality"))
+
+```
+
+]
+
+
+
+---
+class: center, middle
+
+## Assumptions not met?
+
+###What if our data does not satisfy one or more of these assumptions?
+
+---
+
+## Data transformations
+
+If our assumptions are violated, then depending on the issue, estimates of the mean or uncertainty intervals may be biased, affecting our ability to determine statistical significance. 
+
+
+Transformations can help with:
+
+1. Heteroscedasticity (the opposite of Homogeneity) of variance
+
+2. Non-linearity
+
+3. Non-normal residual variance
+
+4. Outliers (sometimes) - might be possible to remove these
+
+
+```{}
+lm(sqrt(y) ~ x)
+
+lm(log(y) ~ x)
+```
+
+---
+## Choosing a transformation
+
+.right-plot[
+
+```{r, out.width = "80%"}
+MASS::boxcox(lsmodel1)
+
+```
+
+]
+
+.left-code[
+
+
+|Lambda value $\lambda$ | Transformed data ($Y$)|
+|-----------------------|-----------------------|
+|-2|Y^-2|
+|-1|Y^-1|
+|-0.5|Y^-0.5|
+|0|log(Y)|
+|0.5|sqrt(Y)|
+|1|Y^1|
+|2|Y^2|
+
+]
+
+
+---
+
+## Multicollinearity
+
+Correlation between predictor variables in a linear model
+
+One pair = collinearity, two or more = multicollinearity
+
+Can be a result of an overspecified model (chucked everything in without thinking) also common in observation datasets (rather than experimental datasets) e.g. ecological data where variables may be dependent on each other
+
+--
+
+$R^2$ may be high
+
+BUT individual predictors may have high uncertainties and appear non-significant
+
+$VIF_j={1\over{1-R^2_j}}$
+
+Each predictor is regressed against the full model *without* that predictor present
+
+---
+
+## Omitted variable bias
+
+Bias created when one or more predictor variables are incorrectly left out of a model
+
+e.g. this predictor variable should have been included because you could reasonably expect it to influence the outcome. 
+
+
+--
+
+* Other terms may have their influence over – or underestimated ( it is not always clear which way round this will occur).
+
+* Standard errors and measures of uncertainty are wrong
+
+* Significance tests are biased
+
+* Predictions will be wrong
+
+---
+
+## Irrelevant variables
+
+**The other side of the coin – Including irrelevant variables**
+
+* Estimates will be unbiased but perhaps inefficient (greater variances, SE)
+
+* Variances will be unbiased (but maybe not optimal)
+
+* Hypothesis testing, CI results are valid
+
+* Greater sample size can help reduce inconsistency and selection bias issues
+
+* Prediction will be unchanged
+
+
+**So: it’s better to INCLUDE an irrelevant predictor variable that to OMIT a relevant one.**
+
+
+---
+
+## Model fit checklist
+
+Think **HARD** about what terms should be included in a model to test a hypothesis
+
+.pull-left[
+
+1) Which terms is it reasonable to test might interact with each other to affect y? 
+
+2) Which terms might be showing signs of collinearity? 
+
+3) Visualise your data
+
+4) Fit your most complex model (main terms and interactions)
+
+]
+
+.pull-right[
+
+5) Check the model fit/diagnostics
+
+    - Homogeneity of variance,
+    
+    - normal distribution of residuals,
+    
+    - collinearity
+
+6) Refit model (change terms, data transformation if necessary)
+
+7) Test removal of interaction terms 
+
+8) Leave all main predictors in the model 
+
+]
+
+---
+
+## Testing whether my model fit improves
+
+$R^2$ almost always increases as you add more terms and interactions. This does not increase your ability to test predictors. 
+
+The adjusted $R^2$ may be more a more reliable measure.
+
+`anova()` or `drop1()` both produce **likelihood ratio F-tests** when comparing **nested models**.
+
+
+---
+## Types of sums of squares
+
+There are three types of sums of squares I, II & III
+
+By default `anova()` implements type I
+
+The `car` package function `Anova()` allows you to specify which type you want.
+
+Roughly:
+
+--
+
+**Type I** sum of squares are sequential - the factors are tested in the order specified in the model
+
+--
+
+**Type II** are partial - all terms tested in light of each other (but does not account for interactions)
+
+--
+
+**Type III** also partial include interactions
+
+--
+
+When data are balanced these will be **identical**. For unbalanced designs these will differ
+
+---
+
+##drop1()
+
+The `drop1()` function compares all possible models that can be constructed by dropping a single model term. As such it produces the most robust sum of squares for F-test with unbalanced model design
+
+```{r}
+drop1(lsmodel1, test = "F")
+
+```
+
+Note it drops all terms that *can* be dropped e.g. species cannot be dropped here, because it is in the interaction term.
+
+If an interaction was dropped from a full model (non-significant), then `drop1()` could be re-run.
+
+
+
+

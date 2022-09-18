@@ -1,0 +1,557 @@
+---
+title: "Programming in R"
+subtitle: ""
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(rstatix)
+library(palmerpenguins)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+---
+class: center, middle
+
+###DRY: Don't Repeat Yourself
+###vs.
+###WET: Write Everything Twice
+
+
+---
+
+Writing functions
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Write reusable code with functions"}
+knitr::include_graphics("images/function.png")
+```
+
+---
+class: center
+
+## When to write a function
+
+“You should consider writing a function whenever you’ve copied and pasted a block of code more than twice”
+
+ H. Wickham
+
+---
+
+## Functions in R
+
+.left-code[
+```{r, eval = FALSE}
+
+function01 <- 
+  function(argument1,
+           argument2,
+           ...){
+    # body where you put in the functions
+    # output
+           }
+```
+]
+
+.right-plot[
+
+* `function01` name of function
+
+* `function()` make a function, function!
+
+* `argument1` placeholders for values that will be supplied to a finished argument
+
+* body 
+  * the code that solves your problem
+  
+* output
+  * by default the last object made is returned
+  * `return()` can be use to return other selected objects
+]
+
+---
+
+## Why would I write a function?
+
+.left-code[
+
+```{r, eval = FALSE}
+# simple dataframe
+
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df
+
+```
+
+]
+
+.right-plot[
+
+```{r, echo = FALSE}
+
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df
+
+```
+
+]
+
+---
+
+
+$$
+z_i = {x_i-min(x)\over{max(x)-min(x)}}
+$$
+.pull-left[
+
+```{r, eval = FALSE}
+# What are we doing here?
+df$a <- (df$a - min(df$a, na.rm = TRUE)) /  
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) /  
+  (max(df$b, na.rm = TRUE) - min(df$b, na.rm = TRUE))
+df$c <- (df$c - min(df$a, na.rm = TRUE)) /  
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) /  
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+
+df
+
+```
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE}
+# What are we doing here?
+df$a <- (df$a - min(df$a, na.rm = TRUE)) /  
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) /  
+  (max(df$b, na.rm = TRUE) - min(df$b, na.rm = TRUE))
+df$c <- (df$c - min(df$a, na.rm = TRUE)) /  
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) /  
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+
+df
+
+```
+
+]
+
+
+There is nothing wrong with this code, it works. 
+
+BUT: My script will be longer, I might make mistakes, if I carryover mistakes I have to go looking for them
+
+---
+
+## Functionalise
+
+```{r, eval = FALSE}
+
+df$d <- (df$d - min(df$d, na.rm = TRUE)) /  
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+
+```
+
+--
+
+```{r, eval = FALSE}
+
+# pull out what's common, these are your arguments
+x <- (x - min(x, na.rm = TRUE)) /  
+  (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+
+```
+
+--
+
+```{r, eval = FALSE}
+
+# can this be simplified more?
+x <- (x - min(x, na.rm = TRUE)) /  
+  diff(range(x, na.rm = TRUE))
+```
+
+--
+
+```{r, eval = FALSE}
+
+# rewrite as a function
+
+rescale_0_1 <- function(x) {#<<
+  (x - min(x, na.rm = TRUE)) /  
+  diff(range(x, na.rm = TRUE))
+}
+
+```
+
+---
+
+## Test it
+
+```{r}
+rescale_0_1 <- function(x) {
+  (x - min(x, na.rm = TRUE)) /  
+  diff(range(x, na.rm = TRUE))
+}
+testvec <- 1:11
+testvec
+
+```
+
+```{r}
+rescale_0_1(testvec)
+```
+
+**Q. Does the result make sense?**
+
+---
+## Put it to work
+
+```{r}
+df <- data.frame(a = rnorm(10), b = rnorm(10), c = rnorm(10), d = rnorm(10))
+rescale_0_1 <- function(x) {
+  (x - min(x, na.rm = TRUE)) /  
+  diff(range(x, na.rm = TRUE))
+}
+out <- df #make a copy so we don't have to remake df again
+out$a <- rescale_0_1(df$a) # scale column a
+out$b <- rescale_0_1(df$b) # scale column b
+out$c <- rescale_0_1(df$c) # scale column c
+out$d <- rescale_0_1(df$d) # scale column d
+out # let's look
+
+```
+
+---
+## Function writing best practices
+
+* Make sure it does what you want it to do
+
+* Use good names
+
+  * functions do stuff; use verbs
+  * arguments are things; use nouns
+  * don't overwrite existing functions
+  
+* Argument order matters
+
+  * tidyverse assumes data input comes first
+  * detail arguments come later (e.g. na.rm = TRUE)
+
+* Make output clear and obvious
+
+The Tidyverse style guide is here: http://style.tidyverse.org/
+
+---
+class: center, middle, inverse
+
+# Data structures
+
+---
+## Data structures
+
+1. Vector
+
+2. Matrix
+
+3. List
+
+4. Dataframe/tibble
+
+---
+
+## Vector
+
+All elements are of the same type. 
+
+
+
+```{r}
+name <- c("MICHAEL", "LUCY", "JOHN")
+
+age <- c(20,25,30)
+
+```
+
+--
+
+R will routinely apply functions to all elements of a vector automatically
+
+```{r}
+str_remove(name, "L")
+
+sum(age)
+
+```
+
+
+---
+
+## Matrix
+
+Matrix is a special kind of vector. 
+
+A matrix is a vector with two additional attributes: the number of rows and the number of columns.
+
+```{r}
+x <- matrix(c(1,2,3,4), nrow=2, ncol=2)
+
+x
+
+```
+
+```{r}
+
+x[1,2]
+
+```
+---
+
+##List
+
+List can contain elements of different types.
+
+```{r}
+y <- list(name = name, age = age, work = c("Oxford", "Cambridge", "London"))
+y
+```
+
+---
+
+##List 
+
+```{r}
+
+y[1]
+
+y$work[2]
+
+```
+---
+##tibble
+
+A tibble is used for storing data tables. It is a list of vectors of equal length.
+
+Each vector can contain elements of different types
+
+
+
+```{r}
+
+df2 <- tibble(name, age, work = c("Oxford", "Cambridge", "London"))
+
+df2
+
+```
+---
+
+##tibble
+
+With a tibble we can use all of the power of `dplyr` for data wrangling
+
+```{r}
+df2 %>% 
+  select(name)
+
+df2 %>% 
+  filter(age < 26)
+
+```
+
+---
+
+## So... what about those repeats? 
+
+```{r, eval = FALSE}
+out <- df
+out$a <- rescale_0_1(df$a)
+out$b <- rescale_0_1(df$b)
+out$c <- rescale_0_1(df$c)
+out$d <- rescale_0_1(df$d)
+out
+
+```
+
+The function simplified the call, but we're copying and pasting again.
+
+🤔
+
+
+---
+## Loops
+
+```{r}
+
+for (i in 1:ncol(df)) { # loop through each element
+  out[i] <- rescale_0_1(df[[i]]) #apply function and store in out[]
+}
+
+out
+
+```
+
+---
+
+##Apply
+
+```{r}
+
+sapply(df, rescale_0_1)
+
+sapply(df, rescale_0_1) %>% 
+  is.matrix(.)
+```
+
+---
+
+##Apply
+
+|Function|Arguments|Objective|Input|Output|
+|---|---|---|---|---|
+|apply|apply(X, MARGIN, FUN)|Apply a function to the rows, columns or both| Dataframe or matrix| vector, list or array|
+|lapply| lapply(X,FUN)|Apply a function to all the elements of the input| List, vector or dataframe| list|
+|sapply| sapply(X,FUN)| Apply a function to all the elements of the input| List, vector or dataframe| vector or matrix|
+
+---
+
+##Map
+
+```{r}
+
+map_df(.x = df, 
+       .f = rescale_0_1) #map over the columns in df
+
+
+```
+
+---
+
+map iterates over a list and returns a list
+
+* .x list (or vector) to iterate over
+
+* .f function to apply over that list
+
+* ... things that get passed from map() to .f
+
+
+```{r}
+
+l <-  list(a=1:10, b = 10:100)
+
+map(.x = l, 
+    .f = function(x) {
+      mean(x, na.rm = TRUE)})
+
+# here I have used an anonymous function
+```
+
+The names .x and .f are intentionally weird because they are unlikely to collide with other names passed through ... to .f.
+
+---
+## More maps
+
+Other types of map that return specific things
+
+* `map` - list
+* `map_lgl` logical
+* `map_int` integer
+* `map_dbl` double
+* `map_chr` character
+* `map_df` dataframe
+
+Maps are "type-safe" they will fail if they cannot return the correct data type (unlike apply)
+
+```
+## Error: Can't coerce element 1 from a double to a logical
+```
+
+---
+
+## Source scripts & functions
+
+You may find it useful to assemble your custom functions into a dedicated R script.
+
+This can then be sourced for use in any other R scripts when required
+
+```{r, eval = FALSE}
+source("path/to/some/file/functions.R")
+```
+
+Simply add this line to the top of your R script and you’ll be able to use any functions defined in file.R.
+
+---
+
+## Packages
+
+Packages are the fundamental units of reproducible code. When functions become routinely useful to you, you might consider turning them into a package for your personal R `library()` to be called at a moments notice. 
+
+If your functions might be useful to others, it can be made public (via Github or CRAN), so that others can use it too. 
+
+A reason to remember to always `cite` R packages 
+
+---
+
+## Keep learning
+
+* [R4DS](https://r4ds.had.co.nz/functions.html)
+
+* [Learn to purrr](https://www.rebeccabarter.com/blog/2019-08-19_purrr/#map-functions-beyond-apply)
+
+* [Writing a package](https://ourcodingclub.github.io/tutorials/writing-r-package/)

@@ -1,0 +1,338 @@
+---
+title: "Confidence Intervals"
+subtitle: ""
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(DiagrammeR)
+library(palmerpenguins)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+---
+
+## Sampling distribution * Standard Error
+
+If we had a bunch of samples, and found their *probability distribution*(e.g. gaussian, mean and sd etc), then we would be able to predict the **sampling distribution**
+
+```{r, eval = F}
+# function to generate samples with a normal distribution
+rnorm(n = 100, mean = 10, sd  = 1)
+
+```
+
+--
+
+The **standard deviation of the sampling distribution of means** is the **standard error**. It is calculated by dividing the standard deviation by the square root of the sample size:
+
+$$
+SE = {s\over\sqrt n}
+$$
+
+---
+
+## Standard Error
+
+How much does your **sample statistic** differ from the population parameter *aka* how accurate is your mean?
+
+**Q. What happens to SE as sample size increases?**
+
+
+
+$$
+SE = {s\over\sqrt n}
+$$
+
+---
+
+### Descriptive statistics
+
+If we want to say how widely scattered our measurements are we use the **standard deviation**.
+
+--
+
+### Inferential statistics
+
+If we want to indicate some level of uncertainty around our estimate of the mean, we use the **standard error**. 
+
+We can also use standard error to calculate a **confidence interval**
+
+---
+
+## Central Limit Theorem
+
+Most analyses require some sort of assumptions of a normal distribution. 
+
+**Central limit theorem** states that the standard deviation of the sampling distribution of means follows a normal distribution, *regardless of the underlying shape of a population*. 
+
+In order for this to hold true the **sample size** (*n*) must be sufficiently larger
+
+---
+
+## Large enough sample size
+
+**Q. What is a large enough sample size?**
+
+--
+
+You will often hear *n* $\geq$ *30* as large enough to claim means are normally distributed according to CLT
+
+--
+
+This depends on how far removed the underlying shape of a population *is* from a normal distribution
+
+* If the population distribution is symmetrical, it could be as small as 15.
+
+* If the population is sufficiently skewed it could be as high as 100. 
+
+--
+
+Also see **bootstrapping**
+
+---
+class: middle
+
+## Statistical inference
+
+We want to *understand* something about our populations using observations from a random sample
+
+--
+
+We only have a *sample*, therefore there will always be uncertainty about the population.
+
+--
+
+How do we express this?
+
+---
+class: center, middle, inverse
+
+## Confidence Intervals
+
+---
+
+## Common misconception
+
+"There is a 95% chance that the **true** population mean is within this range"
+
+--
+
+The mean either *is* or *is not* within this range
+
+--
+
+"If we repeat this experiment many times, 95% of our computed confidence intervals would contain the *true mean*"
+
+Frame the probability around the intervals not the population parameter.
+
+```{r, echo = FALSE, out.width="50%", fig.alt = " Confidence Intervals"}
+
+knitr::include_graphics("images/CI-experiments.png")
+```
+
+---
+
+## Confidence levels
+
+Can be constructed by YOU:
+
+Do you want to know the range within which you will capture the mean...
+
+* 90% of the time
+
+--
+
+* 95%
+
+--
+
+* 99%
+
+--
+
+The Confidence level (C) is the inverse of the significance level.
+
+$$
+\huge\alpha = 1 - C
+$$
+---
+
+```{r, echo = FALSE, out.width="90%", fig.alt = " Confidence Intervals"}
+
+knitr::include_graphics("images/confidence-interval-area.png")
+```
+
+---
+
+## Calculating a Confidence interval
+
+This requires us to **know** the population variance (standard deviation)
+
+
+$$
+\bigg[\overline x - z_{a\over2} * {\sigma\over {\sqrt n}}
+$$
+
+
+$$
+\overline x + z_{a\over2} *{\sigma\over {\sqrt n}}\bigg]
+$$
+
+--
+
+
+**Q. How likely is this?**
+
+
+---
+
+## Z distribution
+
+So far we have used the z-distribution. This is OK for normally distributed data, where we have population $\mu$ and $\sigma$. 
+
+When we don't know the population mean and SD
+
+--
+
+Then we cannot be sure of our uncertainty
+
+--
+
+Three choices: 
+
+1. Assume we have a big enough sample size and CLT fixes this
+
+2. Use another type of sampling distribution (e.g. t-distribution)
+
+3. Bootstrap our sampling distribution
+
+---
+
+## Bootstrapping
+
+```{r, echo = FALSE, out.width="120%", fig.alt = "With as few as 10 data points in our random sample, it is possible to do  bootstapped resampling (minimum ~ 1000 samples). We can use this to find the sampling distribution of the mean, se and 95% CI "}
+
+knitr::include_graphics("images/bootstrapping.png")
+```
+
+---
+
+## Bootstrapping
+
+.left-code[
+
+```{r, eval = TRUE}
+library(boot)
+
+flipper <- penguins %>% 
+  filter(sex == "male") %>% 
+  pull(flipper_length_mm)
+
+mean_fun <- function(x,i){
+  mean(x[i])
+}
+
+boot_1000 <- boot( #<<
+  data = flipper,#<<
+  statistic = mean_fun,#<<
+  R = 1000#<<
+)
+
+
+```
+]
+
+
+.right-plot[
+
+```{r}
+boot_1000
+```
+
+]
+
+---
+
+.left-code[
+
+```{r, eval = FALSE}
+ggplot()+
+  aes(boot_1000$t)+
+  geom_histogram()
+
+```
+
+]
+
+
+.right-plot[
+
+```{r, echo = FALSE}
+ggplot()+
+  aes(boot_1000$t)+
+  geom_histogram()
+
+```
+
+]
+
+---
+
+## Bootstrap Confidence Intervals
+
+```{r}
+boot.ci(boot_1000,
+        conf = 0.95,
+        type = "perc")
+
+```
+
+---
+class: center, middle, inverse
+
+# Next time
+# T-distributions
+

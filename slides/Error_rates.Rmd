@@ -1,0 +1,222 @@
+---
+title: "Type 1 & Type 2 Errors"
+subtitle: ""
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(DiagrammeR)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+---
+class: center, middle
+
+# Hypothesis testing
+
+---
+class: center, middle
+
+### P-value: probability of getting samples at least as different (means) as ours if the null hypothesis is true
+
+---
+class: center, middle
+
+## Type 1 and Type 2 Errors:
+
+|             | H0 True   | H0 False     
+| ----------- | ----------- |----------- |
+| Reject H0 | Type 1 Error | Correct rejection
+| Fail to reject H0    | Correct decision | Type 2 Error     
+
+---
+class: center, middle
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "P > 0.05."}
+
+knitr::include_graphics("images/type_1_errors.png")
+
+```
+
+---
+class: center, middle
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "P < 0.05."}
+
+knitr::include_graphics("images/type_2_errors.png")
+
+```
+
+---
+
+## Type 2 error
+
+* Probability of a Type 2 error is $\beta$ 
+
+--
+
+* Power is the inverse of a Type 2 error $\beta=1-Power$ 
+
+--
+
+* A Type 2 error is the scenario where you fail to detect a *true* difference/effect
+
+--
+
+* Power is the probability you **will** detect a *true* difference/effect
+
+--
+
+* It is common to aim for 80% Power.
+
+---
+
+
+class: center, middle
+
+```{r, echo = FALSE, warning = FALSE, out.width = "100%", fig.cap = "9/(16+9) = 36% of significant p values would be false positives"}
+
+
+grViz("
+digraph boxes_and_circles {
+  rankdir = LR
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 8]
+
+
+
+
+  # several 'node' statements
+  node [shape = box,
+        fontname = Helvetica]
+
+  
+# label names
+
+A[label = '200\n experiments']
+B[label = '20 \n real effect']
+C[label = '180 \n no real effect']
+
+F[label = '171 \n true null']
+G[label = '9 \n false null',
+color = blue]
+
+E[label = '4 \n effect \nnot found',
+
+color = red]
+D[label = '16 \n effect found']
+
+  # several 'edge' statements
+  A->B 
+  A->C
+  C->F[label = 0.95]
+  C->G[label = 0.05]
+  B->D[label = 0.8]
+  B->E[label = 0.2]
+}
+")
+
+
+```
+
+.pull-left[
+
+[Smaldino & McElreath 2016](https://royalsocietypublishing.org/doi/full/10.1098/rsos.160384?wm=3049_a111)
+
+]
+
+---
+
+ Statistical significance **is not** a direct indicator of the size of effect, but rather a product of sample size, effect size and threshold for $\alpha$
+
+ For this reason, sample sizes, effect sizes and measures of uncertainty *must* be reported. 
+
+
+--
+### Compare
+
+“The fuel additive significantly increased car gas mileage (*t*<sub>1998</sub> = 2.71, *p* = 0.007).”
+
+--
+
+"The difference in mean gas mileage between the two groups is only 0.04 mpg. While statistically significant (*t*<sub>1998</sub> = 2.71, *p* = 0.007, n = 2000 for each group), the minimal increase in gas mileage does not warrant investment in the  technology tested.”
+
+---
+
+## Statistical Power
+
+Statistical power then has four related parts: 
+
+--
+
+* Effect size: The magnitude of a result present in a population
+
+* Sample size: The number of observations per sample
+
+* Alpha: the threshold at which you would accept statistical significance (often 0.05)
+
+* Power: the probability of accepting the alternate hypothesis (if it is true)
+
+--
+
+Raising the value of any of effect size, sample size or $\alpha$ all increase Power $1-\beta$
+
+---
+
+## Am I right?
+
+Reporting effect sizes, levels of uncertainty and understanding the statistical power of your experiment are all important. 
+
+--
+
+But a single experiment is **never** enough to know which hypothesis is correct. 
+
+--
+
+Only multiple experiments will allow true statistical trends to emerge
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "A range of P values under when the Null hypothesis is true."}
+knitr::include_graphics("images/26_sample_null.png")
+knitr::include_graphics("images/26_sample_110.png")
+```
+

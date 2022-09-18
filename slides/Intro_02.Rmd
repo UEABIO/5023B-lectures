@@ -1,0 +1,443 @@
+---
+title: "Introductions"
+subtitle: "R programming and Statistics"
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE)
+library(tidyverse)
+library(gt)
+library(gtExtras)
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+---
+
+# Introduction to R 
+
+* Naming objects and entering data
+* How to troubleshoot and where to find help  
+
+---
+
+## First some terms
+
+```{r, echo = FALSE, out.width="85%", fig.alt = "An R object saved by using the assignment operator <- a dataframe called sloth_df is piped into the function select with arguments id, age and speed"}
+knitr::include_graphics("images/terms.png")
+```
+
+---
+
+class: center, middle, inverse
+
+
+
+# **1. Naming things and entering data**
+
+
+---
+
+### Resources for the basics of good data science and good coding practice
+
+* [Understanding files and directories](https://www.theverge.com/22684730/students-file-folder-directory-structure-education-gen-z)
+
+* [How to organise your spreadsheets](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989)
+
+* [R coding basics](https://rstudio.cloud/learn/primers/1.2)
+
+* [The tidyverse style guide](https://style.tidyverse.org/)
+
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+* Consistent
+
+* Concise
+
+* Readable
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* **Meaningful**
+
+
+
+* Consistent
+
+
+
+* Concise
+
+
+
+* Readable
+]
+
+.pull-right[
+* Names of variables, data frames, and files should not be so generic/vague that a user must need a glossary to know what they contain
+
+* Names should be specific to the data/experiment/project, and the more intuitive their interpretation the better
+
+* **Bad examples:** File-1.xlsx, file-2.csv, indicator1, indicator2, ExperimentA.R, ExperimentB.R
+
+* **Better examples:** taco_nutrients.csv, ca-demographics, mice_1a_mass, sb_channel_spatial.shp
+
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* **Consistent**
+
+
+
+* Concise
+
+
+
+* Readable
+]
+
+.pull-right[
+* Keep names **identical** for identical entries (e.g. “burrito-32” and “Burrito 32” are *different things* to R)
+
+* Be consistent **across data frames** - your life will be easier if you have year called ‘year’ in both sets.
+
+* Use logical suffixes (if necessary), consistently formatted. Like: temp_water_surface, temp_water_sub, temp_water_bottom
+
+
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* Consistent
+
+
+
+* **Concise**
+
+
+
+* Readable
+]
+
+.pull-right[
+* Balance meaningfulness w/conciseness
+
+* Better to be descriptive than not know what a variable is
+
+* Longer names = tedious coding, but less effort to look through metadata for column/identifier names
+
+
+
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* Consistent
+
+
+
+* Concise
+
+
+
+* **Readable**
+]
+
+.pull-right[
+* Avoid punctuation (%, !, ~, ( ), #) in names - more challenging to type & can break code.
+
+* Avoid spaces (makes coding much more difficult)
+
+* Avoid starting object names with numbers (but could be useful for file names in sequence)
+
+]
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* Consistent
+
+
+
+* Concise
+
+
+
+* **Readable**
+]
+
+.pull-right[
+
+* Avoid naming objects that are also commonly used functions (like filter or select)
+
+* Pick (and be consistent with) a choice of case, like:
+    * **lowercase_snake_case** (my favorite)
+    * camelCase
+    * UpperCamelCase
+    * kebab-case
+    * SCREAMING_SNAKE_CASE
+
+]
+
+---
+
+## Entering data
+
+* The outcomes for a variable (whether values or descriptions) should exist alone in a column
+
+* Be very consistent when entering descriptions (e.g. “Purple” v. “purple” v. “purple_”)
+
+* Avoid formatting and symbols (if it’s hard to type, then it’s hard to type...and might cause issues beyond that)
+
+* Put any additional information (units, notes, etc.) in columns separate from the value/description
+
+* If there are missings, enter the **same exact thing** for each missing value (common: NA, -- or -)
+
+
+---
+
+## Data entry
+
+.pull-left[
+### Bad:
+```{r, echo = FALSE, out.width="90%", fig.alt = "Inconsistent data entry, units in the column of berry mass, observations mixed in with units"}
+knitr::include_graphics("images/bad_df.png")
+```
+
+]
+
+--
+
+.pull-right[
+### Better:
+```{r, echo = FALSE, out.width="90%", fig.alt = "Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column"}
+knitr::include_graphics("images/good_df.png")
+```
+
+
+]
+
+
+---
+
+## Keep a clear record of your naming system
+
+### And plan on forgetting it!
+
+### Keep a project description with: 
+
+  * The name of your variable in the data and a longer description of what it means
+    
+  * What are the units
+    
+  * How you have indicated a missing record. [Why is it missing?](https://en.wikipedia.org/wiki/Missing_data)
+
+---
+class: center, middle, inverse
+
+# **2. Help yourself in R:**
+
+## Finding resources and tips for troubleshooting
+
+
+---
+
+## What package or function should I use?
+
+### **Google it:**
+
+  * Search with the keywords and package/function name if known, and include .R in the search keywords (e.g. “dplyr::mutate add column in .R” instead of “mutate variable”).
+    
+  * “R” is generic - so consider using “R software” or “.R”
+    
+  * Start learning and using language common in R communities & publications (e.g. [R4DS](https://r4ds.had.co.nz/)), like data frame instead of spreadsheet
+    
+  * For now, anything reading, wrangling, ggplot2 related: considering navigating to documentation from [tidyverse.org](https://www.tidyverse.org/), [rdocumentation](https://www.rdocumentation.org/), or [RStudio community](https://community.rstudio.com/). 
+
+---
+
+## How do I know there’s an error, and where to look for it? 
+
+* When you save a script, lines of code with some errors (e.g. unmatched parentheses) will have a red circle with an x in it next to the line number
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "Syntax error"}
+knitr::include_graphics("images/console_error.png")
+```
+
+* You might also see a red squiggly line under part of your code, indicating a syntax issue. You can hover over the squiggly to see a pop-up hint about what’s going on. 
+
+---
+
+## Error messages will show up* in the Console when you try to run the broken code: 
+
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "Console error"}
+knitr::include_graphics("images/error_output.png")
+```
+
+---
+class: center
+
+## Fact
+### Sometimes walking away is the most productive
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "Things will look better in the morning"}
+knitr::include_graphics("images/Error.jpg")
+```
+
+---
+
+## There are multiple types of messages that R will print. Read the message to figure out what it’s trying to tell you. 
+
+* **Error:** There’s a fatal error in your code that prevented it from being run through successfully. You need to fix it for the code to run. 
+
+* **Warning:** Non-fatal errors (don’t stop the code from running, but this is a potential problem that you should know about).
+
+* **Message:** Here’s some helpful information about the code you just ran (you can hide these if you want to)
+
+---
+class: center
+
+### Read the error message
+--
+
+## Read the error message
+--
+
+# Read the error message
+
+Sometimes it will be infuriatingly vague, but often it will tell you exactly how to fix it (e.g. “do you need ==?”). 
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "Always read the error message"}
+knitr::include_graphics("images/misspelling.png")
+```
+
+---
+
+## Troubleshooting
+
+* Symptom: `Error in _________: could not find function “_________”`
+
+
+* Diagnosis: 
+    * The `library()` containing the function hasn't been called
+    * The function has been misspelled
+
+---
+
+## Troubleshooting
+
+* Symptom: `Error in ____ : object ‘_____’ not found’`
+
+* Diagnosis: 
+    * The object hasn’t been created or stored
+    * You’ve mistyped the object name
+
+---
+
+## Troubleshooting
+  
+### If R…tells you it’s ignoring an argument within a function
+
+* Symptom: `Warning: Ignoring unknown parameters: ____`
+
+* Diagnosis: 
+    * You’ve included an argument that doesn’t exist for that function
+    * You’ve mistyped an argument that does exist for that function
+---
+
+## Troubleshooting
+
+* Look over code very carefully - character-by-character and space-by-space. Run line-by-line to see where it breaks. 
+
+--
+
+* Google the copied & pasted error message. **Someone else has encountered and solved it before**.
+
+--
+
+* Take a break and come back to it later. ☕ 
+

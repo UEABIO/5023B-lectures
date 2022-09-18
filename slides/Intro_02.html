@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introductions</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Philip Leftwich" />
+    <meta name="date" content="2022-09-01" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: title-slide, left, top
+
+# Introductions
+
+## R programming and Statistics
+
+### Philip Leftwich
+
+&lt;br&gt;
+
+
+
+&lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
+
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
+
+---
+
+# Introduction to R 
+
+* Naming objects and entering data
+* How to troubleshoot and where to find help  
+
+---
+
+## First some terms
+
+&lt;img src="images/terms.png" title="An R object saved by using the assignment operator &amp;lt;- a dataframe called sloth_df is piped into the function select with arguments id, age and speed" alt="An R object saved by using the assignment operator &amp;lt;- a dataframe called sloth_df is piped into the function select with arguments id, age and speed" width="85%" /&gt;
+
+---
+
+class: center, middle, inverse
+
+
+
+# **1. Naming things and entering data**
+
+
+---
+
+### Resources for the basics of good data science and good coding practice
+
+* [Understanding files and directories](https://www.theverge.com/22684730/students-file-folder-directory-structure-education-gen-z)
+
+* [How to organise your spreadsheets](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989)
+
+* [R coding basics](https://rstudio.cloud/learn/primers/1.2)
+
+* [The tidyverse style guide](https://style.tidyverse.org/)
+
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+* Consistent
+
+* Concise
+
+* Readable
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* **Meaningful**
+
+
+
+* Consistent
+
+
+
+* Concise
+
+
+
+* Readable
+]
+
+.pull-right[
+* Names of variables, data frames, and files should not be so generic/vague that a user must need a glossary to know what they contain
+
+* Names should be specific to the data/experiment/project, and the more intuitive their interpretation the better
+
+* **Bad examples:** File-1.xlsx, file-2.csv, indicator1, indicator2, ExperimentA.R, ExperimentB.R
+
+* **Better examples:** taco_nutrients.csv, ca-demographics, mice_1a_mass, sb_channel_spatial.shp
+
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* **Consistent**
+
+
+
+* Concise
+
+
+
+* Readable
+]
+
+.pull-right[
+* Keep names **identical** for identical entries (e.g. “burrito-32” and “Burrito 32” are *different things* to R)
+
+* Be consistent **across data frames** - your life will be easier if you have year called ‘year’ in both sets.
+
+* Use logical suffixes (if necessary), consistently formatted. Like: temp_water_surface, temp_water_sub, temp_water_bottom
+
+
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* Consistent
+
+
+
+* **Concise**
+
+
+
+* Readable
+]
+
+.pull-right[
+* Balance meaningfulness w/conciseness
+
+* Better to be descriptive than not know what a variable is
+
+* Longer names = tedious coding, but less effort to look through metadata for column/identifier names
+
+
+
+]
+
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* Consistent
+
+
+
+* Concise
+
+
+
+* **Readable**
+]
+
+.pull-right[
+* Avoid punctuation (%, !, ~, ( ), #) in names - more challenging to type &amp; can break code.
+
+* Avoid spaces (makes coding much more difficult)
+
+* Avoid starting object names with numbers (but could be useful for file names in sequence)
+
+]
+---
+
+## Naming things
+
+### When naming variables, observations, dataframes or files make them:
+
+.pull-left[
+* Meaningful
+
+
+
+* Consistent
+
+
+
+* Concise
+
+
+
+* **Readable**
+]
+
+.pull-right[
+
+* Avoid naming objects that are also commonly used functions (like filter or select)
+
+* Pick (and be consistent with) a choice of case, like:
+    * **lowercase_snake_case** (my favorite)
+    * camelCase
+    * UpperCamelCase
+    * kebab-case
+    * SCREAMING_SNAKE_CASE
+
+]
+
+---
+
+## Entering data
+
+* The outcomes for a variable (whether values or descriptions) should exist alone in a column
+
+* Be very consistent when entering descriptions (e.g. “Purple” v. “purple” v. “purple_”)
+
+* Avoid formatting and symbols (if it’s hard to type, then it’s hard to type...and might cause issues beyond that)
+
+* Put any additional information (units, notes, etc.) in columns separate from the value/description
+
+* If there are missings, enter the **same exact thing** for each missing value (common: NA, -- or -)
+
+
+---
+
+## Data entry
+
+.pull-left[
+### Bad:
+&lt;img src="images/bad_df.png" title="Inconsistent data entry, units in the column of berry mass, observations mixed in with units" alt="Inconsistent data entry, units in the column of berry mass, observations mixed in with units" width="90%" /&gt;
+
+]
+
+--
+
+.pull-right[
+### Better:
+&lt;img src="images/good_df.png" title="Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column" alt="Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column" width="90%" /&gt;
+
+
+]
+
+
+---
+
+## Keep a clear record of your naming system
+
+### And plan on forgetting it!
+
+### Keep a project description with: 
+
+  * The name of your variable in the data and a longer description of what it means
+    
+  * What are the units
+    
+  * How you have indicated a missing record. [Why is it missing?](https://en.wikipedia.org/wiki/Missing_data)
+
+---
+class: center, middle, inverse
+
+# **2. Help yourself in R:**
+
+## Finding resources and tips for troubleshooting
+
+
+---
+
+## What package or function should I use?
+
+### **Google it:**
+
+  * Search with the keywords and package/function name if known, and include .R in the search keywords (e.g. “dplyr::mutate add column in .R” instead of “mutate variable”).
+    
+  * “R” is generic - so consider using “R software” or “.R”
+    
+  * Start learning and using language common in R communities &amp; publications (e.g. [R4DS](https://r4ds.had.co.nz/)), like data frame instead of spreadsheet
+    
+  * For now, anything reading, wrangling, ggplot2 related: considering navigating to documentation from [tidyverse.org](https://www.tidyverse.org/), [rdocumentation](https://www.rdocumentation.org/), or [RStudio community](https://community.rstudio.com/). 
+
+---
+
+## How do I know there’s an error, and where to look for it? 
+
+* When you save a script, lines of code with some errors (e.g. unmatched parentheses) will have a red circle with an x in it next to the line number
+
+&lt;img src="images/console_error.png" title="Syntax error" alt="Syntax error" width="50%" /&gt;
+
+* You might also see a red squiggly line under part of your code, indicating a syntax issue. You can hover over the squiggly to see a pop-up hint about what’s going on. 
+
+---
+
+## Error messages will show up* in the Console when you try to run the broken code: 
+
+
+&lt;img src="images/error_output.png" title="Console error" alt="Console error" width="50%" /&gt;
+
+---
+class: center
+
+## Fact
+### Sometimes walking away is the most productive
+
+&lt;img src="images/Error.jpg" title="Things will look better in the morning" alt="Things will look better in the morning" width="50%" /&gt;
+
+---
+
+## There are multiple types of messages that R will print. Read the message to figure out what it’s trying to tell you. 
+
+* **Error:** There’s a fatal error in your code that prevented it from being run through successfully. You need to fix it for the code to run. 
+
+* **Warning:** Non-fatal errors (don’t stop the code from running, but this is a potential problem that you should know about).
+
+* **Message:** Here’s some helpful information about the code you just ran (you can hide these if you want to)
+
+---
+class: center
+
+### Read the error message
+--
+
+## Read the error message
+--
+
+# Read the error message
+
+Sometimes it will be infuriatingly vague, but often it will tell you exactly how to fix it (e.g. “do you need ==?”). 
+
+&lt;img src="images/misspelling.png" title="Always read the error message" alt="Always read the error message" width="50%" /&gt;
+
+---
+
+## Troubleshooting
+
+* Symptom: `Error in _________: could not find function “_________”`
+
+
+* Diagnosis: 
+    * The `library()` containing the function hasn't been called
+    * The function has been misspelled
+
+---
+
+## Troubleshooting
+
+* Symptom: `Error in ____ : object ‘_____’ not found’`
+
+* Diagnosis: 
+    * The object hasn’t been created or stored
+    * You’ve mistyped the object name
+
+---
+
+## Troubleshooting
+  
+### If R…tells you it’s ignoring an argument within a function
+
+* Symptom: `Warning: Ignoring unknown parameters: ____`
+
+* Diagnosis: 
+    * You’ve included an argument that doesn’t exist for that function
+    * You’ve mistyped an argument that does exist for that function
+---
+
+## Troubleshooting
+
+* Look over code very carefully - character-by-character and space-by-space. Run line-by-line to see where it breaks. 
+
+--
+
+* Google the copied &amp; pasted error message. **Someone else has encountered and solved it before**.
+
+--
+
+* Take a break and come back to it later. ☕ 
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "dracula",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

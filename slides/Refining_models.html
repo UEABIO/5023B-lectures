@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Refining models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Philip Leftwich" />
+    <meta name="date" content="2022-09-16" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: title-slide, left, top
+
+# Refining models
+
+## Model checks and refinement
+
+### Philip Leftwich
+
+&lt;br&gt;
+
+
+
+&lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
+
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
+
+
+---
+
+## How do I know my model is a good fit?
+
+
+###1. Statistics are no substitute for judgment
+
+Have a clear hypothesis for why variables are being included (and whether they might interact)
+
+###2. Check assumptions &amp; diagnostics
+
+A model with poor diagnostics is a bad fit for the data – confidence intervals and p values will not be robust. 
+---
+
+## Model checks
+
+* Diagnostic plots
+
+* Multicollinearity
+
+* Omitted Variable Bias
+
+* Irrelevant variables
+
+* Hypothesis testing for model simplification
+
+
+
+
+
+---
+
+### Residual Linearity
+
+
+```r
+library(performance)
+
+check_model(lsmodel1)
+```
+
+.left-code[
+
+The first two plots analyze the linearity of the residuals (in-sample model error) versus the fitted values. We want to make sure that our model is error is relatively flat - e.g. our model has equal amounts of error across the fitted range.
+
+
+We can see that when our model predictions &gt;50 there is larger error than &lt;50. We may want to inspect this, but there is also clearly less data at this high value range.
+
+
+
+]
+
+.right-plot[
+
+&lt;img src="Refining_models_files/figure-html/unnamed-chunk-3-1.png" width="120%" /&gt;
+
+]
+
+---
+
+## Collinearity and High Leverage
+
+The next two plots analyze for collinearity and high leverage points. 
+
+.left-code[
+**Collinearity** is when features are highly correlated, which can throw off simple regression models. However, when we are using interaction terms - we *expect* these to be highly correlated with main effects. So use your common sense. 
+
+**High Leverage Points** are observations that deviate far from the average. These can skew the predictions for linear models, and removal or model adjustment may be necessary.
+
+]
+
+.right-plot[
+
+&lt;img src="Refining_models_files/figure-html/unnamed-chunk-4-1.png" width="120%" /&gt;
+
+]
+
+
+---
+
+## Normality of Residuals
+
+.left-code[
+The last two plots analyze for the normality of residuals, which is how the model error is distributed.
+
+If the distributions are skewed, this can indicate problems with the model.
+
+**Quantile-Quantile Plot**: We can see that several points towards the end of the quantile plot do not fall along the straight-line. 
+
+**Normal density Plot**: The residuals fit a very nice normal distribution
+
+]
+
+.right-plot[
+
+&lt;img src="Refining_models_files/figure-html/unnamed-chunk-5-1.png" width="120%" /&gt;
+
+]
+
+
+
+---
+class: center, middle
+
+## Assumptions not met?
+
+###What if our data does not satisfy one or more of these assumptions?
+
+---
+
+## Data transformations
+
+If our assumptions are violated, then depending on the issue, estimates of the mean or uncertainty intervals may be biased, affecting our ability to determine statistical significance. 
+
+
+Transformations can help with:
+
+1. Heteroscedasticity (the opposite of Homogeneity) of variance
+
+2. Non-linearity
+
+3. Non-normal residual variance
+
+4. Outliers (sometimes) - might be possible to remove these
+
+
+```{}
+lm(sqrt(y) ~ x)
+
+lm(log(y) ~ x)
+```
+
+---
+## Choosing a transformation
+
+.right-plot[
+
+
+```r
+MASS::boxcox(lsmodel1)
+```
+
+&lt;img src="Refining_models_files/figure-html/unnamed-chunk-6-1.png" width="80%" /&gt;
+
+]
+
+.left-code[
+
+
+|Lambda value `\(\lambda\)` | Transformed data ($Y$)|
+|-----------------------|-----------------------|
+|-2|Y^-2|
+|-1|Y^-1|
+|-0.5|Y^-0.5|
+|0|log(Y)|
+|0.5|sqrt(Y)|
+|1|Y^1|
+|2|Y^2|
+
+]
+
+
+---
+
+## Multicollinearity
+
+Correlation between predictor variables in a linear model
+
+One pair = collinearity, two or more = multicollinearity
+
+Can be a result of an overspecified model (chucked everything in without thinking) also common in observation datasets (rather than experimental datasets) e.g. ecological data where variables may be dependent on each other
+
+--
+
+`\(R^2\)` may be high
+
+BUT individual predictors may have high uncertainties and appear non-significant
+
+`\(VIF_j={1\over{1-R^2_j}}\)`
+
+Each predictor is regressed against the full model *without* that predictor present
+
+---
+
+## Omitted variable bias
+
+Bias created when one or more predictor variables are incorrectly left out of a model
+
+e.g. this predictor variable should have been included because you could reasonably expect it to influence the outcome. 
+
+
+--
+
+* Other terms may have their influence over – or underestimated ( it is not always clear which way round this will occur).
+
+* Standard errors and measures of uncertainty are wrong
+
+* Significance tests are biased
+
+* Predictions will be wrong
+
+---
+
+## Irrelevant variables
+
+**The other side of the coin – Including irrelevant variables**
+
+* Estimates will be unbiased but perhaps inefficient (greater variances, SE)
+
+* Variances will be unbiased (but maybe not optimal)
+
+* Hypothesis testing, CI results are valid
+
+* Greater sample size can help reduce inconsistency and selection bias issues
+
+* Prediction will be unchanged
+
+
+**So: it’s better to INCLUDE an irrelevant predictor variable that to OMIT a relevant one.**
+
+
+---
+
+## Model fit checklist
+
+Think **HARD** about what terms should be included in a model to test a hypothesis
+
+.pull-left[
+
+1) Which terms is it reasonable to test might interact with each other to affect y? 
+
+2) Which terms might be showing signs of collinearity? 
+
+3) Visualise your data
+
+4) Fit your most complex model (main terms and interactions)
+
+]
+
+.pull-right[
+
+5) Check the model fit/diagnostics
+
+    - Homogeneity of variance,
+    
+    - normal distribution of residuals,
+    
+    - collinearity
+
+6) Refit model (change terms, data transformation if necessary)
+
+7) Test removal of interaction terms 
+
+8) Leave all main predictors in the model 
+
+]
+
+---
+
+## Testing whether my model fit improves
+
+`\(R^2\)` almost always increases as you add more terms and interactions. This does not increase your ability to test predictors. 
+
+The adjusted `\(R^2\)` may be more a more reliable measure.
+
+`anova()` or `drop1()` both produce **likelihood ratio F-tests** when comparing **nested models**.
+
+
+---
+## Types of sums of squares
+
+There are three types of sums of squares I, II &amp; III
+
+By default `anova()` implements type I
+
+The `car` package function `Anova()` allows you to specify which type you want.
+
+Roughly:
+
+--
+
+**Type I** sum of squares are sequential - the factors are tested in the order specified in the model
+
+--
+
+**Type II** are partial - all terms tested in light of each other (but does not account for interactions)
+
+--
+
+**Type III** also partial include interactions
+
+--
+
+When data are balanced these will be **identical**. For unbalanced designs these will differ
+
+---
+
+##drop1()
+
+The `drop1()` function compares all possible models that can be constructed by dropping a single model term. As such it produces the most robust sum of squares for F-test with unbalanced model design
+
+
+```r
+drop1(lsmodel1, test = "F")
+```
+
+```
+## Single term deletions
+## 
+## Model:
+## bill_length_mm ~ bill_depth_mm + body_mass_g + species + species:bill_depth_mm
+##                       Df Sum of Sq    RSS    AIC F value    Pr(&gt;F)    
+## &lt;none&gt;                             1729.6 568.32                      
+## body_mass_g            1   278.504 2008.1 617.38 53.9437 1.583e-12 ***
+## bill_depth_mm:species  2    92.677 1822.2 582.17  8.9754 0.0001595 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+Note it drops all terms that *can* be dropped e.g. species cannot be dropped here, because it is in the interaction term.
+
+If an interaction was dropped from a full model (non-significant), then `drop1()` could be re-run.
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "dracula",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

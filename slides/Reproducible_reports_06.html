@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Reproducible Reports</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Philip Leftwich" />
+    <meta name="date" content="2022-09-14" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: title-slide, left, top
+
+# Reproducible Reports
+
+## Using Rmarkdown
+
+### Philip Leftwich
+
+&lt;br&gt;
+
+
+
+&lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
+
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
+
+---
+class: center, middle
+
+# Rmarkdown
+
+&lt;div class="figure"&gt;
+&lt;img src="images/wizard.png" alt="Figure courtesy of Allison Horst" width="70%" /&gt;
+&lt;p class="caption"&gt;Figure courtesy of Allison Horst&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Calls for reproducibility
+
+**Reproducibility** has the potential to serve as a minimum standard for judging scientific claims when full independent replication of a study is not possible.
+
+&lt;img src="images/repro-spectrum.jpg" title="Reproducible Research in Computational Science ROGER D. PENG, SCIENCE 02 DEC 2011 : 1226-1227" alt="Reproducible Research in Computational Science ROGER D. PENG, SCIENCE 02 DEC 2011 : 1226-1227" width="90%" /&gt;
+---
+## Literate programming
+
+Treat program as literature to be understandable to human beings
+
+Literate programming is an approach to programming in which the code is explained using natural language alongside the source code
+
+---
+## Literate programming in R
+
+Rmarkdown (`.Rmd`) integrates:
+
+* a documentantion language (`.md`)
+
+* a programming language (`R`)
+
+* functionality to "knit" them together through 📦 `knitr`
+
+### Features
+
+✅ provides a framework for writing narratives around code and data
+
+✅ Code re-run in a clean environment every time the document is "knit"
+---
+class: center
+
+## Rmarkdown outputs
+
+
+&lt;div class="figure"&gt;
+&lt;img src="images/rmarkdownoutputformats.png" alt="Pandoc output formats" width="45%" /&gt;
+&lt;p class="caption"&gt;Pandoc output formats&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+##Rmarkdown to HTML
+
+
+**File &gt; New File &gt; RMarkdown &gt; Document**
+
+&lt;div class="figure"&gt;
+&lt;img src="images/quicktourexample.png" alt="Rmarkdown template left, output on the right" width="90%" /&gt;
+&lt;p class="caption"&gt;Rmarkdown template left, output on the right&lt;/p&gt;
+&lt;/div&gt;
+---
+
+## Rmarkdown to pdf
+
+&lt;div class="figure"&gt;
+&lt;img src="images/pdf.png" alt="Rmarkdown template left, output on the right" width="90%" /&gt;
+&lt;p class="caption"&gt;Rmarkdown template left, output on the right&lt;/p&gt;
+&lt;/div&gt;
+
+
+---
+
+## Rmarkdown to pdf
+
+* Rmarkdown documents can be compiled to PDF, which is a great feature. 
+
+* In order to convert the documents to PDF, they use a software called LaTeX (pronounced *la-tek* or *lay-tek*).
+
+* Installing LaTeX can be a pain, but thankfully there is an easier way to install it - `tinytex`. 
+
+* `tinytex` is an R package that installs a sane, lightweight (&lt;200Mb) version of LaTeX.
+
+* RStudio Cloud has `tinytex` pre-installed. 
+
+---
+class: center, middle, inverse
+
+## Using Rmarkdown
+
+---
+## Applications
+
+Rmd documents can be useful for a number of research related long form documentation materials:
+
+* Electronic notebooks
+
+* Supplementary Materials
+
+* Reports
+
+* Papers
+
+* Presentations
+
+
+---
+##YAML
+
+```
+---
+title: "An example document"
+author: "Philip Leftwich"
+output: html_document
+---
+
+```
+
+* The metadata of the file
+
+* YAML Ain't Markup Language
+
+* Provides title, author, document output type
+
+---
+
+## Markdown text
+
+.pull-left[
+
+```
+- bullet list
+- bullet list
+- bullet list
+
+1. numbered list
+2. numbered list
+3. numbered list
+
+__bold__, **bold**, _italic_, *italic*
+
+&gt; quote of something profound 
+```
+]
+
+.pull-right[
+- bullet list
+- bullet list
+- bullet list
+
+1. numbered list
+2. numbered list
+3. numbered list
+
+__bold__, **bold**, _italic_, *italic*
+
+&gt; quote of something profound 
+
+]
+
+---
+
+## Rcode
+
+* Code chunks are marked by three backticks and curly braces with r (and an optional chunk name) inside them: 
+
+.pull-left[
+
+
+````r
+```{r chunk-name}
+# computer code goes in three back ticks
+1 + 1
+2 + 2
+
+```
+````
+
+
+]
+
+.pull-right[
+
+
+```
+## [1] 2
+```
+
+```
+## [1] 4
+```
+
+]
+
+---
+
+## [Visual editor in RStudio](https://www.rstudio.com/blog/rstudio-v1-4-preview-visual-markdown-editing/)
+
+&lt;img src="images/visual-editor.png" title="RStudio visual editor view" alt="RStudio visual editor view" width="70%" /&gt;
+
+✅ Easy insertion and compilation of citations
+
+✅  Easy insertion of tables, footnotes, equations, code and LaTex
+
+✅  Spellcheck! 
+
+
+---
+
+##Rmarkdown to Word
+
+📦 `redoc`
+
+Enables a two-way R Markdown-Microsoft Word workflow. It generates Word documents that can be de-rendered back into R Markdown, retaining edits on the Word document, including tracked changes.
+
+&lt;div class="figure"&gt;
+&lt;img src="images/redoc.png" alt="Rmarkdown to word" width="90%" /&gt;
+&lt;p class="caption"&gt;Rmarkdown to word&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Publish to the web
+
+
+* RPubs: Publish rendered Rmarkdown documents on the web with the click of a button http://rpubs.com/
+
+* GitHub: Host your site through gh-pages on GitHub. Enable in GitHub repo ⚙️Settings
+
+
+&lt;div class="figure"&gt;
+&lt;img src="images/gh-pages.png" alt="Github pages" width="90%" /&gt;
+&lt;p class="caption"&gt;Github pages&lt;/p&gt;
+&lt;/div&gt;
+
+---
+## Data analysis notebooks
+
+* Simple templates for hosting your [literate programming analysis online](https://github.com/lmullen/rmd-notebook)
+
+* Rnotebook files run in the same way as an Rmd file
+
+* Has 'preview' button not 'knit'
+
+* Produces an html "snapshot" of the file everytime it is saved
+
+&lt;img src="images/notebook.png" title="R notebooks snapshot" alt="R notebooks snapshot" width="50%" /&gt;
+
+
+
+---
+
+class: center, middle, inverse 
+
+##Rmarkdown extensions
+
+Many great packages and applications build on Rmarkdown.
+
+All this makes it incredibly [versatile.](https://rmarkdown.rstudio.com/gallery.html)
+
+---
+
+##bookdown
+
+### Create and maintain online books
+
+Authoring with R Markdown, offers:
+
+* cross-references
+
+* citations
+
+* HTML widgets and Shiny apps
+
+* tables of content and section numbering
+
+* The publication can be exported to HTML, PDF, and e-books (e.g. EPUB)
+
+* EXAMPLE: [This coursebook](https://ueabio.github.io/data-sci-v1/)
+
+* Also see [thesisdown](https://github.com/ismayc/thesisdown)
+
+---
+
+## rticles
+
+A package containing [LaTex formats for various journals](https://github.com/rstudio/rticles) 
+
+&lt;img src="images/rticles.png" title="Rrticles journal theme range" alt="Rrticles journal theme range" width="90%" /&gt;
+
+https://github.com/rstudio/rticles
+---
+
+##blogdown
+
+&lt;img src="images/blogdown.png" title="blogdown logo" alt="blogdown logo" width="20%" /&gt;
+
+For creating and maintaining blogs through R.
+
+Check out https://awesome-blogdown.com/, a curated list of awesome [#rstats](https://twitter.com/hashtag/rstats?src=hashtag_click) blogs in blogdown for inspiration!
+
+---
+
+##presentations
+
+&lt;img src="images/xaringan.png" title="xaringan logo" alt="xaringan logo" width="20%" /&gt;
+
+A number of existing frameworks:
+
+* `xaringan` 📦 Presentation Ninja (https://github.com/yihui/xaringan)
+
+---
+class: center, middle, inverse 
+
+##Project management
+
+---
+
+.pull-left[
+&lt;img src="images/Project.png" title="An opinionated method of integrating analyses and literate programming" alt="An opinionated method of integrating analyses and literate programming" width="100%" /&gt;
+]
+
+.pull-right[
+
+Keep all of your outputs (slides, notebooks &amp; manuscripts) related to a project or analysis
+
+An opinionated method of integrating analyses and literate programming
+
+]
+
+---
+class: center, middle, inverse 
+
+## Keep learning
+
+[The Rmarkdown cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
+
+[Cut the tyranny of copy-and-paste with these coding tools](https://www.nature.com/articles/d41586-022-00563-z)
+
+
+ 
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "dracula",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

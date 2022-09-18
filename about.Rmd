@@ -1,0 +1,57 @@
+---
+title: "About the course"
+---
+
+```{r setup, include=FALSE}
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+
+This is an [R Markdown website](http://rmarkdown.rstudio.com/rmarkdown_websites.html). 
+The source can be found [on GitHub <i class="fa fa-github"></i>](https://github.com/UEABIO/lecture_01.git).
+
+The link to all the labs is here: <https://ueabio.github.io/data-sci-v1/index.html>
+
+
+## Announcements
+
+All course 
+
+## Assignments
+
+Formative:
+
+There will be weekly assignments to complete, details are in your practical workbook. Completing these does not contribute to your course grade, but does improve your skills.
+
+Summative:
+
+This module is 100% coursework, split into two assignments. The full details of these assignments will be published on [Blackboard](https://learn.uea.ac.uk/).
+
+Assignment 1: 40% of module grade
+Assignment 2: 60% of module grade
+
+## Announcements
+
+You should join our course page on [Yammer](https://www.yammer.com/uea.ac.uk/) and subscribe to announcements to stay informed on:
+
+* course updates
+
+* tips and tricks
+
+* Q & A
+
+
+# About me
+
+Who am I?
+
+  * Philip Leftwich
+  * <a href = "https://github.com/Philip-Leftwich"><i class="fa fa-github"> GitHub</i></a>
+  * <a href = "https://twitter.com/PhilipLeftwich"><i class="fa fa-twitter"> Twitter</i></a>
+  
+  * <a href = "https://research-portal.uea.ac.uk/en/persons/philip-leftwich"><i class="fa fa-home"> Staff webpage</i></a>
+  * <a href = "https://philip-leftwich.github.io/"><i class="fa fa-home"> Personal Website</i></a>
+
+
+
+
