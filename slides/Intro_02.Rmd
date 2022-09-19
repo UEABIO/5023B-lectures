@@ -85,9 +85,8 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
 
-### When naming variables, observations, dataframes or files make them:
+## When naming variables, observations, dataframes or files make them:
 
 .pull-left[
 * Meaningful
@@ -101,11 +100,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * **Meaningful**
 
 
@@ -121,7 +118,7 @@ class: center, middle, inverse
 * Readable
 ]
 
-.pull-right[
+.right-plot[
 * Names of variables, data frames, and files should not be so generic/vague that a user must need a glossary to know what they contain
 
 * Names should be specific to the data/experiment/project, and the more intuitive their interpretation the better
@@ -134,11 +131,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -154,7 +149,7 @@ class: center, middle, inverse
 * Readable
 ]
 
-.pull-right[
+.right-plot[
 * Keep names **identical** for identical entries (e.g. “burrito-32” and “Burrito 32” are *different things* to R)
 
 * Be consistent **across data frames** - your life will be easier if you have year called ‘year’ in both sets.
@@ -166,11 +161,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -186,7 +179,7 @@ class: center, middle, inverse
 * Readable
 ]
 
-.pull-right[
+.right-plot[
 * Balance meaningfulness w/conciseness
 
 * Better to be descriptive than not know what a variable is
@@ -199,11 +192,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -219,7 +210,7 @@ class: center, middle, inverse
 * **Readable**
 ]
 
-.pull-right[
+.right-plot[
 * Avoid punctuation (%, !, ~, ( ), #) in names - more challenging to type & can break code.
 
 * Avoid spaces (makes coding much more difficult)
@@ -229,11 +220,10 @@ class: center, middle, inverse
 ]
 ---
 
-## Naming things
 
-### When naming variables, observations, dataframes or files make them:
+## When naming variables, observations, dataframes or files make them:
 
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -249,7 +239,7 @@ class: center, middle, inverse
 * **Readable**
 ]
 
-.pull-right[
+.right-plot[
 
 * Avoid naming objects that are also commonly used functions (like filter or select)
 
@@ -283,7 +273,7 @@ class: center, middle, inverse
 
 .pull-left[
 ### Bad:
-```{r, echo = FALSE, out.width="90%", fig.alt = "Inconsistent data entry, units in the column of berry mass, observations mixed in with units"}
+```{r, echo = FALSE, out.width="95%", fig.alt = "Inconsistent data entry, units in the column of berry mass, observations mixed in with units"}
 knitr::include_graphics("images/bad_df.png")
 ```
 
@@ -293,7 +283,7 @@ knitr::include_graphics("images/bad_df.png")
 
 .pull-right[
 ### Better:
-```{r, echo = FALSE, out.width="90%", fig.alt = "Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column"}
+```{r, echo = FALSE, out.width="95%", fig.alt = "Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column"}
 knitr::include_graphics("images/good_df.png")
 ```
 
@@ -391,7 +381,7 @@ class: center
 
 Sometimes it will be infuriatingly vague, but often it will tell you exactly how to fix it (e.g. “do you need ==?”). 
 
-```{r, echo = FALSE, out.width="50%", fig.alt = "Always read the error message"}
+```{r, echo = FALSE, out.width="60%", fig.alt = "Always read the error message"}
 knitr::include_graphics("images/misspelling.png")
 ```
 

@@ -4,7 +4,7 @@
     <title>Introductions</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2022-09-01" />
+    <meta name="date" content="2022-09-19" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -76,9 +76,8 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
 
-### When naming variables, observations, dataframes or files make them:
+## When naming variables, observations, dataframes or files make them:
 
 .pull-left[
 * Meaningful
@@ -92,11 +91,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * **Meaningful**
 
 
@@ -112,7 +109,7 @@ class: center, middle, inverse
 * Readable
 ]
 
-.pull-right[
+.right-plot[
 * Names of variables, data frames, and files should not be so generic/vague that a user must need a glossary to know what they contain
 
 * Names should be specific to the data/experiment/project, and the more intuitive their interpretation the better
@@ -125,11 +122,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -145,7 +140,7 @@ class: center, middle, inverse
 * Readable
 ]
 
-.pull-right[
+.right-plot[
 * Keep names **identical** for identical entries (e.g. “burrito-32” and “Burrito 32” are *different things* to R)
 
 * Be consistent **across data frames** - your life will be easier if you have year called ‘year’ in both sets.
@@ -157,11 +152,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -177,7 +170,7 @@ class: center, middle, inverse
 * Readable
 ]
 
-.pull-right[
+.right-plot[
 * Balance meaningfulness w/conciseness
 
 * Better to be descriptive than not know what a variable is
@@ -190,11 +183,9 @@ class: center, middle, inverse
 
 ---
 
-## Naming things
+## When naming variables, observations, dataframes or files make them:
 
-### When naming variables, observations, dataframes or files make them:
-
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -210,7 +201,7 @@ class: center, middle, inverse
 * **Readable**
 ]
 
-.pull-right[
+.right-plot[
 * Avoid punctuation (%, !, ~, ( ), #) in names - more challenging to type &amp; can break code.
 
 * Avoid spaces (makes coding much more difficult)
@@ -220,11 +211,10 @@ class: center, middle, inverse
 ]
 ---
 
-## Naming things
 
-### When naming variables, observations, dataframes or files make them:
+## When naming variables, observations, dataframes or files make them:
 
-.pull-left[
+.left-code[
 * Meaningful
 
 
@@ -240,7 +230,7 @@ class: center, middle, inverse
 * **Readable**
 ]
 
-.pull-right[
+.right-plot[
 
 * Avoid naming objects that are also commonly used functions (like filter or select)
 
@@ -274,7 +264,7 @@ class: center, middle, inverse
 
 .pull-left[
 ### Bad:
-&lt;img src="images/bad_df.png" title="Inconsistent data entry, units in the column of berry mass, observations mixed in with units" alt="Inconsistent data entry, units in the column of berry mass, observations mixed in with units" width="90%" /&gt;
+&lt;img src="images/bad_df.png" title="Inconsistent data entry, units in the column of berry mass, observations mixed in with units" alt="Inconsistent data entry, units in the column of berry mass, observations mixed in with units" width="95%" /&gt;
 
 ]
 
@@ -282,7 +272,7 @@ class: center, middle, inverse
 
 .pull-right[
 ### Better:
-&lt;img src="images/good_df.png" title="Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column" alt="Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column" width="90%" /&gt;
+&lt;img src="images/good_df.png" title="Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column" alt="Units included in title, consistent use of snake case, each column is a unique variable, each row is an observation. Notes in separate column" width="95%" /&gt;
 
 
 ]
@@ -372,7 +362,7 @@ class: center
 
 Sometimes it will be infuriatingly vague, but often it will tell you exactly how to fix it (e.g. “do you need ==?”). 
 
-&lt;img src="images/misspelling.png" title="Always read the error message" alt="Always read the error message" width="50%" /&gt;
+&lt;img src="images/misspelling.png" title="Always read the error message" alt="Always read the error message" width="60%" /&gt;
 
 ---
 
