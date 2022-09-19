@@ -52,6 +52,94 @@ layout: true
 <div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
 
 ---
+
+# Introductions
+
+.left-code[
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Philip Leftwich"}
+knitr::include_graphics("images/Me.jpg")
+```
+
+* Associate Professor 
+
+* Genetics & Data Science 
+
+* University of East Anglia
+
+* twitter: [@PhilipLeftwich](https://twitter.com/PhilipLeftwich)
+
+
+]
+
+.right_plot[
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Norwich on a map"}
+knitr::include_graphics("images/Norwich_map.png")
+```
+
+]
+
+---
+
+# Introductions
+
+.left-code[
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Philip Leftwich"}
+knitr::include_graphics("images/Me.jpg")
+```
+
+* Associate Professor 
+
+* Genetics & Data Science 
+
+* University of East Anglia
+
+* twitter: [@PhilipLeftwich](https://twitter.com/PhilipLeftwich)
+
+]
+
+.right_plot[
+
+```{r, echo = FALSE, out.width="50%", fig.cap = "City of Norwich"}
+knitr::include_graphics("images/Norwich.png")
+```
+
+]
+
+---
+
+
+# Introductions
+
+.left-code[
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Philip Leftwich"}
+knitr::include_graphics("images/Me.jpg")
+```
+
+* Associate Professor 
+
+* Genetics & Data Science 
+
+* University of East Anglia
+
+* twitter: [@PhilipLeftwich](https://twitter.com/PhilipLeftwich)
+
+
+]
+
+.right_plot[
+
+```{r, echo = FALSE, out.width="60%", fig.cap = "UEA campus"}
+knitr::include_graphics("images/UEA.jpg")
+```
+
+]
+
+---
+
 class: center, inverse
 
 # Introductions
