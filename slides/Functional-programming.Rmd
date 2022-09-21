@@ -464,7 +464,7 @@ sapply(df, rescale_0_1) %>%
 
 |Function|Arguments|Objective|Input|Output|
 |---|---|---|---|---|
-|apply|apply(X, MARGIN, FUN)|Apply a function to the rows, columns or both| Dataframe or matrix| vector, list or array|
+|apply|apply(X, MARGIN, FUN)|Apply a function to the rows, columns or both| Dataframe or matrix| vector, list or matrix|
 |lapply| lapply(X,FUN)|Apply a function to all the elements of the input| List, vector or dataframe| list|
 |sapply| sapply(X,FUN)| Apply a function to all the elements of the input| List, vector or dataframe| vector or matrix|
 
