@@ -9,82 +9,41 @@ All lecture materials will be available here.
 - 01: Introductions and course outline
     - [Slides](slides/Introduction.html)
 
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/introduction-to-r-and-rstudio.html)
 
-- 02: Using R
-    - [Slides](slides/Intro_02.html)
-    
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/basic-programming.html)
-
-- 03: Working with data
-    - [Slides](slides/Data_wrangling_03.html)
-
-    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/loading-data.html)
-    - [Practical work 2](https://philip-leftwich.github.io/physalia-stats-intro/data-wrangling-part-one.html)
-    - [Practical work 3](https://philip-leftwich.github.io/physalia-stats-intro/data-wrangling-part-two.html)
-    
-- 04: Data Visualisation
-    - [Slides](slides/ggplot.html)
-    
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/data-visualisation-with-ggplot2.html)
-    
-- 05: Reproducible Reports
-    - [Slides](slides/Reproducible_reports_06.html)
-    
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/markdown.html)
-    
-
-- 06: Descriptive statistics
+- 02: Descriptive statistics
     - [Slides: Central tendency and spread](slides/Descriptive_statistics_05.html)
     - [Slides: Association](slides/Association_05a.html)
 
-    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/data-insights-part-one.html)
-    - [Practical work 2](https://philip-leftwich.github.io/physalia-stats-intro/data-insights-part-two.html)
 
-- 07: Confidence intervals
+
+- 03: Measures of uncertainty
     - [Slides](slides/Confidence_intervals.html)
-    
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/introduction-to-statistics.html)
 
-- 08: Hypothesis testing
-    - [Slides: P-values](slides/Probability.html)
-    - [Slides: Type 1 and Type 2 errors](slides/Error_rates.html)
-    
-    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/introduction-to-linear-models.html)
-    
+- 04: Intro to linear models
+    - [Slides: Regression](slides/intro-linear-model.html) 
 
-- 09: T-tests
-    - [Slides](slides/t-tests.html)
+- 05: Hypothesis testing
+    - [Slides: Testing](slides/testing.html)
+    - [Slides: P-values](slides/Error_rates.html)
+
     
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/testing.html)
-  
-- 10: Intro to linear models
-    - [Slides: Regression](slides/Linear-Regression.html) 
+- 06: Regression
+    - [Slides](slides/linear-regression.html)
+
     
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/regression.html)    
-    
-- 11: ANOVA
+- 07: ANOVA
     - [Slides](slides/ANOVA.html)
     
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/anova.html)
-  
+ 
 - 12: Multivariate models
     - [Slides: Complex models](slides/Complex_models.html)
     - [Slides: Checking and Refining models](slides/Refining_models.html)
     
-    - [Practical work 1](https://philip-leftwich.github.io/physalia-stats-intro/multivariate-linear-models.html)
-    - [Practical work 2](https://philip-leftwich.github.io/physalia-stats-intro/complex-models.html)
-     
-      
+
 - 13: Generalised linear models
   - [Slides: Introduction to Generalised Linear Models](slides/Generalized-Linear-Models.html)
   - [Slides: Binomial and Poisson distributions](slides/Generalized-Linear-Models-Part-2.html)
-  
-  - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/generalized-linear-models.html)
 
+- 14: Mixed effects models
 
-- 14: Functional programming
-    - [Slides](slides/Functional-programming.html)
-
-    - [Practical work](https://philip-leftwich.github.io/physalia-stats-intro/functions-and-iteration.html)
     

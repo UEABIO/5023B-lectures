@@ -1,6 +1,6 @@
 ---
-title: "Central tendencies"
-subtitle: ""
+title: "Descriptive Statistics"
+subtitle: "Part one"
 author: "Philip Leftwich"
 date: "`r Sys.Date()`"
 output:
@@ -18,13 +18,15 @@ output:
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE,
         eval = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
 library(tidyverse)
 library(gt)
 library(gtExtras)
-
+library(rstatix)
+library(palmerpenguins)
 
 ```
-
 
 class: title-slide, left, top
 
@@ -35,12 +37,9 @@ class: title-slide, left, top
 ### `r rmarkdown::metadata$author`
 
 <br>
-
-
-
 <span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
 
-<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
 
 ---
 
@@ -49,10 +48,77 @@ layout: true
 <div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
 
 ---
+
+## Building Statistical Models
+
+.right-plot[
+
+
+```{r, echo = FALSE, fig.alt = " Model bridges - Andy Field Discovering Statistics"}
+
+knitr::include_graphics("images/bridge.png")
+```
+
+]
+
+.left-code[
+
+A model is a representation of what we think is going on in the real world. It can be a good fit, or a poor fit. 
+
+
+A well fitted model could be used to make *predictions* about what might happen in the real world. 
+
+
+A poorly fitted model could also make *predictions* but they might be disastrously wrong.
+
+
+If we want our inferences to be **accurate** the model must represent the data collected.
+
+]
+
+
+---
+
+# Populations
+
+- The total “pool” you are trying to explore/describe
+
+- You define what it is
+
+- Usually you’re not going to be able to study the entire population, because: time, money, access, resources, support, etc. 
+
+- So instead, we can usually only take a...
+
+---
+
+# Sample
+
+- Drawn randomly from the population...
+
+- ...to collect observations for variable(s) of interest...
+
+- ...to try to say something meaningful about the population.
+
+---
 class: center, middle
 
 # Central tendency & spread
 
+Often we will start with
+
+**Central tendency** - a central or typical value
+
+**Data Spread** - how observations are dispersed
+
+---
+
+# Central tendency
+
+The **central tendency** of a series of observations is a measure of the “middle value”
+
+--
+
+The three most commonly reported measures of central tendency are the sample **mean, median, and mode**.
 
 ---
 
@@ -67,15 +133,257 @@ class: center, middle
 
 ---
 
+## The mean
+
+One of the simplest statistical models in biology is the **mean**
+
+.left-code[
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Mean **  | **2.6**      |
+| **Median **  | **3**      |
+| **Mode **  | **3**      |
+]
+
+.right-plot[
+
+Calculating the mean:
+
+$$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
+$$\frac{5 + 3 + 3 + 2 + 1}{5} = 2.6$$
+
+]
+
+---
+
+## The mean
+
+One of the simplest statistical models in biology is the **mean**
+
+.left-code[
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Mean **  | **2.6**      |
+| **Median **  | **3**      |
+| **Mode **  | **3**      |
+]
+
+.right-plot[
+
+We already *know* this is a hypothetical value as you can't have 2.6 friends (I think?)
+
+Now with any model we have to know how well it fits/ how accurate it is
+
+]
+
+---
+
+
+If data is symmetrically distributed, the **mean and median** will be close, especially as *n* increases. 
+
+This is also know as a **normal distribution**
+
+
+```{r, echo = FALSE, out.width = "60%"}
+# Load required packages
+library(ggplot2)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Generate random sample from a normal distribution
+sample_size <- 1000
+mu <- 0  # mean
+sigma <- 1  # standard deviation
+sample <- rnorm(sample_size, mean = mu, sd = sigma)
+
+# Create a data frame with the sample data
+df <- data.frame(x = sample)
+
+# Create a histogram plot using ggplot2
+ggplot(df, aes(x = x)) +
+  geom_histogram(binwidth = 0.2, fill = "lightblue", color = "black") +
+  labs(x = "Value", y = "Frequency", title = "Distribution Histogram") +
+  theme_classic()
+
+
+```
+
+---
+
 ## Why is data distribution important?
 
 Understanding the shape of our data informs the summary statistics we can use
 
-```{r, echo = FALSE, out.width="50%", fig.alt = "Frequency distribution with central tendencies"}
-knitr::include_graphics("images/three_tendencies.png")
+```{r, echo = FALSE, fig.alt = "Frequency distribution with central tendencies", out.width = "60%"}
+# Set seed for reproducibility
+set.seed(123)
+
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+
+# Generate random sample from a skewed distribution
+sample_size <- 1000
+skewness <- 0.6  # skewness parameter
+sample1 <- rnorm(sample_size)
+sample1 <- exp(sample * skewness)
+
+# Create a data frame with the sample data
+df1 <- data.frame(x = sample)
+
+# Calculate mean and median
+mean_val <- mean(sample1)
+median_val <- median(sample1)
+mode_val <- Mode(sample1)
+# Create a histogram plot using ggplot2
+ggplot(df1, aes(x = x)) +
+    geom_histogram(binwidth = 0.2, fill = "lightblue", color = "black") +
+    geom_vline(xintercept = mean_val, linetype = "dashed", color = "red", size = 1) +
+    geom_vline(xintercept = median_val, linetype = "dashed", color = "blue", size = 1) +
+    geom_vline(xintercept = mode_val, linetype = "dashed", color = "black", size = 1) +
+    labs(x = "Value", y = "Frequency") +
+    annotate("text", x = mean_val, y = 80, label = "Mean", color = "red", vjust = -1, hjust = -0.2) +
+    annotate("text", x = median_val, y = 140, label = "Median", color = "blue", vjust = -1, hjust = -0.2)+annotate("text", x = mode_val, y = 160, label = "Mode", color = "black", vjust = -1, hjust = -0.2)+
+    theme_classic()
 ```
 
 
+---
+
+Depending on our question, if the data is not symmetrical this could really matter...
+
+```{r, echo = FALSE, out.width = "60%"}
+
+mean_val2 <- mean(sample)
+
+ggplot(df1, aes(x = x)) +
+    geom_histogram(binwidth = 0.2, fill = "lightpink", color = "black", alpha = 0.6) +
+    geom_vline(xintercept = mean_val, linetype = "dashed", color = "red", size = 1) +
+    labs(x = "Value", y = "Frequency") +
+    annotate("text", x = mean_val, y = 80, label = "Mean 2", color = "red", vjust = -1, hjust = -0.2) +  
+  geom_histogram(data = df, aes(x=x), binwidth = 0.2, fill = "lightblue", color = "black", alpha =0.6)+
+  geom_vline(xintercept = mean_val2, linetype = "dashed", color = "blue", size = 1)+
+  annotate("text", x = mean_val2, y = 80, label = "Mean 1", color = "blue", vjust = -1, hjust = 1.2) +
+    theme_classic()
+
+
+```
+
+---
+
+class: center, middle
+
+## Data Spread
+
+---
+
+## Assessing the fit of a central tendency
+
+So we have multiple ways to describe a central tendency of a set of observations. 
+
+But we do not know **how the data are distributed or spread around this**
+
+---
+
+## Data Spread
+
+- Range
+
+- Variance
+
+- Standard deviation
+
+
+---
+
+## Range
+
+Going back to our friends data: 
+
+.left-code[
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Median **  | **3**      |
+| **Range **  | **4**      |
+
+]
+
+.right-plot[
+
+- The range is affected by extreme values
+
+- The interquartile range (IQR)  looks at the middle 50% of scores
+
+- The first **quartile** is the median of the lower 50% of the data: 1.5
+
+- The second **quartile** is the median: 3
+
+- The third **quartile** is the median of the upper 50% of the data: 5
+
+]
+
+
+---
+
+## Range
+
+* Box bounded by 25th and 75th percentile (first and third quartile). This is called the interquartile range (IQR)
+
+* Line in box is usually the median
+
+* Whiskers extend to last OBSERVATION within 1 step (usually 1.5*IQR) from end of the box
+
+* Any observations beyond whisker are plotted as individual points
+
+.pull-left[
+
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "Boxplot"}
+knitr::include_graphics("images/boxplot.png")
+```
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "Box and whiskers"}
+knitr::include_graphics("images/cat.jpg")
+```
+
+]
+
+
+---
+
+## Variance
+
+Sample variance is a more robust measure of data spread because it is not so highly influence by outliers and takes into account all observations. In words, variance is the mean squared distance of observations from the sample mean. 
+
+$$s{^2}_{sample} = \frac{\sum(x - \bar{x})^2}{N -1}$$
 ---
 
 ## Calculating variance
@@ -91,9 +399,8 @@ knitr::include_graphics("images/normal-distribution.jpg")
 .pull-right[
 
 ```
-# A tibble: 100 x 3
-   value residuals sq_residuals
-   <dbl>     <dbl>        <dbl>
+
+   value residuals squared residuals
  1 12.7      2.88         8.27 
  2 14.2      4.32        18.7  
  3 11.3      1.41         1.99 
@@ -106,10 +413,9 @@ knitr::include_graphics("images/normal-distribution.jpg")
 ```
 
 ```
-# A tibble: 1 x 3
-  sum_residuals sum_squares  mean
-          <dbl>       <dbl> <dbl>
-1       -0.0577        359.  9.87
+
+  sum of residuals sum of squares  mean
+1       -0.0577        359        9.87
 
 ```
 
@@ -118,31 +424,48 @@ knitr::include_graphics("images/normal-distribution.jpg")
 
 ---
 
+## N-1?
+
+```{r, echo = FALSE, out.width="40%", fig.alt = "Sampling"}
+knitr::include_graphics("images/pop_sam.png")
+```
+
+For a *population* the variance $S_p^2$ is exactly the **mean** squared distance of the values from the population mean
+
+$$
+s{^2}_{pop} = \frac{\sum(x - \bar{x})^2}{N}
+$$
+
+---
+
+But this is a *biased* estimate for the population variance 
+
+- A biased sample variance will *underestimate* population variance
+
+- n-1 (if you take a large enough sample size, will correct for this)
+
+[More here](https://www.jamelsaadaoui.com/unbiased-estimator-for-population-variance-clearly-explained/#:~:text=The%20expected%20value%20of%20the%20sample%20variance%20is%20equal%20to,definition%20of%20an%20unbiased%20estimator.)
+---
+
+
 ## Standard Deviation
+
+- Square root of sample variance
+
+- A measure of dispersion of the sample
+
+- Smaller SD = more values closer to mean, larger SD = greater data spread from mean
 
 * *variance*:
 
 $$
-s^2 = {\sum(x - \overline x)^2\over n - 1}
+\sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
 $$
-
-$$
-s^2 = {sum~of~squares\over n - 1}
-$$
-
-
-* Square root of sample *variance*
-
-* A measure of *dispersion* of the sample
-
-$$
-s = \sqrt{\sum(x - \overline x)^2\over n - 1}
-$$
-* Smaller SD σ = more values close to the mean, larger SD = greater data spread away from the mean.
 
 ---
 
-Samples with different standard deviations $s$ can look very different
+Small $s$ = taller, narrower
+Large $s$ = squatter, wider
 
 ```{r, eval = FALSE}
 rnorm(n = 1000,mean = 0,sd = 1)
@@ -150,7 +473,7 @@ rnorm(n = 1000,mean = 0,sd = 2)
 rnorm(n = 1000,mean = 0,sd = 3)
 ```
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "60%"}
 
 library(patchwork)
 
@@ -171,21 +494,7 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
 
 ```
 
----
 
-## Another method
-
-* Box bounded by 25th and 75th percentile. This is called the interquartile range (IQR)
-
-* Line in box is usually the median
-
-* Whiskers extend to last OBSERVATION within 1 step (usually 1.5*IQR) from end of the box
-
-* Any observations beyond whisker are plotted as individual points
-
-```{r, echo = FALSE, out.width="50%", fig.alt = "Boxplot"}
-knitr::include_graphics("images/boxplot.png")
-```
 ---
 
 ## The Normal Distribution
@@ -206,17 +515,20 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
 ]
 
 .pull-right[
-```{r, echo = FALSE, out.width="50%", fig.alt = "Normal distribution, paranormal distribution"}
+```{r, echo = FALSE, out.width="70%", fig.alt = "Normal distribution, paranormal distribution"}
 knitr::include_graphics("images/paranormal.png")
 ```
 ]
 
 ---
+
 ## There are infinite normal distributions
+
 ### Different means and sd change the shape
 
+.pull-left[
 
-```{r, echo = FALSE, out.width = "40%"}
+```{r, echo = FALSE, out.width = "100%"}
 
 `SD = 1` <- rnorm(n = 1000, mean = 2, sd = 1)
 `SD = 2` <- rnorm(n = 1000, mean = 6, sd = 4)
@@ -230,6 +542,67 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
   labs(x = " ",
        y = "Frequency")
 ```
+
+]
+
+.pull-right[
+
+The normal distribution is common. But **NEVER** assume your data are normally distributed without looking at it and thinking really hard first
+
+]
+
+
+---
+
+## Going beyond the data
+
+For any distribution of values we can calculate the probability of obtaining a particular measure, if we assume they follow (or are close to) an idealised **probability distribution**
+
+The normal distribution is probably the most common/well-known
+
+For a mean of 0, and a sd of 1 - we can calculate a table of probabilities that a particular value will occur under a normal distribution
+
+
+$$
+z = {x_i - \mu \over s}
+$$
+
+The *Z* score can be looked up in [*Z*-table](https://www.simplypsychology.org/z-table.html) to find the "probability of observing that value in a normal distribution." 
+
+---
+
+## Z scores
+
+.pull-left[
+
+The obvious problem is that not all data will have a mean of 0 and a sd of 1.
+
+Luckily any dataset can be easily converted into a z-distribution:
+
+$$ z = \frac{x - \bar{x}}{s}$$
+
+And the probability of observing any value can be predicted. 
+
+Under a z distribution:
+
+66% of values fall within 1 sd of the mean
+
+95% of values fall within 1.96 sd of the mean
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Normal distribution"}
+knitr::include_graphics("images/standard_normal.png")
+```
+
+]
+
+---
+
+## Questions and Summaries
+
 ---
 
 ## Visualising a Distribution
@@ -251,6 +624,7 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
 ]
 
 .pull-right[
+
 **Quantile-Quantile plots** plot quantiles of a dataset vs. quantiles of a *theoretical* (usually normal) distribution
 
 ```{r, echo = FALSE, warning = F, message  = F, out.width="80%"}
@@ -265,39 +639,73 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
   labs(x = " ",
        y = " ")
 ```
+
 ]
 
 ---
 
 ## QQ plots
 
+.left-code[
 If data is normally distributed, then if we plot the [*quantiles*](https://www.youtube.com/watch?v=okjYjClSjOg) vs. theoretical normal quantiles (with same *n*), then we find a linear relationship
----
 
-class: center
+]
 
-```{r, echo = FALSE, out.width="50%", fig.alt = "QQ plot examples"}
+.right-plot[
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "QQ plot examples"}
 knitr::include_graphics("images/qq_example.png")
 ```
 
+]
 
+---
+
+# Normal distribution
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "QQ plot examples"}
+knitr::include_graphics("images/norm_qq.png")
+```
+---
+
+# Skewed distribution
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "QQ plot examples"}
+knitr::include_graphics("images/skew-qq.png")
+```
+
+---
+
+# Peaky distribution
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "QQ plot examples"}
+knitr::include_graphics("images/peaky-qq.png")
+```
 ---
 class: center
 
 ## Using the standard normal distribution
 
-```{r, echo = FALSE, out.width="50%", fig.alt = "Normal distribution"}
+.pull-left[
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Normal distribution"}
 knitr::include_graphics("images/standard_normal.png")
 ```
 
+]
+
+.pull-right[
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Normal prob distribution"}
+knitr::include_graphics("images/norm prob dens.jpg")
+```
+
+]
+
 ---
 
-## Z scores: How many standard deviations from the mean?
-
-$$
-z = {x_i - \mu \over \sigma}
-$$
-The *Z* score can be looked up in [*Z*-table](https://www.simplypsychology.org/z-table.html) to find the "probability of observing that value in a normal distribution." 
 
 ---
 class: center, middle
@@ -325,7 +733,7 @@ How can we know how well our sample represents the population?
 ---
 class: center, middle
 
-```{r, echo = FALSE, warning = FALSE, out.width = "100%"}
+```{r, echo = FALSE, warning = FALSE, out.width = "110%"}
 
 library(DiagrammeR)
 
@@ -389,7 +797,7 @@ This is true *even if the population distribution does not follow a normal distr
 
 ### Here the width of turtle shells follow a "uniform distribution"
 
-```{r, echo = F}
+```{r, echo = F, out.width = "60%"}
 #make this example reproducible
 set.seed(0)
 
@@ -407,7 +815,7 @@ hist(data, col='steelblue', main='Histogram of Turtle Shell Widths')
 
 
 
-```{r, echo = F}
+```{r, echo = F, out.width = "60%"}
 set.seed(0)
 #create empty vector to hold sample means
 sample30 <- c()
@@ -428,7 +836,7 @@ hist(sample30, col ='steelblue', xlab='Turtle Shell Width', main='10 experiments
 
 
 
-```{r, echo = F}
+```{r, echo = F, out.width = "60%"}
 set.seed(0)
 #create empty vector to hold sample means
 sample30 <- c()
@@ -449,7 +857,7 @@ hist(sample30, col ='steelblue', xlab='Turtle Shell Width', main='200 experiment
 
 
 
-```{r, echo = F}
+```{r, echo = F, out.width = "60%"}
 set.seed(0)
 #create empty vector to hold sample means
 sample30 <- c()

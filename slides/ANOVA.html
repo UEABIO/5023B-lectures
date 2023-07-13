@@ -4,7 +4,7 @@
     <title>ANOVA</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2022-09-16" />
+    <meta name="date" content="2023-07-13" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -12,7 +12,6 @@
   </head>
   <body>
     <textarea id="source">
-
 
 
 
@@ -31,7 +30,7 @@ class: title-slide, left, top
 
 &lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
 
-&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
 
 ---
 
@@ -39,12 +38,20 @@ layout: true
 
 &lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
 
+
+---
+
+## z and t distributions
+
+&lt;img src="ANOVA_files/figure-html/unnamed-chunk-1-1.png" width="70%" /&gt;
+
+
 ---
 ## Model summary
 
 In this example of a simple linear model, we run the equivalent to a Student's t-test.
 
-&lt;img src="images/model_summary.png" title="R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared" alt="R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared" width="50%" /&gt;
+&lt;img src="images/model_summary.png" title="R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared" alt="R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared" width="60%" /&gt;
 
 **Q. What happens when we have more than two groups in our predictor variable? Why can't we just do more t-tests?**
 
@@ -56,8 +63,11 @@ class: center
 
 ANOVAs use information about variances, but the main goal of analysis is comparison of MEANS (don’t let the name mix you up - more on this later).
 
+--
 
 **ANOVA is an omnibus test** – it tests for significant differences between any means in the study
+
+--
 
 **ANOVA is just a special case of the linear model**
 
@@ -66,6 +76,8 @@ ANOVAs use information about variances, but the main goal of analysis is compari
 ## ANOVA Hypotheses:
 
 **Null Hypothesis (H0):** All means are equal (in other words, all groups are from populations with the same mean)
+
+--
 
 **Alternative Hypothesis (HA):** At least two group means are NOT equal (that means that just two could be different, or they could ALL be different)
 
@@ -81,7 +93,7 @@ We have collected data for soil uranium concentrations at three locations on Los
 
 
 .pull-right[
-&lt;img src="images/three_level.png" title="A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)" alt="A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)" width="110%" /&gt;
+&lt;img src="images/three_level.png" title="A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)" alt="A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)" width="120%" /&gt;
 ]
 
 --
@@ -96,7 +108,7 @@ What does this one-way/single-factor refer to?
 
 There is a **single factor** (*variable*), with at least 3 **levels**, where we are trying to compare means across the different levels of that factor.
 
-ANOVA does this *indirectly* by looking at total *between* and *within* group variances as a ratio
+ANOVA does this *indirectly* by looking at total *between* and *within* group variances as a ratio (F).
 
 &lt;img src="images/understand-ANOVA.png" width="70%" /&gt;
 
@@ -123,7 +135,7 @@ where:
 
 `\(y_i\)` = Observed value
 
-`\(\hat{y_i}\)` = Value estimated by regression
+`\(\hat{y_i}\)` = Value estimated by model
 
 `\(\overline{y}\)` = The Grand Mean
 
@@ -136,26 +148,44 @@ where:
 
 ]
 
+--
+
 `\(SSE + SSR = SST\)`
 
 ---
 
 ## What does an ANOVA actually do?
 
+.pull-left[
 
-&lt;img src="images/F_ratio.png" width="20%" /&gt;
+.huge[
 
+$$
+F = {SSR / (k-1)\over SSE / (N-k)} = {MSR\over MSE}
+$$
+]
 
-
-`\(N\)` = numerator degrees of freedom = Total number of observations across all groups
 
 `\(k\)` = Total number of groups
 
-`\(N-k\)` = denominator degrees of freedom
+`\(N\)` = **numerator** degrees of freedom = Total number of observations across all groups
 
-This is a ratio of the between group variance and the the within group variance. 
+`\(N-k\)` = **denominator** degrees of freedom
 
-&lt;img src="images/one-way-ANOVA.png" width="30%" /&gt;
+`\(MSR\)` = Mean Squares Regression
+
+`\(MSE\)` = Mean Squares Error
+
+This is a **ratio** of the between group variance and the the within group variance. 
+
+]
+
+.pull-right[
+
+
+&lt;img src="images/one-way-ANOVA.png" width="120%" /&gt;
+
+]
 
 ---
 
@@ -173,21 +203,23 @@ The curve of the distribution depends on the degrees of freedom, and it is alway
 
 .right-plot[
 
-&lt;div class="figure"&gt;
-&lt;img src="images/F-distribution.png" alt="Q. why can this distribution never be negative?*" width="100%" /&gt;
-&lt;p class="caption"&gt;Q. why can this distribution never be negative?*&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="ANOVA_files/figure-html/unnamed-chunk-7-1.png" width="110%" /&gt;
 
 ]
 
 ---
 
-The higher the *F*-value the greater the *signal-to-noise* ratio. 
+The **higher** the *F*-value the greater the *signal-to-noise* ratio. 
 
-For a given value of numerator and denominator degrees of freedom we can look up the probability of observing this ratio under a null hypothesis of identical means between populations
+--
 
+For a given value of **numerator** and **denominator** degrees of freedom we can look up the probability of observing this ratio under a null hypothesis of identical variances.
+
+--
 
 If F value is high enough then we might have enough evidence to conclude that samples are likely drawn from populations with *different* means.
+
+--
 
 &lt;img src="images/F-test-sig.jpg" width="60%" /&gt;
 
@@ -209,12 +241,12 @@ bulbs %&gt;%
   gt()
 ```
 
-<div id="pyzstefahs" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="qfrxlszvqk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#pyzstefahs .gt_table {
+#qfrxlszvqk .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -239,7 +271,7 @@ bulbs %&gt;%
   border-left-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_heading {
+#qfrxlszvqk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -251,7 +283,7 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_title {
+#qfrxlszvqk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -261,7 +293,7 @@ bulbs %&gt;%
   border-bottom-width: 0;
 }
 
-#pyzstefahs .gt_subtitle {
+#qfrxlszvqk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -271,13 +303,13 @@ bulbs %&gt;%
   border-top-width: 0;
 }
 
-#pyzstefahs .gt_bottom_border {
+#qfrxlszvqk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_col_headings {
+#qfrxlszvqk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -292,7 +324,7 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_col_heading {
+#qfrxlszvqk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -312,7 +344,7 @@ bulbs %&gt;%
   overflow-x: hidden;
 }
 
-#pyzstefahs .gt_column_spanner_outer {
+#qfrxlszvqk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -324,15 +356,15 @@ bulbs %&gt;%
   padding-right: 4px;
 }
 
-#pyzstefahs .gt_column_spanner_outer:first-child {
+#qfrxlszvqk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pyzstefahs .gt_column_spanner_outer:last-child {
+#qfrxlszvqk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pyzstefahs .gt_column_spanner {
+#qfrxlszvqk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -344,7 +376,7 @@ bulbs %&gt;%
   width: 100%;
 }
 
-#pyzstefahs .gt_group_heading {
+#qfrxlszvqk .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -366,7 +398,7 @@ bulbs %&gt;%
   vertical-align: middle;
 }
 
-#pyzstefahs .gt_empty_group_heading {
+#qfrxlszvqk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -381,15 +413,15 @@ bulbs %&gt;%
   vertical-align: middle;
 }
 
-#pyzstefahs .gt_from_md > :first-child {
+#qfrxlszvqk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pyzstefahs .gt_from_md > :last-child {
+#qfrxlszvqk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pyzstefahs .gt_row {
+#qfrxlszvqk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -408,7 +440,7 @@ bulbs %&gt;%
   overflow-x: hidden;
 }
 
-#pyzstefahs .gt_stub {
+#qfrxlszvqk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -420,7 +452,7 @@ bulbs %&gt;%
   padding-left: 12px;
 }
 
-#pyzstefahs .gt_summary_row {
+#qfrxlszvqk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -430,7 +462,7 @@ bulbs %&gt;%
   padding-right: 5px;
 }
 
-#pyzstefahs .gt_first_summary_row {
+#qfrxlszvqk .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -440,7 +472,7 @@ bulbs %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_grand_summary_row {
+#qfrxlszvqk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -450,7 +482,7 @@ bulbs %&gt;%
   padding-right: 5px;
 }
 
-#pyzstefahs .gt_first_grand_summary_row {
+#qfrxlszvqk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -460,11 +492,11 @@ bulbs %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_striped {
+#qfrxlszvqk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pyzstefahs .gt_table_body {
+#qfrxlszvqk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -473,7 +505,7 @@ bulbs %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_footnotes {
+#qfrxlszvqk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -487,13 +519,13 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_footnote {
+#qfrxlszvqk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#pyzstefahs .gt_sourcenotes {
+#qfrxlszvqk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -507,41 +539,41 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#pyzstefahs .gt_sourcenote {
+#qfrxlszvqk .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#pyzstefahs .gt_left {
+#qfrxlszvqk .gt_left {
   text-align: left;
 }
 
-#pyzstefahs .gt_center {
+#qfrxlszvqk .gt_center {
   text-align: center;
 }
 
-#pyzstefahs .gt_right {
+#qfrxlszvqk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pyzstefahs .gt_font_normal {
+#qfrxlszvqk .gt_font_normal {
   font-weight: normal;
 }
 
-#pyzstefahs .gt_font_bold {
+#qfrxlszvqk .gt_font_bold {
   font-weight: bold;
 }
 
-#pyzstefahs .gt_font_italic {
+#qfrxlszvqk .gt_font_italic {
   font-style: italic;
 }
 
-#pyzstefahs .gt_super {
+#qfrxlszvqk .gt_super {
   font-size: 65%;
 }
 
-#pyzstefahs .gt_footnote_marks {
+#qfrxlszvqk .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -583,6 +615,7 @@ bulbs %&gt;%
 ]
 
 .right-plot[
+.tiny[
 
 
 ```r
@@ -629,34 +662,63 @@ anova(bulb_lsmodel0)
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
-]
+]]
 
 ---
 
 class: center, middle, inverse
 
-# Post-hoc
+# Post-hoc vs. Planned contrasts
 
-## You decide that *at least* two means differ within your groups, what next?
+
+---
+
+## Correcting for multiple comparisons
+
+The *F*-ratio tells us only whether the model fitted to the data (SSR) accounts for more variance than other factors (SSE). 
+
+So if the *F*-ratio is large enough to be statistically significant, then we only know that *one or more* differences between means are statistically significant.
+
+Further testing is needed! 
+
+--
+
+### Planned contrasts
+
+- You focused on a *few* scientifically sensible comparisons, rather than every possible comparison
+
+- You chose these *as part of the experimental design* before collecting data
+
+- Could structure linear model to reflect this?
+
+---
+
+### Post hoc
+
+- Typically unplanned comparisons, conducted only after a significant ANOVA result
+
+- All combinations checked
+
+- Needs correcting for inflated Type 1 error
+
+--
+
+| Method     | Equation | Notes|
+| ----------- | ----------- |----------- |
+| Bonferroni/Dunn-Sidak    | `\(p = {\alpha \over k}\)`      | Correct critical p for the number of independent tests
+| Holm's    | `\(p_{1} &lt; \alpha/(k–1+1) = \alpha/k\)`      | we start with the smallest p-value (i = 1) and determine whether there is a significant result (i.e. p1 &lt; α/(k–1+1) = α/k. If so we move on to the second test. We continue in this manner until we get a non-significant result
+| Tukey HSD  | `\(t_{crit} = q * \sqrt{MSE \over N}\)`  | Essential a t-test, correcting for multiple comparison, q-values can be looked up for test df and number of treatments
 
 ---
 
 ## Post hoc testing
 
+.tiny[
 
 
-Pairwise comparisons with different optional adjustments for multiple comparisons
-
-Confidence intervals provide information on minimum predicted differences on dependent variable scale
-
----
-
-## Post hoc testing
 
 
 ```r
-library(emmeans)
-
 means &lt;- emmeans(bulb_lsmodel0, 
                  specs = pairwise ~ bulb_type)
 
@@ -685,6 +747,21 @@ confint(means)
 ## Confidence level used: 0.95 
 ## Conf-level adjustment: tukey method for comparing a family of 4 estimates
 ```
+
+]
+
+---
+class: middle, center, inverse
+
+# Next time: Multivariate models
+
+
+### Reading 
+
+ Chapters ANOVA: Discovering Statistics using R/SPSS - Andy Field
+
+ Chapter ANOVA: The New Statistics - Andy Hector
+
 
 
 

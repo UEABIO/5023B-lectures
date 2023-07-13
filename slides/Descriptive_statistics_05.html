@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Central tendencies</title>
+    <title>Descriptive Statistics</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2022-09-18" />
+    <meta name="date" content="2023-07-13" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
@@ -20,19 +20,15 @@
 
 
 
-
 class: title-slide, left, top
 
-# Central tendencies
+# Descriptive Statistics
 
-## 
+## Part one
 
 ### Philip Leftwich
 
 &lt;br&gt;
-
-
-
 &lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
 
 &lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
@@ -44,10 +40,74 @@ layout: true
 &lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
 
 ---
+
+## Building Statistical Models
+
+.right-plot[
+
+
+&lt;img src="images/bridge.png" title=" Model bridges - Andy Field Discovering Statistics" alt=" Model bridges - Andy Field Discovering Statistics" width="120%" /&gt;
+
+]
+
+.left-code[
+
+A model is a representation of what we think is going on in the real world. It can be a good fit, or a poor fit. 
+
+
+A well fitted model could be used to make *predictions* about what might happen in the real world. 
+
+
+A poorly fitted model could also make *predictions* but they might be disastrously wrong.
+
+
+If we want our inferences to be **accurate** the model must represent the data collected.
+
+]
+
+
+---
+
+# Populations
+
+- The total “pool” you are trying to explore/describe
+
+- You define what it is
+
+- Usually you’re not going to be able to study the entire population, because: time, money, access, resources, support, etc. 
+
+- So instead, we can usually only take a...
+
+---
+
+# Sample
+
+- Drawn randomly from the population...
+
+- ...to collect observations for variable(s) of interest...
+
+- ...to try to say something meaningful about the population.
+
+---
 class: center, middle
 
 # Central tendency &amp; spread
 
+Often we will start with
+
+**Central tendency** - a central or typical value
+
+**Data Spread** - how observations are dispersed
+
+---
+
+# Central tendency
+
+The **central tendency** of a series of observations is a measure of the “middle value”
+
+--
+
+The three most commonly reported measures of central tendency are the sample **mean, median, and mode**.
 
 ---
 
@@ -62,13 +122,182 @@ class: center, middle
 
 ---
 
+## The mean
+
+One of the simplest statistical models in biology is the **mean**
+
+.left-code[
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Mean **  | **2.6**      |
+| **Median **  | **3**      |
+| **Mode **  | **3**      |
+]
+
+.right-plot[
+
+Calculating the mean:
+
+$$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
+`$$\frac{5 + 3 + 3 + 2 + 1}{5} = 2.6$$`
+
+]
+
+---
+
+## The mean
+
+One of the simplest statistical models in biology is the **mean**
+
+.left-code[
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Mean **  | **2.6**      |
+| **Median **  | **3**      |
+| **Mode **  | **3**      |
+]
+
+.right-plot[
+
+We already *know* this is a hypothetical value as you can't have 2.6 friends (I think?)
+
+Now with any model we have to know how well it fits/ how accurate it is
+
+]
+
+---
+
+
+If data is symmetrically distributed, the **mean and median** will be close, especially as *n* increases. 
+
+This is also know as a **normal distribution**
+
+
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-2-1.png" width="60%" /&gt;
+
+---
+
 ## Why is data distribution important?
 
 Understanding the shape of our data informs the summary statistics we can use
 
-&lt;img src="images/three_tendencies.png" title="Frequency distribution with central tendencies" alt="Frequency distribution with central tendencies" width="50%" /&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-3-1.png" title="Frequency distribution with central tendencies" alt="Frequency distribution with central tendencies" width="60%" /&gt;
 
 
+---
+
+Depending on our question, if the data is not symmetrical this could really matter...
+
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-4-1.png" width="60%" /&gt;
+
+---
+
+class: center, middle
+
+## Data Spread
+
+---
+
+## Assessing the fit of a central tendency
+
+So we have multiple ways to describe a central tendency of a set of observations. 
+
+But we do not know **how the data are distributed or spread around this**
+
+---
+
+## Data Spread
+
+- Range
+
+- Variance
+
+- Standard deviation
+
+
+---
+
+## Range
+
+Going back to our friends data: 
+
+.left-code[
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Median **  | **3**      |
+| **Range **  | **4**      |
+
+]
+
+.right-plot[
+
+- The range is affected by extreme values
+
+- The interquartile range (IQR)  looks at the middle 50% of scores
+
+- The first **quartile** is the median of the lower 50% of the data: 1.5
+
+- The second **quartile** is the median: 3
+
+- The third **quartile** is the median of the upper 50% of the data: 5
+
+]
+
+
+---
+
+## Range
+
+* Box bounded by 25th and 75th percentile (first and third quartile). This is called the interquartile range (IQR)
+
+* Line in box is usually the median
+
+* Whiskers extend to last OBSERVATION within 1 step (usually 1.5*IQR) from end of the box
+
+* Any observations beyond whisker are plotted as individual points
+
+.pull-left[
+
+
+&lt;img src="images/boxplot.png" title="Boxplot" alt="Boxplot" width="80%" /&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="images/cat.jpg" title="Box and whiskers" alt="Box and whiskers" width="50%" /&gt;
+
+]
+
+
+---
+
+## Variance
+
+Sample variance is a more robust measure of data spread because it is not so highly influence by outliers and takes into account all observations. In words, variance is the mean squared distance of observations from the sample mean. 
+
+`$$s{^2}_{sample} = \frac{\sum(x - \bar{x})^2}{N -1}$$`
 ---
 
 ## Calculating variance
@@ -82,9 +311,8 @@ Understanding the shape of our data informs the summary statistics we can use
 .pull-right[
 
 ```
-# A tibble: 100 x 3
-   value residuals sq_residuals
-   &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+
+   value residuals squared residuals
  1 12.7      2.88         8.27 
  2 14.2      4.32        18.7  
  3 11.3      1.41         1.99 
@@ -97,10 +325,9 @@ Understanding the shape of our data informs the summary statistics we can use
 ```
 
 ```
-# A tibble: 1 x 3
-  sum_residuals sum_squares  mean
-          &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
-1       -0.0577        359.  9.87
+
+  sum of residuals sum of squares  mean
+1       -0.0577        359        9.87
 
 ```
 
@@ -109,31 +336,46 @@ Understanding the shape of our data informs the summary statistics we can use
 
 ---
 
+## N-1?
+
+&lt;img src="images/pop_sam.png" title="Sampling" alt="Sampling" width="60%" /&gt;
+
+For a *population* the variance ($S_p^2$) is exactly the **mean** squared distance of the values from the population mean
+
+$$
+s{^2}_{pop} = \frac{\sum(x - \bar{x})^2}{N}
+$$
+
+---
+
+But this is a *biased* estimate for the population variance 
+
+- A biased sample variance will *underestimate* population variance
+
+- n-1 (if you take a large enough sample size, will correct for this)
+
+(More here)[https://www.jamelsaadaoui.com/unbiased-estimator-for-population-variance-clearly-explained/#:~:text=The%20expected%20value%20of%20the%20sample%20variance%20is%20equal%20to,definition%20of%20an%20unbiased%20estimator.]
+---
+
+
 ## Standard Deviation
+
+- Square root of sample variance
+
+- A measure of dispersion of the sample
+
+- Smaller SD = more values closer to mean, larger SD = greater data spread from mean
 
 * *variance*:
 
 $$
-s^2 = {\sum(x - \overline x)^2\over n - 1}
+\sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
 $$
-
-$$
-s^2 = {sum~of~squares\over n - 1}
-$$
-
-
-* Square root of sample *variance*
-
-* A measure of *dispersion* of the sample
-
-$$
-s = \sqrt{\sum(x - \overline x)^2\over n - 1}
-$$
-* Smaller SD σ = more values close to the mean, larger SD = greater data spread away from the mean.
 
 ---
 
-Samples with different standard deviations `\(s\)` can look very different
+Small `\(s\)` = taller, narrower
+Large `\(s\)` = squatter, wider
 
 
 ```r
@@ -142,82 +384,146 @@ rnorm(n = 1000,mean = 0,sd = 2)
 rnorm(n = 1000,mean = 0,sd = 3)
 ```
 
-![](Descriptive_statistics_05_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-10-1.png" width="60%" /&gt;
 
----
 
-## Another method
-
-* Box bounded by 25th and 75th percentile. This is called the interquartile range (IQR)
-
-* Line in box is usually the median
-
-* Whiskers extend to last OBSERVATION within 1 step (usually 1.5*IQR) from end of the box
-
-* Any observations beyond whisker are plotted as individual points
-
-&lt;img src="images/boxplot.png" title="Boxplot" alt="Boxplot" width="50%" /&gt;
 ---
 
 ## The Normal Distribution
 
 .pull-left[
-![](Descriptive_statistics_05_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-11-1.png" width="120%" /&gt;
 ]
 
 .pull-right[
-&lt;img src="images/paranormal.png" title="Normal distribution, paranormal distribution" alt="Normal distribution, paranormal distribution" width="50%" /&gt;
+&lt;img src="images/paranormal.png" title="Normal distribution, paranormal distribution" alt="Normal distribution, paranormal distribution" width="70%" /&gt;
 ]
 
 ---
+
 ## There are infinite normal distributions
+
 ### Different means and sd change the shape
 
+.pull-left[
 
-&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-8-1.png" width="40%" /&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-13-1.png" width="100%" /&gt;
+
+]
+
+.pull-right[
+
+The normal distribution is common. But **NEVER** assume your data are normally distributed without looking at it and thinking really hard first
+
+]
+
+
 ---
+
+## Going beyond the data
+
+For any distribution of values we can calculate the probability of obtaining a particular measure, if we assume they follow (or are close to) an idealised **probability distribution**
+
+The normal distribution is probably the most common/well-known
+
+For a mean of 0, and a sd of 1 - we can calculate a table of probabilities that a particular value will occur under a normal distribution
+
+
+$$
+z = {x_i - \mu \over s}
+$$
+
+The *Z* score can be looked up in [*Z*-table](https://www.simplypsychology.org/z-table.html) to find the "probability of observing that value in a normal distribution." 
+
+---
+
+## Z scores
+
+The obvious problem is that not all data will have a mean of 0 and a sd of 1.
+
+Luckily any dataset can be easily converted into a z-distribution:
+
+$$ z = \frac{x - \bar{x}}{s}$$
+
+And the probability of observing any value can be predicted. 
+
+Under a z distribution:
+
+66% of values fall within 1 sd of the mean
+
+95% of values fall within 1.96 sd of the mean
+
+---
+
 
 ## Visualising a Distribution
 
 .pull-left[
 **Histograms** plot frequency/density of observations within bins
 
-&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-9-1.png" width="80%" /&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-14-1.png" width="80%" /&gt;
 ]
 
 .pull-right[
+
 **Quantile-Quantile plots** plot quantiles of a dataset vs. quantiles of a *theoretical* (usually normal) distribution
 
-&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-10-1.png" width="80%" /&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-15-1.png" width="80%" /&gt;
+
 ]
 
 ---
 
 ## QQ plots
 
+.left-code[
 If data is normally distributed, then if we plot the [*quantiles*](https://www.youtube.com/watch?v=okjYjClSjOg) vs. theoretical normal quantiles (with same *n*), then we find a linear relationship
+
+]
+
+.right-plot[
+
+
+&lt;img src="images/qq_example.png" title="QQ plot examples" alt="QQ plot examples" width="100%" /&gt;
+
+]
+
 ---
 
-class: center
+# Normal distribution
 
-&lt;img src="images/qq_example.png" title="QQ plot examples" alt="QQ plot examples" width="50%" /&gt;
+&lt;img src="images/norm_qq.png" title="QQ plot examples" alt="QQ plot examples" width="100%" /&gt;
+---
 
+# Skewed distribution
 
+&lt;img src="images/skew-qq.png" title="QQ plot examples" alt="QQ plot examples" width="100%" /&gt;
+
+---
+
+# Peaky distribution
+
+&lt;img src="images/peaky-qq.png" title="QQ plot examples" alt="QQ plot examples" width="100%" /&gt;
 ---
 class: center
 
 ## Using the standard normal distribution
 
-&lt;img src="images/standard_normal.png" title="Normal distribution" alt="Normal distribution" width="50%" /&gt;
+.pull-left[
+
+
+&lt;img src="images/standard_normal.png" title="Normal distribution" alt="Normal distribution" width="100%" /&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="images/norm prob dens.jpg" title="Normal prob distribution" alt="Normal prob distribution" width="100%" /&gt;
+
+]
 
 ---
 
-## Z scores: How many standard deviations from the mean?
-
-$$
-z = {x_i - \mu \over \sigma}
-$$
-The *Z* score can be looked up in [*Z*-table](https://www.simplypsychology.org/z-table.html) to find the "probability of observing that value in a normal distribution." 
 
 ---
 class: center, middle
@@ -245,8 +551,8 @@ How can we know how well our sample represents the population?
 ---
 class: center, middle
 
-<div id="htmlwidget-374802b657555961df51" style="width:100%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-374802b657555961df51">{"x":{"diagram":"digraph {\n  \ngraph[layout = dot]\n\na[label = \"Population mean = 3\"]\nb[label = \"Sample mean = 3\"]\nc[label = \"Sample mean = 4\"]\nd[label = \"Sample mean = 5\"]\ne[label = \"Sample mean = 1\"]\nf[label = \"Sample mean = 2\"]\ng[label = \"Sample mean = 4\"]\n\na -> b\na -> c\na -> d\na -> e\na -> f\na -> g\n\n\n\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-86f7d157afd5f3bb599c" style="width:110%;height:403.2px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-86f7d157afd5f3bb599c">{"x":{"diagram":"digraph {\n  \ngraph[layout = dot]\n\na[label = \"Population mean = 3\"]\nb[label = \"Sample mean = 3\"]\nc[label = \"Sample mean = 4\"]\nd[label = \"Sample mean = 5\"]\ne[label = \"Sample mean = 1\"]\nf[label = \"Sample mean = 2\"]\ng[label = \"Sample mean = 4\"]\n\na -> b\na -> c\na -> d\na -> e\na -> f\na -> g\n\n\n\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ---
 ## Sampling distribution
@@ -281,7 +587,7 @@ This is true *even if the population distribution does not follow a normal distr
 
 ### Here the width of turtle shells follow a "uniform distribution"
 
-![](Descriptive_statistics_05_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-23-1.png" width="60%" /&gt;
 
 ---
 
@@ -289,7 +595,7 @@ This is true *even if the population distribution does not follow a normal distr
 
 
 
-![](Descriptive_statistics_05_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-24-1.png" width="60%" /&gt;
 
 ---
 
@@ -297,7 +603,7 @@ This is true *even if the population distribution does not follow a normal distr
 
 
 
-![](Descriptive_statistics_05_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-25-1.png" width="60%" /&gt;
 
 ---
 
@@ -305,7 +611,7 @@ This is true *even if the population distribution does not follow a normal distr
 
 
 
-![](Descriptive_statistics_05_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+&lt;img src="Descriptive_statistics_05_files/figure-html/unnamed-chunk-26-1.png" width="60%" /&gt;
 
 ---
 

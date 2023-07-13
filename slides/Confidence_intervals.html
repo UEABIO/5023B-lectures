@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Confidence Intervals</title>
+    <title>Sampling</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2022-09-18" />
+    <meta name="date" content="2023-07-13" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <script src="libs/viz/viz.js"></script>
+    <link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
+    <script src="libs/grViz-binding/grViz.js"></script>
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
     <link rel="stylesheet" href="css/my-fonts.css" type="text/css" />
   </head>
@@ -19,9 +23,9 @@
 
 class: title-slide, left, top
 
-# Confidence Intervals
+# Sampling
 
-## 
+## Standard Error and Confidence Intervals
 
 ### Philip Leftwich
 
@@ -41,9 +45,9 @@ layout: true
 
 ---
 
-## Sampling distribution * Standard Error
+## Sampling distribution
 
-If we had a bunch of samples, and found their *probability distribution*(e.g. gaussian, mean and sd etc), then we would be able to predict the **sampling distribution**
+If we had a bunch of samples, and found their *probability distribution*(e.g. normal, mean and sd etc), then we would be able to predict the **sampling distribution**
 
 
 ```r
@@ -53,11 +57,67 @@ rnorm(n = 100, mean = 10, sd  = 1)
 
 --
 
+When looking at standard deviation we looked at whether our model (the mean) was a good fit for *our data*.
+
+But we can move beyond this to look at whether it is a good fit for *our population*.
+
+---
+
+**Standard Deviation (SD):**
+
+The standard deviation is a measure of the spread or dispersion of data points within a sample or population. It quantifies the average amount by which individual data points deviate from the mean. A higher standard deviation indicates greater variability in the data.
+
+--
+
+**Standard Error (SE):**
+
+The standard error is a measure of the uncertainty or precision associated with *estimating a population parameter*, typically the mean. It quantifies the average amount of variation between sample means if multiple samples are taken from the same population. The standard error is closely related to the standard deviation, but it is divided by the square root of the sample size
+
+---
+
+## Standard Error
+
 The **standard deviation of the sampling distribution of means** is the **standard error**. It is calculated by dividing the standard deviation by the square root of the sample size:
 
 $$
-SE = {s\over\sqrt n}
+SE = {\sigma\over\sqrt n}
 $$
+
+If we took hundreds of samples and independently calculated the mean of each sample, we would get a nice, even, sampling distribution - which if you averaged it would get back to the population mean.
+
+
+---
+
+.right-plot[
+
+<div id="htmlwidget-9693a3d618c8c0a51dc1" style="width:120%;height:403.2px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9693a3d618c8c0a51dc1">{"x":{"diagram":"digraph {\n  \ngraph[layout = dot]\n\na[label = \"Population mean = 3\"]\nb[label = \"Sample mean = 3\"]\nc[label = \"Sample mean = 4\"]\nd[label = \"Sample mean = 5\"]\ne[label = \"Sample mean = 1\"]\nf[label = \"Sample mean = 2\"]\ng[label = \"Sample mean = 3\"]\nh[label = \"Sample mean = 3\"]\ni[label = \"Sample mean = 4\"]\nj[label = \"Sample mean = 2\"]\n\na -> b\na -> c\na -> d\na -> e\na -> f\na -> g\na -> h\na -> i\na -> j\n\n\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+]
+
+.left-code[
+
+
+&lt;img src="Confidence_intervals_files/figure-html/unnamed-chunk-3-1.png" width="120%" /&gt;
+
+]
+
+---
+
+## Standard Error
+
+In reality we cannot collect hundreds of sample means, so we rely on this approximation of the standard error. 
+
+Luckily for us it has been demonstrated that when the number of observations in a sample gets large (usually defined as *at least 30*), the sampling distribution has an approximate normal distribution.
+
+--
+
+This is known as **central limit theorem**
+
+`$$\sigma_{\bar{x}} = \frac{s}{\sqrt{n}}$$`
+Interestingly (and handily for us) central limit theorem applies - *even if the population distribution doesn't have a normal distribution*
+
+- When the sample size is small we have to rely on a different (*t*) distribution, more on this later.
 
 ---
 
@@ -73,29 +133,6 @@ $$
 SE = {s\over\sqrt n}
 $$
 
----
-
-### Descriptive statistics
-
-If we want to say how widely scattered our measurements are we use the **standard deviation**.
-
---
-
-### Inferential statistics
-
-If we want to indicate some level of uncertainty around our estimate of the mean, we use the **standard error**. 
-
-We can also use standard error to calculate a **confidence interval**
-
----
-
-## Central Limit Theorem
-
-Most analyses require some sort of assumptions of a normal distribution. 
-
-**Central limit theorem** states that the standard deviation of the sampling distribution of means follows a normal distribution, *regardless of the underlying shape of a population*. 
-
-In order for this to hold true the **sample size** (*n*) must be sufficiently larger
 
 ---
 
@@ -120,21 +157,6 @@ This depends on how far removed the underlying shape of a population *is* from a
 Also see **bootstrapping**
 
 ---
-class: middle
-
-## Statistical inference
-
-We want to *understand* something about our populations using observations from a random sample
-
---
-
-We only have a *sample*, therefore there will always be uncertainty about the population.
-
---
-
-How do we express this?
-
----
 class: center, middle, inverse
 
 ## Confidence Intervals
@@ -142,6 +164,8 @@ class: center, middle, inverse
 ---
 
 ## Common misconception
+
+A calculated boundary within which we think the true value of the mean will sit: 
 
 "There is a 95% chance that the **true** population mean is within this range"
 
@@ -159,21 +183,29 @@ Frame the probability around the intervals not the population parameter.
 
 ---
 
+For that specific experiment, either the ring landed on the target or it didn't, either the confidence interval based on our experimental data has the true value in it or doesn't.
+
+There's a 95% chance.
+
+&lt;img src="images/ring-toss.jpg" title="Ring toss" alt="Ring toss" width="70%" /&gt;
+
+---
+
 ## Confidence levels
 
 Can be constructed by YOU:
 
 Do you want to know the range within which you will capture the mean...
 
-* 90% of the time
+* 66% of the time = 1 * S.E.
 
 --
 
-* 95%
+* 95% = 1.96 * S.E. 
 
 --
 
-* 99%
+* 99% = 2.58 * S.E. 
 
 --
 
@@ -182,6 +214,43 @@ The Confidence level (C) is the inverse of the significance level.
 $$
 \huge\alpha = 1 - C
 $$
+---
+
+Example: We calculate a confidence interval for mean flipper lengths in male and female penguins (n = 165, 168), finding a 95% confidence interval of [203.4 - 206.6]mm for males and [195.7 - 198.3]mm for females   
+
+**What does that mean?**
+
+If we took many samples and found the confidence interval for each, then we’d expect 95% of the calculated confidence intervals to contain the population parameters. So...there’s a pretty good chance that a calculated confidence interval contains the population parameter...increasing with increasing confidence level.   
+
+.left-code[
+
+
+
+```r
+flipper &lt;- penguins %&gt;% 
+  group_by(sex) %&gt;% 
+  drop_na(sex) %&gt;% 
+  summarise(mean = mean(flipper_length_mm, na.rm = T),
+            sd = sd(flipper_length_mm, na.rm = T),
+            n = n(),
+            se = sd/sqrt(nrow(.)),
+            ci = se*1.96)
+
+ggplot(data = flipper, aes(x = mean, y = sex, group = sex))+
+  geom_pointrange(aes(xmin = mean-ci, xmax = mean+ci))+
+  labs(x = "Flipper length (mm)", y = "")+
+  theme_classic()+
+  coord_cartesian(xlim = c(195,210))
+```
+]
+
+.right-plot[
+
+&lt;img src="Confidence_intervals_files/figure-html/unnamed-chunk-7-1.png" width="120%" /&gt;
+
+]
+
+
 ---
 
 &lt;img src="images/confidence-interval-area.png" title=" Confidence Intervals" alt=" Confidence Intervals" width="90%" /&gt;
@@ -194,12 +263,12 @@ This requires us to **know** the population variance (standard deviation)
 
 
 $$
-\bigg[\overline x - z_{a\over2} * {\sigma\over {\sqrt n}}
+\bigg[\overline \mu - z_{a\over2} * {s\over {\sqrt n}}
 $$
 
 
 $$
-\overline x + z_{a\over2} *{\sigma\over {\sqrt n}}\bigg]
+\overline \mu + z_{a\over2} *{s\over {\sqrt n}}\bigg]
 $$
 
 --
@@ -212,9 +281,9 @@ $$
 
 ## Z distribution
 
-So far we have used the z-distribution. This is OK for normally distributed data, where we have population `\(\mu\)` and `\(\sigma\)`. 
+So far we have used the z-distribution. This is OK for normally distributed data, where we have population `\(\mu\)` and `\(s\)`. 
 
-When we don't know the population mean and SD
+When we don't *know* the population mean and SD
 
 --
 
@@ -226,7 +295,7 @@ Three choices:
 
 1. Assume we have a big enough sample size and CLT fixes this
 
-2. Use another type of sampling distribution (e.g. t-distribution)
+2. Use another type of sampling distribution (e.g. *t*-distribution)
 
 3. Bootstrap our sampling distribution
 
@@ -281,7 +350,7 @@ boot_1000
 ## 
 ## Bootstrap Statistics :
 ##     original     bias    std. error
-## t1*  204.506 0.05298214    1.090122
+## t1*  204.506 0.02398214    1.076855
 ```
 
 ]
@@ -302,7 +371,7 @@ ggplot()+
 
 .right-plot[
 
-&lt;img src="Confidence_intervals_files/figure-html/unnamed-chunk-8-1.png" width="120%" /&gt;
+&lt;img src="Confidence_intervals_files/figure-html/unnamed-chunk-13-1.png" width="120%" /&gt;
 
 ]
 
@@ -326,7 +395,7 @@ boot.ci(boot_1000,
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   (202.4, 206.8 )  
+## 95%   (202.3, 206.6 )  
 ## Calculations and Intervals on Original Scale
 ```
 

@@ -21,11 +21,13 @@ options(htmltools.dir.version = FALSE,
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
 
 library(tidyverse)
+library(here)
 library(gt)
 library(gtExtras)
 library(rstatix)
 library(palmerpenguins)
-library(ggpubr)
+library(DiagrammeR)
+
 
 ```
 
@@ -44,7 +46,7 @@ class: title-slide, left, top
 
 <span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
 
-<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
 
 ---
 
@@ -69,13 +71,21 @@ A model with poor diagnostics is a bad fit for the data – confidence intervals
 
 ## Model checks
 
-* Diagnostic plots
+* Diagnostic plots of residuals
+
+--
 
 * Multicollinearity
 
+--
+
 * Omitted Variable Bias
 
+--
+
 * Irrelevant variables
+
+--
 
 * Hypothesis testing for model simplification
 
@@ -105,18 +115,20 @@ check_model(lsmodel1)
 
 .left-code[
 
+.tiny[
+
 The first two plots analyze the linearity of the residuals (in-sample model error) versus the fitted values. We want to make sure that our model is error is relatively flat - e.g. our model has equal amounts of error across the fitted range.
 
 
 We can see that when our model predictions >50 there is larger error than <50. We may want to inspect this, but there is also clearly less data at this high value range.
 
-
+]
 
 ]
 
 .right-plot[
 
-```{r, echo = F}
+```{r, echo = F, out.width = "90%"}
 library(performance)
 
 check_model(lsmodel1, check = c("linearity", "homogeneity"))
@@ -132,15 +144,16 @@ check_model(lsmodel1, check = c("linearity", "homogeneity"))
 The next two plots analyze for collinearity and high leverage points. 
 
 .left-code[
-**Collinearity** is when features are highly correlated, which can throw off simple regression models. However, when we are using interaction terms - we *expect* these to be highly correlated with main effects. So use your common sense. 
 
 **High Leverage Points** are observations that deviate far from the average. These can skew the predictions for linear models, and removal or model adjustment may be necessary.
+
+**Collinearity** is when features are highly correlated, which can throw off simple regression models. However, when we are using interaction terms - we *expect* these to be highly correlated with main effects. So use your common sense. 
 
 ]
 
 .right-plot[
 
-```{r, echo = F}
+```{r, echo = F, out.width = "90%"}
 
 
 check_model(lsmodel1, check = c("vif", "outliers"))
@@ -167,7 +180,7 @@ If the distributions are skewed, this can indicate problems with the model.
 
 .right-plot[
 
-```{r, echo = F}
+```{r, echo = F, out.width = "90%"}
 
 
 check_model(lsmodel1, check = c("qq", "normality"))
@@ -194,14 +207,23 @@ If our assumptions are violated, then depending on the issue, estimates of the m
 
 Transformations can help with:
 
+--
+
 1. Heteroscedasticity (the opposite of Homogeneity) of variance
+
+--
 
 2. Non-linearity
 
+--
+
 3. Non-normal residual variance
+
+--
 
 4. Outliers (sometimes) - might be possible to remove these
 
+--
 
 ```{}
 lm(sqrt(y) ~ x)
@@ -210,11 +232,12 @@ lm(log(y) ~ x)
 ```
 
 ---
+
 ## Choosing a transformation
 
 .right-plot[
 
-```{r, out.width = "80%"}
+```{r, out.width = "90%"}
 MASS::boxcox(lsmodel1)
 
 ```
@@ -224,7 +247,7 @@ MASS::boxcox(lsmodel1)
 .left-code[
 
 
-|Lambda value $\lambda$ | Transformed data ($Y$)|
+|Lambda value $\lambda$ | Transformed data (Y)|
 |-----------------------|-----------------------|
 |-2|Y^-2|
 |-1|Y^-1|
@@ -243,19 +266,38 @@ MASS::boxcox(lsmodel1)
 
 Correlation between predictor variables in a linear model
 
-One pair = collinearity, two or more = multicollinearity
+--
 
-Can be a result of an overspecified model (chucked everything in without thinking) also common in observation datasets (rather than experimental datasets) e.g. ecological data where variables may be dependent on each other
+One pair = collinearity, 
+
+two or more = multicollinearity
+
+--
+
+Can be a result of an overspecified model (chucked everything in without thinking) 
+--
+
+also common in observation datasets (rather than experimental datasets) 
+
+e.g. ecological data where variables may be dependent on each other
 
 --
 
 $R^2$ may be high
 
+--
+
 BUT individual predictors may have high uncertainties and appear non-significant
 
-$VIF_j={1\over{1-R^2_j}}$
+--
 
-Each predictor is regressed against the full model *without* that predictor present
+Variance Inflation Factor
+
+$VIF_j={1\over{1-R^2_i}}$
+
+--
+
+Each predictor is regressed (in turn) against the full model *without* that predictor present $R^2_i$
 
 ---
 
@@ -270,9 +312,15 @@ e.g. this predictor variable should have been included because you could reasona
 
 * Other terms may have their influence over – or underestimated ( it is not always clear which way round this will occur).
 
+--
+
 * Standard errors and measures of uncertainty are wrong
 
+--
+
 * Significance tests are biased
+
+--
 
 * Predictions will be wrong
 
@@ -282,18 +330,19 @@ e.g. this predictor variable should have been included because you could reasona
 
 **The other side of the coin – Including irrelevant variables**
 
-* Estimates will be unbiased but perhaps inefficient (greater variances, SE)
+--
 
-* Variances will be unbiased (but maybe not optimal)
+* Estimates will be unbiased but perhaps inefficient (greater variances, SE, CI)
 
-* Hypothesis testing, CI results are valid
+* Variances will be unbiased (**but maybe not optimal for hypothesis testing**)
 
 * Greater sample size can help reduce inconsistency and selection bias issues
 
 * Prediction will be unchanged
 
+--
 
-**So: it’s better to INCLUDE an irrelevant predictor variable that to OMIT a relevant one.**
+**So: it’s better to INCLUDE an irrelevant predictor variable that to OMIT a relevant one if you aren't sure.**
 
 
 ---
@@ -328,7 +377,7 @@ Think **HARD** about what terms should be included in a model to test a hypothes
 
 7) Test removal of interaction terms 
 
-8) Leave all main predictors in the model 
+8) Leave all main predictors in the model/refine model further.
 
 ]
 
@@ -342,6 +391,12 @@ The adjusted $R^2$ may be more a more reliable measure.
 
 `anova()` or `drop1()` both produce **likelihood ratio F-tests** when comparing **nested models**.
 
+$$F = {({SSE_{reduced} - SSE_{full}})\over{df_{reduced} - df_{full}} )}~\div~{{SSE_{full}}\over{df_{full}}}$$
+
+
+$$
+F = {SSE\Delta\over df\Delta}
+$$
 
 ---
 ## Types of sums of squares
@@ -350,25 +405,13 @@ There are three types of sums of squares I, II & III
 
 By default `anova()` implements type I
 
-The `car` package function `Anova()` allows you to specify which type you want.
+--
 
 Roughly:
 
---
+When data are balanced these will all be **the same**. For unbalanced designs these may not
 
-**Type I** sum of squares are sequential - the factors are tested in the order specified in the model
 
---
-
-**Type II** are partial - all terms tested in light of each other (but does not account for interactions)
-
---
-
-**Type III** also partial include interactions
-
---
-
-When data are balanced these will be **identical**. For unbalanced designs these will differ
 
 ---
 
@@ -383,8 +426,31 @@ drop1(lsmodel1, test = "F")
 
 Note it drops all terms that *can* be dropped e.g. species cannot be dropped here, because it is in the interaction term.
 
-If an interaction was dropped from a full model (non-significant), then `drop1()` could be re-run.
 
+---
+
+##drop1()
+
+```{r}
+
+lsmodel1a <- lm(bill_length_mm ~ bill_depth_mm + body_mass_g + species,
+            data = penguins)
+
+drop1(lsmodel1a, test = "F")
+
+```
+
+If an interaction is dropped from a full model, then `drop1()` could be re-run. This can be done to simplify the model, or just accurately acquire F values **only for the main effects also involved in an interaction**.
+
+---
+
+# Reporting
+
+**Any estimates or confidence intervals should come from full model.**
+
+```{r}
+gtsummary::tbl_regression(lsmodel1)
+```
 
 
 

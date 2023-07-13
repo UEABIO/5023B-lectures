@@ -21,10 +21,12 @@ options(htmltools.dir.version = FALSE,
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
 
 library(tidyverse)
+library(here)
 library(gt)
 library(gtExtras)
 library(rstatix)
 library(palmerpenguins)
+library(DiagrammeR)
 library(ggpubr)
 
 ```
@@ -44,7 +46,7 @@ class: title-slide, left, top
 
 <span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
 
-<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
 
 ---
 
@@ -53,8 +55,8 @@ layout: true
 <div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
 
 
----
 
+---
 ## Basic linear models
 
 ```{r, echo = FALSE, out.width="60%", fig.cap = "Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares"}
@@ -75,13 +77,21 @@ $$
 
 $y_i$ is the predicted value of the response variable
 
+--
+
 $a$ is the intercept (value of y when x = 0)
+
+--
 
 $b$ is the slope of the regression line
 
+--
+
 $x$ is the value of the explanatory variable
 
-**$\epsilon$ is the value of the residual error**
+--
+
+$\epsilon$ is the value of the residual error
 
 ---
 
@@ -154,7 +164,11 @@ $bill~length=23.31+0.16_{(bill~depth)}+0.004_{(body~mass)}$
 
 * Bill depth - a continuous quantitative variable
 
+--
+
 * Body mass - a continuous quantitative variable
+
+--
 
 * Penguin Species - a categorical variable with three levels
 
@@ -209,6 +223,8 @@ $$
 $bill~length=15.9+0.71_{bill~depth}+0.003_{body~mass}+9.9_{speciesChinstrap}+7.39_{speciesGentoo}$
 
 If everything else about two penguins is the same (bill depth and body mass), we would expect a **Chinstrap** penguin to have a bill length 9.9mm longer than an Adelie pengun (on average).
+
+--
 
 If everything else about two penguins is the same (bill depth and body mass), we would expect a **Gentoo** penguin to have a bill length 7.39mm longer than an Adelie pengun (on average).
 
@@ -299,6 +315,7 @@ drop1(lsmodel1,
 
 Once we add an interaction term we can no longer interpret that "on average bill length increases by 0.29mm for every 1mm increase in bill depth. Because bill depth **also shows up as interaction term with species**
 
+--
 
 We now have to interpret this as :
 

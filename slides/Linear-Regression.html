@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Linear Models</title>
+    <title>Regression</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2022-09-16" />
+    <meta name="date" content="2023-07-13" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -15,13 +15,11 @@
 
 
 
-
-
 class: title-slide, left, top
 
-# Linear Models
+# Regression
 
-## 
+## Continuous predictors &amp; linear models
 
 ### Philip Leftwich
 
@@ -31,7 +29,7 @@ class: title-slide, left, top
 
 &lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
 
-&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
 
 ---
 
@@ -39,37 +37,50 @@ layout: true
 
 &lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
 
+
 ---
 
 
 ## Linear models
 
 
-.left-code[
+.pull-left[
 
-* Difference tests: t-test, ANOVA, ANCOVA
+Difference tests: t-test, ANOVA, ANCOVA
 
-* Association tests: Regressions
+&lt;img src="images/linear_model_difference.png" title="Difference model" alt="Difference model" width="100%" /&gt;
+
+
 
 ]
 
-.right-plot[
-&lt;img src="images/linear_model_difference.png" title="Introduction to linear models" alt="Introduction to linear models" width="60%" /&gt;&lt;img src="images/linear_model_regression.png" title="Introduction to linear models" alt="Introduction to linear models" width="60%" /&gt;
+--
+
+.pull-right[
+
+Association tests: Regressions
+
+&lt;img src="images/linear_model_regression.png" title="Regression model" alt="Regression model" width="100%" /&gt;
 ]
 
 ---
 
-https://lindeloev.github.io/tests-as-linear/
+## [Common stats tests as linear models](https://lindeloev.github.io/tests-as-linear/)
 
-&lt;img src="images/commmon_statistical_tests_linear_models.png" title="Common statistical tests are linear models" alt="Common statistical tests are linear models" width="100%" /&gt;
+&lt;img src="images/commmon_statistical_tests_linear_models.png" title="Common statistical tests are linear models" alt="Common statistical tests are linear models" width="80%" /&gt;
 ---
 
 ## Basic linear models
 
-&lt;div class="figure"&gt;
-&lt;img src="images/basic_linear.png" alt="Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares" width="60%" /&gt;
-&lt;p class="caption"&gt;Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="images/basic_linear.png" title="Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares" alt="Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares" width="100%" /&gt;
+
+Basic linear models aim to describe a linear relationship between a:
+
+- response (dependent) variable and a predictor (independent) variable. 
+
+--
+
+- usually by the method of ordinary least squares.
 
 ---
 
@@ -79,20 +90,38 @@ $$
 \LARGE{y = a + bx}
 $$
 
+.left-code[
+
 ### Where:
 
 `\(y\)` is the predicted value of the response variable
 
+
+
 `\(a\)` is the intercept (value of y when x = 0)
+
+
 
 `\(b\)` is the slope of the regression line
 
+
+
 `\(x\)` is the value of the explanatory variable
+
+]
+
+--
+
+.right-plot[
+
+&lt;img src="images/reg.png" title="regression" alt="regression" width="100%" /&gt;
+
+]
 
 ---
 ## Line of best fit
 
-&lt;img src="images/fit-linear.png" title="Line fitting" alt="Line fitting" width="60%" /&gt;
+&lt;img src="images/fit-linear.png" title="Line fitting" alt="Line fitting" width="70%" /&gt;
 
 ---
 class: center, middle
@@ -101,28 +130,28 @@ The line of best fit minimises the sum of the **squared distance** that *each* s
 
 This is called the method of 
 
+--
+
 ##Ordinary Least Squares
 
 ---
 
 ## Residuals
 
+--
+
 The difference between the ACTUAL value of the observation `\(y_i\)` and the value that the model predicts `\(\hat{y_i}\)` at that `\(x\)` value are the residuals (residual error).
 
+--
 
 &lt;img src="images/ols.png" title="residuals" alt="residuals" width="50%" /&gt;
 
-The regression model fitted by Ordinary Least Squares (OLS) will produce the equation for the line that **MINIMIZES** the sum of squares of the residuals
+The regression model fitted by **O**rdinary **L**east **S**quares (OLS) will produce the equation for the line that **MINIMIZES** the sum of squares of the residuals
 
 ---
 
-.pull-left[
 
-&lt;img src="images/ols-2.png" title="sum of squares error" alt="sum of squares error" width="120%" /&gt;
-
-]
-
-.pull-right[
+&lt;img src="images/ols-2.png" title="sum of squares error" alt="sum of squares error" width="40%" /&gt;
 
 
 This produces the line with the *smallest* total area size for the squares. 
@@ -130,12 +159,89 @@ This produces the line with the *smallest* total area size for the squares.
 $$
 SSE = \underset{i=1}{n \atop{\sum}}(y_i - \hat{y_i})^2
 $$
+--
 
 SUM OF RESIDUAL ERROR = `\((2)+(-1)+(4)+(-3)+(-2)=0\)`
 
-
+--
 
 SUM OF SQUARES OF RESIDUAL ERROR = `\((2^2)+(-1^2)+(4^2)+(-3^2)+(-2^2)=34\)`
+
+
+
+---
+
+## Sums of Squares
+
+.right-plot[
+
+
+&lt;img src="images/Sum of squares.png" title="OLS fits a line to produce the smallest amount of SSE" alt="OLS fits a line to produce the smallest amount of SSE" width="100%" /&gt;
+]
+
+.left-code[
+
+**SST** The squared differences between the observed dependent variable ($y_i$) and its overall mean ($\overline{y}$).
+
+**SSR** The sum of the differences between the predicted value ($\hat{y_i}$) of the dependent variable and its overall mean ($\overline{y}$).
+
+**SSE** The error is the difference between the observed dependent value ($y_i$)  and the predicted value ($\hat{y_i}$).
+
+]
+
+---
+
+## Linear model equation
+
+$$
+\LARGE{y_i = a + bx+\epsilon}
+$$
+
+.left-code[
+
+
+`\(y_i\)` is the predicted value of the response variable
+
+`\(a\)` is the intercept (value of y when x = 0)
+
+`\(b\)` is the slope of the regression line
+
+`\(x\)` is the value of the explanatory variable
+
+`\(\epsilon\)` is the value of the residual error
+
+]
+
+.right-plot[
+
+
+
+
+```r
+janka_ls1 &lt;- lm(hardness ~ dens, data = janka) 
+summary(janka_ls1)
+```
+
+```
+## 
+## Call:
+## lm(formula = hardness ~ dens, data = janka)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -338.40  -96.98  -15.71   92.71  625.06 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1160.500    108.580  -10.69 2.07e-12 ***
+## dens           57.507      2.279   25.24  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 183.1 on 34 degrees of freedom
+## Multiple R-squared:  0.9493,	Adjusted R-squared:  0.9478 
+## F-statistic:   637 on 1 and 34 DF,  p-value: &lt; 2.2e-16
+```
 
 ]
 
@@ -159,35 +265,15 @@ class: center, middle
 
 ---
 
+## Differences
+
 &lt;img src="images/diff.png" title="difference" alt="difference" width="80%" /&gt;
 
 ---
 
+## Regressions
+
 &lt;img src="images/reg.png" title="difference" alt="difference" width="90%" /&gt;
-
----
-
-&lt;img src="images/Sum of squares.png" title="OLS fits a line to produce the smallest amount of SSE" alt="OLS fits a line to produce the smallest amount of SSE" width="80%" /&gt;
-
----
-
-## Straight line equation
-
-$$
-\LARGE{y_i = a + bx+\epsilon}
-$$
-
-### Where:
-
-`\(y_i\)` is the predicted value of the response variable
-
-`\(a\)` is the intercept (value of y when x = 0)
-
-`\(b\)` is the slope of the regression line
-
-`\(x\)` is the value of the explanatory variable
-
-**$\epsilon$ is the value of the residual error**
 
 ---
 
@@ -196,49 +282,216 @@ $$
 
 `\(\LARGE{R^2}\)` : The proportion of variation in the dependent variable that can be predicted from the independent variable
 
-$$
-R^2=1-{Sum~of~Squared~Distances~between~y_i~and~\hat{y_i}\over{Sum~of~Squared~Distances~between~y_i~and~\overline{y}}} 
-$$
-
-
+--
 
 $$
-R^2=1-{SSE\over{SST}}
+\LARGE{R^2=1-{Sum~of~Squared~Distances~between~y_i~and~\hat{y_i}\over{Sum~of~Squared~Distances~between~y_i~and~\overline{y}}} }
+$$
+
+--
+
+$$
+\LARGE{R^2=1-{SSE\over{SST}}}
 $$
 
 ---
 
-## Adjusted `\(\huge{R^2}\)`
+## Adjusted `\(\LARGE{R^2}\)`
 
 Adjusted `\(R^2\)` is a corrected goodness-of-fit measure for linear models.
 
+--
+
 `\(R^2\)` always increases as the number of effects are included in the model. Good for overall prediction, but does not check efficiency. 
+
+--
 
 Adjusted `\(R^2\)` can fall if a model term does not *improve* the fit of the model
 
+--
 
 &lt;img src="images/adj_r.png" width="30%" /&gt;
 
+--
 
 `\(N\)` = numerator degrees of freedom = Total number of observations across all groups
 
+--
+
 `\(k\)` = Total number of groups
+
+--
 
 `\(N-k\)` = denominator degrees of freedom
 
 ---
 
+## Summary
+
 
 ```r
-lsmodel0 &lt;- lm(height ~ type, data = darwin)
-
-summary(lsmodel0)
+summary(janka_ls1)
 ```
 
-&lt;img src="images/model_summary.png" title="R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared" alt="R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared" width="90%" /&gt;
-
+```
+## 
+## Call:
+## lm(formula = hardness ~ dens, data = janka)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -338.40  -96.98  -15.71   92.71  625.06 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1160.500    108.580  -10.69 2.07e-12 ***
+## dens           57.507      2.279   25.24  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 183.1 on 34 degrees of freedom
+## Multiple R-squared:  0.9493,	Adjusted R-squared:  0.9478 
+## F-statistic:   637 on 1 and 34 DF,  p-value: &lt; 2.2e-16
+```
 
 ---
+
+.tiny[
+
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)  -1160.     109.       -10.7 2.07e-12
+## 2 dens            57.5      2.28      25.2 1.33e-23
+```
+
+
+
+```r
+report::report(janka_ls1)
+```
+
+```
+## We fitted a linear model (estimated using OLS) to predict hardness with dens
+## (formula: hardness ~ dens). The model explains a statistically significant and
+## substantial proportion of variance (R2 = 0.95, F(1, 34) = 636.98, p &lt; .001,
+## adj. R2 = 0.95). The model's intercept, corresponding to dens = 0, is at
+## -1160.50 (95% CI [-1381.16, -939.84], t(34) = -10.69, p &lt; .001). Within this
+## model:
+## 
+##   - The effect of dens is statistically significant and positive (beta = 57.51,
+## 95% CI [52.88, 62.14], t(34) = 25.24, p &lt; .001; Std. beta = 0.97, 95% CI [0.90,
+## 1.05])
+## 
+## Standardized parameters were obtained by fitting the model on a standardized
+## version of the dataset. 95% Confidence Intervals (CIs) and p-values were
+## computed using a Wald t-distribution approximation.
+```
+
+]
+
+---
+
+## Interpretation - automate with extreme caution
+
+
+.tiny[
+
+
+```r
+report::report(janka_ls1)
+```
+
+```
+## We fitted a linear model (estimated using OLS) to predict hardness with dens
+## (formula: hardness ~ dens). The model explains a statistically significant and
+## substantial proportion of variance (R2 = 0.95, F(1, 34) = 636.98, p &lt; .001,
+## adj. R2 = 0.95). The model's intercept, corresponding to dens = 0, is at
+## -1160.50 (95% CI [-1381.16, -939.84], t(34) = -10.69, p &lt; .001). Within this
+## model:
+## 
+##   - The effect of dens is statistically significant and positive (beta = 57.51,
+## 95% CI [52.88, 62.14], t(34) = 25.24, p &lt; .001; Std. beta = 0.97, 95% CI [0.90,
+## 1.05])
+## 
+## Standardized parameters were obtained by fitting the model on a standardized
+## version of the dataset. 95% Confidence Intervals (CIs) and p-values were
+## computed using a Wald t-distribution approximation.
+```
+
+]
+
+ **I** fitted a linear model (estimated using OLS) to predict **timber hardness from wood density**. The model explains a statistically significant and substantial proportion of variance (F&lt;sub&gt;1,34&lt;/sub&gt;) = 636.98, p &lt; .001, adj. R&lt;sup&gt;2&lt;/sup&gt; = 0.95). The model shows that for each unit increase in wood density (kg/m^3) there is an **increase** of 57.51 (lbf) on the Janka wood hardness scale (Beta = 57.51, 95% CI [52.88, 62.14], t&lt;sub&gt;34&lt;/sub&gt; = 25.24, p &lt; .001). Model residuals were checked against the assumptions of a standard linear model.
+ 
+---
+
+class: center, middle, inverse
+
+## Assumptions of the Linear Model
+
+---
+class: center, middle, inverse
+
+## Assumptions of the Linear Model
+
+ *Errors* should be normally distributed
+
+ Homoscedasticity of the errors
+
+ Independent observations
+
+--
+
+ A Linear relationship
+
+---
+
+
+```r
+performance::check_model(janka_ls1, check = "normality") 
+```
+
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-21-1.png" width="70%" /&gt;
+
+---
+
+
+```r
+performance::check_model(janka_ls1, check = "outliers") 
+```
+
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-22-1.png" width="70%" /&gt;
+---
+
+
+```r
+performance::check_model(janka_ls1, check = "homogeneity") 
+```
+
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-23-1.png" width="70%" /&gt;
+
+---
+
+
+```r
+performance::check_model(janka_ls1, check = "outliers") 
+```
+
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-24-1.png" width="70%" /&gt;
+
+---
+
+```r
+performance::check_model(janka_ls1, check = "linearity") 
+```
+
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-25-1.png" width="70%" /&gt;
+
+---
+
+## Linearity
 
 &lt;img src="images/banana.png" title="Here, R squared = 0.92. Does that mean this linear model is appropriate?" alt="Here, R squared = 0.92. Does that mean this linear model is appropriate?" width="70%" /&gt;
 
@@ -250,8 +503,14 @@ summary(lsmodel0)
 ---
 class: middle, center, inverse
 
-# Linear models for more than 2 groups:
-#ANOVA
+# Next time: ANOVA
+
+
+### Reading 
+
+ Chapters Correlation &amp; Regression: Discovering Statistics using R/SPSS - Andy Field
+
+ Chapter Linear Regression: The New Statistics - Andy Hector
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
