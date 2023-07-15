@@ -46,7 +46,7 @@ class: title-slide, left, top
 
 <span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
 
-<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/logo.png" alt="" width="500"></img></div>
 
 ---
 
@@ -462,7 +462,7 @@ D[label = '16 \n real effect \n found']
 .pull-left[
 
 [Smaldino & McElreath 2016](https://royalsocietypublishing.org/doi/full/10.1098/rsos.160384?wm=3049_a111)
-
+[Ioannidis 2005](https://doi.org/10.1371%2Fjournal.pmed.0020124)
 ]
 
 
