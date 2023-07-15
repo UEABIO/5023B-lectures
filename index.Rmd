@@ -14,8 +14,6 @@ All lecture materials will be available here.
     - [Slides: Central tendency and spread](slides/Descriptive_statistics_05.html)
     - [Slides: Association](slides/Association_05a.html)
 
-
-
 - 03: Measures of uncertainty
     - [Slides](slides/Confidence_intervals.html)
 
