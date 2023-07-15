@@ -382,36 +382,14 @@ summary(janka_ls1)
 
 ---
 
-.tiny[
-
-```{r, echo = F, eval = T}
-
-broom::tidy(janka_ls1)
-
-```
-
-
-```{r}
-report::report(janka_ls1)
-```
-
-]
-
----
 
 ## Interpretation - automate with extreme caution
 
 
-.tiny[
-
-```{r}
-report::report(janka_ls1)
-```
-
-]
-
  **I** fitted a linear model (estimated using OLS) to predict **timber hardness from wood density**. The model explains a statistically significant and substantial proportion of variance (F<sub>1,34</sub>) = 636.98, p < .001, adj. R<sup>2</sup> = 0.95). The model shows that for each unit increase in wood density (kg/m^3) there is an **increase** of 57.51 (lbf) on the Janka wood hardness scale (Beta = 57.51, 95% CI [52.88, 62.14], t<sub>34</sub> = 25.24, p < .001). Model residuals were checked against the assumptions of a standard linear model.
- 
+
+
+
 ---
 
 class: center, middle, inverse
@@ -479,11 +457,6 @@ knitr::include_graphics("images/cup.png")
 ---
 class: middle, center, inverse
 
-# Next time: ANOVA
+# Q & A
 
 
-### Reading 
-
- Chapters Correlation & Regression: Discovering Statistics using R/SPSS - Andy Field
-
- Chapter Linear Regression: The New Statistics - Andy Hector

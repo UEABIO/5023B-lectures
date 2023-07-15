@@ -249,6 +249,14 @@ check_model(int_poisson_model)
 
 ## Use deviance for hypothesis testing
 
+
+These follow the simpler $\chi^2$ distribution
+
+$$
+\chi^2= Full~model~deviance~–~ Reduced~model~deviance
+$$
+
+
 ```{r}
 
 drop1(int_poisson_model, 
@@ -261,6 +269,7 @@ drop1(int_poisson_model,
 ## Overdispersion
 
 When the residual deviance/residual df is >1 we have indications of Overdispersion.
+> Note dispersion parameter in summary of model
 
 * Variance is greater than expected from a Poisson distribution
 

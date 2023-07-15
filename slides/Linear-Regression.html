@@ -4,7 +4,7 @@
     <title>Regression</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2023-07-13" />
+    <meta name="date" content="2023-07-15" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -356,75 +356,46 @@ summary(janka_ls1)
 
 ---
 
-.tiny[
-
-
-```
-## # A tibble: 2 x 5
-##   term        estimate std.error statistic  p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)  -1160.     109.       -10.7 2.07e-12
-## 2 dens            57.5      2.28      25.2 1.33e-23
-```
-
-
-
-```r
-report::report(janka_ls1)
-```
-
-```
-## We fitted a linear model (estimated using OLS) to predict hardness with dens
-## (formula: hardness ~ dens). The model explains a statistically significant and
-## substantial proportion of variance (R2 = 0.95, F(1, 34) = 636.98, p &lt; .001,
-## adj. R2 = 0.95). The model's intercept, corresponding to dens = 0, is at
-## -1160.50 (95% CI [-1381.16, -939.84], t(34) = -10.69, p &lt; .001). Within this
-## model:
-## 
-##   - The effect of dens is statistically significant and positive (beta = 57.51,
-## 95% CI [52.88, 62.14], t(34) = 25.24, p &lt; .001; Std. beta = 0.97, 95% CI [0.90,
-## 1.05])
-## 
-## Standardized parameters were obtained by fitting the model on a standardized
-## version of the dataset. 95% Confidence Intervals (CIs) and p-values were
-## computed using a Wald t-distribution approximation.
-```
-
-]
-
----
 
 ## Interpretation - automate with extreme caution
 
 
-.tiny[
+.left-code[
 
 
 ```r
-report::report(janka_ls1)
+summary(janka_ls1)
 ```
 
 ```
-## We fitted a linear model (estimated using OLS) to predict hardness with dens
-## (formula: hardness ~ dens). The model explains a statistically significant and
-## substantial proportion of variance (R2 = 0.95, F(1, 34) = 636.98, p &lt; .001,
-## adj. R2 = 0.95). The model's intercept, corresponding to dens = 0, is at
-## -1160.50 (95% CI [-1381.16, -939.84], t(34) = -10.69, p &lt; .001). Within this
-## model:
 ## 
-##   - The effect of dens is statistically significant and positive (beta = 57.51,
-## 95% CI [52.88, 62.14], t(34) = 25.24, p &lt; .001; Std. beta = 0.97, 95% CI [0.90,
-## 1.05])
+## Call:
+## lm(formula = hardness ~ dens, data = janka)
 ## 
-## Standardized parameters were obtained by fitting the model on a standardized
-## version of the dataset. 95% Confidence Intervals (CIs) and p-values were
-## computed using a Wald t-distribution approximation.
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -338.40  -96.98  -15.71   92.71  625.06 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1160.500    108.580  -10.69 2.07e-12 ***
+## dens           57.507      2.279   25.24  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 183.1 on 34 degrees of freedom
+## Multiple R-squared:  0.9493,	Adjusted R-squared:  0.9478 
+## F-statistic:   637 on 1 and 34 DF,  p-value: &lt; 2.2e-16
 ```
 
 ]
 
+.right-plot[
+
  **I** fitted a linear model (estimated using OLS) to predict **timber hardness from wood density**. The model explains a statistically significant and substantial proportion of variance (F&lt;sub&gt;1,34&lt;/sub&gt;) = 636.98, p &lt; .001, adj. R&lt;sup&gt;2&lt;/sup&gt; = 0.95). The model shows that for each unit increase in wood density (kg/m^3) there is an **increase** of 57.51 (lbf) on the Janka wood hardness scale (Beta = 57.51, 95% CI [52.88, 62.14], t&lt;sub&gt;34&lt;/sub&gt; = 25.24, p &lt; .001). Model residuals were checked against the assumptions of a standard linear model.
- 
+
+]
+
 ---
 
 class: center, middle, inverse
@@ -453,6 +424,23 @@ class: center, middle, inverse
 performance::check_model(janka_ls1, check = "normality") 
 ```
 
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-19-1.png" width="70%" /&gt;
+
+---
+
+
+```r
+performance::check_model(janka_ls1, check = "outliers") 
+```
+
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-20-1.png" width="70%" /&gt;
+---
+
+
+```r
+performance::check_model(janka_ls1, check = "homogeneity") 
+```
+
 &lt;img src="linear-regression_files/figure-html/unnamed-chunk-21-1.png" width="70%" /&gt;
 
 ---
@@ -463,23 +451,6 @@ performance::check_model(janka_ls1, check = "outliers")
 ```
 
 &lt;img src="linear-regression_files/figure-html/unnamed-chunk-22-1.png" width="70%" /&gt;
----
-
-
-```r
-performance::check_model(janka_ls1, check = "homogeneity") 
-```
-
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-23-1.png" width="70%" /&gt;
-
----
-
-
-```r
-performance::check_model(janka_ls1, check = "outliers") 
-```
-
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-24-1.png" width="70%" /&gt;
 
 ---
 
@@ -487,7 +458,7 @@ performance::check_model(janka_ls1, check = "outliers")
 performance::check_model(janka_ls1, check = "linearity") 
 ```
 
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-25-1.png" width="70%" /&gt;
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-23-1.png" width="70%" /&gt;
 
 ---
 
@@ -503,14 +474,9 @@ performance::check_model(janka_ls1, check = "linearity")
 ---
 class: middle, center, inverse
 
-# Next time: ANOVA
+# Q &amp; A
 
 
-### Reading 
-
- Chapters Correlation &amp; Regression: Discovering Statistics using R/SPSS - Andy Field
-
- Chapter Linear Regression: The New Statistics - Andy Hector
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

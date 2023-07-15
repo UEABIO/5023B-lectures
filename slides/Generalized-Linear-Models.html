@@ -4,7 +4,7 @@
     <title>GLM</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2022-09-16" />
+    <meta name="date" content="2023-07-15" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -31,7 +31,7 @@ class: title-slide, left, top
 
 &lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
 
-&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/physalia.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
 
 ---
 
@@ -40,6 +40,9 @@ layout: true
 &lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
 
 ---
+
+## Generalized Linear Models
+
 class: center, middle
 
 .left-code[
@@ -283,11 +286,27 @@ model2 %&gt;%
 
 ---
 
+## Types of GLM
+
+| Family             | Canonical mean             | Variance Function (V)      |
+|--------------------|----------------------------|----------------------------|
+| Gaussian           | μ                          | V = σ²                      |
+| Binomial           | logit(μ)                   | μ(1 - μ)/n                  |
+| Poisson            | exp(μ)                     | μ                          |
+| Gamma              | μ⁻¹                        |  μ²ϕ                        |
+
+- Gaussian: This family assumes a continuous, normally distributed response variable
+- Binomial: The binomial family is appropriate for binary response variables representing two mutually exclusive outcomes, such as success/failure or yes/no
+- Poisson: The Poisson family is suited for count data that follows a Poisson distribution, such as the number of events occurring within a fixed interval
+- Gamma: The gamma family is commonly used for modeling continuous, positive response variables with a skewed distribution and right-skewed tail, such as time or duration data. It allows for modeling heteroscedasticity
+
+---
+
 ## Maximum Likelihood
 
 Maximum likelihood is a method that determined the values for the parameters of a model.
 
-The values are chosen such that they *maximise* the *likelihood* that the process described by the model produced the observed data. 
+The values are chosen such that they *maximise* the *likelihood* that the process described by the model produces the observed data. 
 
 
 $$
@@ -309,7 +328,7 @@ As an example let's assume we are fitting our data using a model describing a Ga
 $$
 \LARGE{L(data;\mu,\sigma)}
 $$
-A Gaussian distribution has two parameters. The mean `\(\mu\)` and the standard deviation `\(\sigma\)`. Different values of these two parameters will result in different regression lines/fits to the data. 
+A Gaussian distribution has **two** parameters. The mean `\(\mu\)` and the standard deviation `\(\sigma\)`. Different values of these two parameters will result in different regression lines/fits to the data. 
 
 They will also produce different *likelihood curves*. 
 
@@ -332,7 +351,6 @@ Maximum likelihoods can solve a wider range of probability distributions, but ar
 ]
 ---
 
-## GLM summary
 
 
 ```r
@@ -377,6 +395,39 @@ The GLM summary output, while mostly identical to the LM as the following differ
 
 ---
 
+
+```r
+fly_lm &lt;- lm(longevity ~ type + thorax, data = fruitfly) 
+
+summary(fly_lm)
+```
+
+```
+## 
+## Call:
+## lm(formula = longevity ~ type + thorax, data = fruitfly)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -27.330  -6.803  -2.531   7.143  29.415 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      -56.521     11.149  -5.069 1.45e-06 ***
+## typeInseminated    3.450      2.759   1.250    0.214    
+## typeVirgin       -13.349      2.756  -4.845 3.80e-06 ***
+## thorax           143.638     13.064  10.995  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 11.21 on 121 degrees of freedom
+## Multiple R-squared:  0.6024,	Adjusted R-squared:  0.5925 
+## F-statistic:  61.1 on 3 and 121 DF,  p-value: &lt; 2.2e-16
+```
+
+
+---
+
 ## Deviance
 
 A generalized linear model can be characterised in terms of two types of deviance:
@@ -391,61 +442,59 @@ A generalized linear model can be characterised in terms of two types of devianc
 
 In the previous example we had:
 
-**Null deviance**: 38253 with df = 124
+**Null deviance**: 38253 k = 3
 
 **Residual deviance**: 15211 with df = 121
 
+
+
 ---
 
-## Chi square distribution
+## F distribution
 
 .right-plot[
-&lt;img src="images/deviance_explained.png" title="The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter." alt="The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter." width="100%" /&gt;
+&lt;img src="images/deviance_explained.png" title="The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter." alt="The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter." width="80%" /&gt;
 
 ]
 
 .left-code[
 
-**Null deviance**: 38253 with df = 124
+**Null deviance**: 38253 with k = 3
 
 **Residual deviance**: 15211 with df = 121
 
 We can compare these values: 
 
-`\(\chi^2=Null~deviance–Residual~deviance\)`
+`\(\Delta Deviance=Null~deviance–Residual~deviance/\)`
 
-`\(\chi^2\)` = 38253-15211
+`\(\Delta Deviance\)` = 38253-15211 = 23042
 
-`\(\chi^2\)` = 23042
-
-With 3 predictors `\({\chi^2}_3=23042;~p&lt;0.001\)`
+(23042/3)/(15211/121) = 61.09 = F
 
 ]
 ---
 
 ## Model simplification
 
-Changes in deviance also follow the *Chi-square statistic* with *k* degrees of freedom.
-
-$$
-\chi^2= Proposed~model~deviance – Reduced~model~deviance
-$$
-
+Changes in deviance also follow the *F statistic* with *k* numerator and *n-k* denominator degrees of d.
 
 .pull-left[
 
 ```r
-drop1(fly_glm, test = "F")%&gt;% 
-  as_tibble()
+drop1(fly_glm, test = "F")
 ```
 
 ```
-## # A tibble: 3 x 5
-##      Df Deviance   AIC `F value`  `Pr(&gt;F)`
-##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1    NA   15211.  965.      NA   NA       
-## 2     2   22756. 1011.      30.0  2.60e-11
-## 3     1   30407. 1050.     121.   6.41e-20
+## Single term deletions
+## 
+## Model:
+## longevity ~ type + thorax
+##        Df Deviance     AIC F value    Pr(&gt;F)    
+## &lt;none&gt;       15211  964.92                      
+## type    2    22756 1011.27  30.011 2.605e-11 ***
+## thorax  1    30408 1049.50 120.887 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 ]
 
@@ -453,21 +502,29 @@ drop1(fly_glm, test = "F")%&gt;%
 
 
 ```r
-drop1(fly_glm, test = "Chi") %&gt;% 
-  as_tibble()
+drop1(fly_glm, test = "Chi")
 ```
 
 ```
-## # A tibble: 3 x 5
-##      Df Deviance   AIC `scaled dev.` `Pr(&gt;Chi)`
-##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;
-## 1    NA   15211.  965.          NA    NA       
-## 2     2   22756. 1011.          50.4   1.16e-11
-## 3     1   30407. 1050.          86.6   1.34e-20
+## Single term deletions
+## 
+## Model:
+## longevity ~ type + thorax
+##        Df Deviance     AIC scaled dev.  Pr(&gt;Chi)    
+## &lt;none&gt;       15211  964.92                          
+## type    2    22756 1011.27      50.353 1.164e-11 ***
+## thorax  1    30408 1049.50      86.585 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 ]
 
 The models are clearly the same, *but* F-tests for models where we estimate variance independently of the mean are a better choice for hypothesis testing. We will use chi-square distributions when using alternative error distributions e.g. Poisson &amp; Binomial.
+
+---
+
+&lt;img src="Generalized-Linear-Models_files/figure-html/unnamed-chunk-21-1.png" width="80%" /&gt;
+
 
 ---
 
@@ -489,13 +546,15 @@ where:
 
 `\(L\)` is maximum likelihood
 
+&gt;If a model is more than 2 AIC units lower than another it can be considered a better model
+
 ---
 
 ## Other outputs
 
 ###Dispersion
 
-Indicates whether the distribution is wide or narrow
+Dispersion (variability/scatter/spread) simply indicates whether a distribution is wide or narrow. The GLM function can use a dispersion parameter to model the variability.
 
 ###Fisher score
 

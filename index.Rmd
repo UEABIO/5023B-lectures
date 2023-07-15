@@ -35,15 +35,15 @@ All lecture materials will be available here.
     - [Slides](slides/ANOVA.html)
     
  
-- 12: Multivariate models
+- 08: Multivariate models
     - [Slides: Complex models](slides/Complex_models.html)
     - [Slides: Checking and Refining models](slides/Refining_models.html)
     
 
-- 13: Generalised linear models
+- 09: Generalised linear models
   - [Slides: Introduction to Generalised Linear Models](slides/Generalized-Linear-Models.html)
   - [Slides: Binomial and Poisson distributions](slides/Generalized-Linear-Models-Part-2.html)
 
-- 14: Mixed effects models
+- 10: Mixed effects models
 
     

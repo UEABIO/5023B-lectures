@@ -54,6 +54,9 @@ layout: true
 <div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
 
 ---
+
+## Generalized Linear Models
+
 class: center, middle
 
 .left-code[
@@ -279,11 +282,27 @@ model2 %>%
 
 ---
 
+## Types of GLM
+
+| Family             | Canonical mean             | Variance Function (V)      |
+|--------------------|----------------------------|----------------------------|
+| Gaussian           | μ                          | V = σ²                      |
+| Binomial           | logit(μ)                   | μ(1 - μ)/n                  |
+| Poisson            | exp(μ)                     | μ                          |
+| Gamma              | μ⁻¹                        |  μ²ϕ                        |
+
+- Gaussian: This family assumes a continuous, normally distributed response variable
+- Binomial: The binomial family is appropriate for binary response variables representing two mutually exclusive outcomes, such as success/failure or yes/no
+- Poisson: The Poisson family is suited for count data that follows a Poisson distribution, such as the number of events occurring within a fixed interval
+- Gamma: The gamma family is commonly used for modeling continuous, positive response variables with a skewed distribution and right-skewed tail, such as time or duration data. It allows for modeling heteroscedasticity
+
+---
+
 ## Maximum Likelihood
 
 Maximum likelihood is a method that determined the values for the parameters of a model.
 
-The values are chosen such that they *maximise* the *likelihood* that the process described by the model produced the observed data. 
+The values are chosen such that they *maximise* the *likelihood* that the process described by the model produces the observed data. 
 
 
 $$
@@ -305,7 +324,7 @@ As an example let's assume we are fitting our data using a model describing a Ga
 $$
 \LARGE{L(data;\mu,\sigma)}
 $$
-A Gaussian distribution has two parameters. The mean $\mu$ and the standard deviation $\sigma$. Different values of these two parameters will result in different regression lines/fits to the data. 
+A Gaussian distribution has **two** parameters. The mean $\mu$ and the standard deviation $\sigma$. Different values of these two parameters will result in different regression lines/fits to the data. 
 
 They will also produce different *likelihood curves*. 
 
@@ -332,9 +351,8 @@ Maximum likelihoods can solve a wider range of probability distributions, but ar
 ]
 ---
 
-## GLM summary
 
-```{r}
+```{r, out.width = "80%"}
 fly_glm <- glm(longevity ~ type + thorax, data = fruitfly, family= gaussian(link = "identity")) 
 
 summary(fly_glm)
@@ -346,6 +364,17 @@ The GLM summary output, while mostly identical to the LM as the following differ
 * Deviance
 
 * Dispersion, AIC & Fisher Scoring 
+
+---
+
+```{r}
+
+fly_lm <- lm(longevity ~ type + thorax, data = fruitfly) 
+
+summary(fly_lm)
+
+```
+
 
 ---
 
@@ -363,16 +392,18 @@ $\Large{Dev_{residual}=2(LnL_{saturated}-LnL_{proposed})}$
 
 In the previous example we had:
 
-**Null deviance**: 38253 with df = 124
+**Null deviance**: 38253 k = 3
 
 **Residual deviance**: 15211 with df = 121
 
+
+
 ---
 
-## Chi square distribution
+## F distribution
 
 .right-plot[
-```{r, echo = FALSE, out.width="100%", fig.alt = "The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter."}
+```{r, echo = FALSE, out.width="80%", fig.alt = "The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter."}
 
 knitr::include_graphics("images/deviance_explained.png")
 
@@ -382,36 +413,28 @@ knitr::include_graphics("images/deviance_explained.png")
 
 .left-code[
 
-**Null deviance**: 38253 with df = 124
+**Null deviance**: 38253 with k = 3
 
 **Residual deviance**: 15211 with df = 121
 
 We can compare these values: 
 
-$\chi^2=Null~deviance–Residual~deviance$
+$\Delta Deviance=Null~deviance–Residual~deviance/$
 
-$\chi^2$ = 38253-15211
+$\Delta Deviance$ = 38253-15211 = 23042
 
-$\chi^2$ = 23042
-
-With 3 predictors ${\chi^2}_3=23042;~p<0.001$
+(23042/3)/(15211/121) = 61.09 = F
 
 ]
 ---
 
 ## Model simplification
 
-Changes in deviance also follow the *Chi-square statistic* with *k* degrees of freedom.
-
-$$
-\chi^2= Proposed~model~deviance – Reduced~model~deviance
-$$
-
+Changes in deviance also follow the *F statistic* with *k* numerator and *n-k* denominator degrees of d.
 
 .pull-left[
 ```{r}
-drop1(fly_glm, test = "F")%>% 
-  as_tibble()
+drop1(fly_glm, test = "F")
 
 ```
 ]
@@ -419,13 +442,51 @@ drop1(fly_glm, test = "F")%>%
 .pull-right[
 
 ```{r}
-drop1(fly_glm, test = "Chi") %>% 
-  as_tibble()
+drop1(fly_glm, test = "Chi")
 
 ```
 ]
 
 The models are clearly the same, *but* F-tests for models where we estimate variance independently of the mean are a better choice for hypothesis testing. We will use chi-square distributions when using alternative error distributions e.g. Poisson & Binomial.
+
+---
+
+```{r, echo = FALSE, out.width = "80%"}
+# Set the seed for reproducibility
+set.seed(123)
+
+# Parameters
+k <- 1  # Number of predictors
+n <- 10000  # Number of observations
+
+# Generate chi-squared distribution
+chi_squared <- rchisq(n, df = k)
+
+# Generate F distributions with different residual degrees of freedom
+residual_df <- c(5, 10, 50)  # Different residual df
+f_distributions <- vector("list", length(residual_df))
+
+for (i in 1:length(residual_df)) {
+    f_distributions[[i]] <- rf(n, df1 = k, df2 = residual_df[i])
+}
+
+# Combine the distributions into one data frame
+data <- data.frame(Values = c(chi_squared, unlist(f_distributions)),
+                   Distribution = rep(c("Chi-squared", "F"), times = c(n, n * length(residual_df))),
+                   Residual_df = rep(c("k = 1", paste("residual df =", residual_df)), each = n))
+data$Residual_df <- factor(data$Residual_df, levels = c("k = 1", "residual df = 50", "residual df = 10", "residual df = 5"))
+# Plot the distributions
+library(ggplot2)
+
+ggplot(data, aes(x = Values, fill = Residual_df)) +
+    geom_density(binwidth = 0.5, alpha = 0.2, position = "identity") +
+    facet_wrap(~ Distribution + Residual_df, nrow = 2) +
+    labs(x = "Value", y = "Density", fill = "Residual df") +
+    ggtitle("Comparison of Chi-squared and F Distributions") +
+    theme_minimal()+coord_cartesian(xlim = c(0,10))
+
+```
+
 
 ---
 
@@ -447,13 +508,15 @@ $k$ is the number of parameters
 
 $L$ is maximum likelihood
 
+>If a model is more than 2 AIC units lower than another it can be considered a better model
+
 ---
 
 ## Other outputs
 
 ###Dispersion
 
-Indicates whether the distribution is wide or narrow
+Dispersion (variability/scatter/spread) simply indicates whether a distribution is wide or narrow. The GLM function can use a dispersion parameter to model the variability.
 
 ###Fisher score
 
