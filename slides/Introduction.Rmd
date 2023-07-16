@@ -1,6 +1,6 @@
 ---
 title: "Introductions"
-subtitle: "Course outlines"
+subtitle: "Course outline"
 author: "Philip Leftwich"
 date: "`r Sys.Date()`"
 output:
@@ -218,16 +218,8 @@ class: center, middle
 
 ## Workflow
 
-We will do everything in **well-annotated, organized scripts** that contain streamlined and easy-to-follow records of our entire analyses from **raw data** through **final reports**, with **unbreakable** file paths and with a **complete history** of changes made.   
+We will do everything in **well-annotated, organized scripts** that contain streamlined and easy-to-follow records of our entire analyses from **raw data** through to **reporting**, with **unbreakable** file paths.
 
----
-class: center, middle
-
-## Workflow
-
-```{r, echo = FALSE, out.width="65%"}
-knitr::include_graphics("images/annotated.png")
-```
 
 ---
 ## Data wrangling
@@ -238,15 +230,11 @@ knitr::include_graphics("images/annotated.png")
 
 * Good coding habits
 
-* Code annotation & organization
-
 * Data visualization
 
 * Troubleshooting 
 
 * Relative file paths
-
-* Literate programming
 
 ---
 class: center, middle, inverse
@@ -367,6 +355,19 @@ class: center, middle, inverse
 
 * Data wrangling tools
 
+---
+
+## We will learn
+
+* Hypothesis building and exploratory analysis
+
+* Linear model building
+
+* Building complex models and interaction terms
+
+* Generalized Linear models for non-linear data
+
+* Random effects models - for structured and hierarchical data
 
 ---
 class: center, middle, inverse

@@ -1,6 +1,6 @@
 ---
-title: "Associations"
-subtitle: ""
+title: "Descriptive Statistics"
+subtitle: "Part two: Associations"
 author: "Philip Leftwich"
 date: "`r Sys.Date()`"
 output:
