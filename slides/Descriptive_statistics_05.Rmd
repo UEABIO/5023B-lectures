@@ -246,7 +246,7 @@ sample1 <- rnorm(sample_size)
 sample1 <- exp(sample * skewness)
 
 # Create a data frame with the sample data
-df1 <- data.frame(x = sample)
+df1 <- data.frame(x = sample1)
 
 # Calculate mean and median
 mean_val <- mean(sample1)
@@ -275,6 +275,7 @@ mean_val2 <- mean(sample)
 
 ggplot(df1, aes(x = x)) +
     geom_histogram(binwidth = 0.2, fill = "lightpink", color = "black", alpha = 0.6) +
+    geom_histogram(data = df, binwidth = 0.2, fill = "lightpink", color = "black") +
     geom_vline(xintercept = mean_val, linetype = "dashed", color = "red", size = 1) +
     labs(x = "Value", y = "Frequency") +
     annotate("text", x = mean_val, y = 80, label = "Mean 2", color = "red", vjust = -1, hjust = -0.2) +  
