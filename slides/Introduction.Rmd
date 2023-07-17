@@ -239,7 +239,7 @@ We will do everything in **well-annotated, organized scripts** that contain stre
 ---
 class: center, middle, inverse
 
-## Once we get, wrangle, explore, and visualize data reproducibly, we star building stats skills...
+## Once we get, wrangle, explore, and visualize data reproducibly, we start building stats skills...
 
 ---
 
