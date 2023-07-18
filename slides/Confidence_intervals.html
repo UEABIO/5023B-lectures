@@ -90,8 +90,8 @@ If we took hundreds of samples and independently calculated the mean of each sam
 
 .right-plot[
 
-<div id="htmlwidget-fda2895a88e945f1334e" style="width:120%;height:403.2px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-fda2895a88e945f1334e">{"x":{"diagram":"digraph {\n  \ngraph[layout = dot]\n\na[label = \"Population mean = 3\"]\nb[label = \"Sample mean = 3\"]\nc[label = \"Sample mean = 4\"]\nd[label = \"Sample mean = 5\"]\ne[label = \"Sample mean = 1\"]\nf[label = \"Sample mean = 2\"]\ng[label = \"Sample mean = 3\"]\nh[label = \"Sample mean = 3\"]\ni[label = \"Sample mean = 4\"]\nj[label = \"Sample mean = 2\"]\n\na -> b\na -> c\na -> d\na -> e\na -> f\na -> g\na -> h\na -> i\na -> j\n\n\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6dc32a5dc9bf1f607ee2" style="width:120%;height:403.2px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6dc32a5dc9bf1f607ee2">{"x":{"diagram":"digraph {\n  \ngraph[layout = dot]\n\na[label = \"Population mean = 3\"]\nb[label = \"Sample mean = 3\"]\nc[label = \"Sample mean = 4\"]\nd[label = \"Sample mean = 5\"]\ne[label = \"Sample mean = 1\"]\nf[label = \"Sample mean = 2\"]\ng[label = \"Sample mean = 3\"]\nh[label = \"Sample mean = 3\"]\ni[label = \"Sample mean = 4\"]\nj[label = \"Sample mean = 2\"]\n\na -> b\na -> c\na -> d\na -> e\na -> f\na -> g\na -> h\na -> i\na -> j\n\n\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ]
 
@@ -108,16 +108,18 @@ If we took hundreds of samples and independently calculated the mean of each sam
 
 In reality we cannot collect hundreds of sample means, so we rely on this approximation of the standard error. 
 
-Luckily for us it has been demonstrated that when the number of observations in a sample gets large (usually defined as *at least 30*), the sampling distribution has an approximate normal distribution.
+Luckily for us it has been demonstrated that when the number of observations in a sample gets large (**usually** defined as *at least 30*), the sampling distribution has an approximate normal distribution.
 
 --
 
 This is known as **central limit theorem**
 
+&gt; the sampling distribution of the mean will always be normally distributed, as long as the sample size is large enough
+
 `$$\sigma_{\bar{x}} = \frac{s}{\sqrt{n}}$$`
 Interestingly (and handily for us) central limit theorem applies - *even if the population distribution doesn't have a normal distribution*
 
-- When the sample size is small we have to rely on a different (*t*) distribution, more on this later.
+&gt; When the sample size is small we have to rely on a different (*t*) distribution, more on this later.
 
 ---
 
@@ -251,12 +253,6 @@ ggplot(data = flipper, aes(x = mean, y = sex, group = sex))+
 ]
 
 
----
-
-&lt;img src="images/confidence-interval-area.png" title=" Confidence Intervals" alt=" Confidence Intervals" width="90%" /&gt;
-
----
-
 ## Calculating a Confidence interval
 
 This requires us to **know** the population variance (standard deviation)
@@ -349,8 +345,8 @@ boot_1000
 ## 
 ## 
 ## Bootstrap Statistics :
-##     original      bias    std. error
-## t1*  204.506 -0.03177381    1.127815
+##     original    bias    std. error
+## t1*  204.506 0.0102381    1.148886
 ```
 
 ]
@@ -371,7 +367,7 @@ ggplot()+
 
 .right-plot[
 
-&lt;img src="Confidence_intervals_files/figure-html/unnamed-chunk-13-1.png" width="120%" /&gt;
+&lt;img src="Confidence_intervals_files/figure-html/unnamed-chunk-12-1.png" width="120%" /&gt;
 
 ]
 
@@ -395,7 +391,7 @@ boot.ci(boot_1000,
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   (202.3, 206.6 )  
+## 95%   (202.2, 206.7 )  
 ## Calculations and Intervals on Original Scale
 ```
 

@@ -159,16 +159,18 @@ ggplot(df1, aes(x = x)) +
 
 In reality we cannot collect hundreds of sample means, so we rely on this approximation of the standard error. 
 
-Luckily for us it has been demonstrated that when the number of observations in a sample gets large (usually defined as *at least 30*), the sampling distribution has an approximate normal distribution.
+Luckily for us it has been demonstrated that when the number of observations in a sample gets large (**usually** defined as *at least 30*), the sampling distribution has an approximate normal distribution.
 
 --
 
 This is known as **central limit theorem**
 
+> the sampling distribution of the mean will always be normally distributed, as long as the sample size is large enough
+
 $$\sigma_{\bar{x}} = \frac{s}{\sqrt{n}}$$
 Interestingly (and handily for us) central limit theorem applies - *even if the population distribution doesn't have a normal distribution*
 
-- When the sample size is small we have to rely on a different (*t*) distribution, more on this later.
+> When the sample size is small we have to rely on a different (*t*) distribution, more on this later.
 
 ---
 
@@ -322,15 +324,6 @@ ggplot(data = flipper, aes(x = mean, y = sex, group = sex))+
 
 ]
 
-
----
-
-```{r, echo = FALSE, out.width="90%", fig.alt = " Confidence Intervals"}
-
-knitr::include_graphics("images/confidence-interval-area.png")
-```
-
----
 
 ## Calculating a Confidence interval
 
