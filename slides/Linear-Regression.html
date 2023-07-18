@@ -4,7 +4,7 @@
     <title>Regression</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2023-07-15" />
+    <meta name="date" content="2023-07-18" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -360,41 +360,9 @@ summary(janka_ls1)
 ## Interpretation - automate with extreme caution
 
 
-.left-code[
-
-
-```r
-summary(janka_ls1)
-```
-
-```
-## 
-## Call:
-## lm(formula = hardness ~ dens, data = janka)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -338.40  -96.98  -15.71   92.71  625.06 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -1160.500    108.580  -10.69 2.07e-12 ***
-## dens           57.507      2.279   25.24  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 183.1 on 34 degrees of freedom
-## Multiple R-squared:  0.9493,	Adjusted R-squared:  0.9478 
-## F-statistic:   637 on 1 and 34 DF,  p-value: &lt; 2.2e-16
-```
-
-]
-
-.right-plot[
-
  **I** fitted a linear model (estimated using OLS) to predict **timber hardness from wood density**. The model explains a statistically significant and substantial proportion of variance (F&lt;sub&gt;1,34&lt;/sub&gt;) = 636.98, p &lt; .001, adj. R&lt;sup&gt;2&lt;/sup&gt; = 0.95). The model shows that for each unit increase in wood density (kg/m^3) there is an **increase** of 57.51 (lbf) on the Janka wood hardness scale (Beta = 57.51, 95% CI [52.88, 62.14], t&lt;sub&gt;34&lt;/sub&gt; = 25.24, p &lt; .001). Model residuals were checked against the assumptions of a standard linear model.
 
-]
+
 
 ---
 
@@ -424,7 +392,7 @@ class: center, middle, inverse
 performance::check_model(janka_ls1, check = "normality") 
 ```
 
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-19-1.png" width="70%" /&gt;
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-18-1.png" width="70%" /&gt;
 
 ---
 
@@ -433,7 +401,7 @@ performance::check_model(janka_ls1, check = "normality")
 performance::check_model(janka_ls1, check = "outliers") 
 ```
 
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-20-1.png" width="70%" /&gt;
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-19-1.png" width="70%" /&gt;
 ---
 
 
@@ -441,7 +409,7 @@ performance::check_model(janka_ls1, check = "outliers")
 performance::check_model(janka_ls1, check = "homogeneity") 
 ```
 
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-21-1.png" width="70%" /&gt;
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-20-1.png" width="70%" /&gt;
 
 ---
 
@@ -450,7 +418,7 @@ performance::check_model(janka_ls1, check = "homogeneity")
 performance::check_model(janka_ls1, check = "outliers") 
 ```
 
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-22-1.png" width="70%" /&gt;
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-21-1.png" width="70%" /&gt;
 
 ---
 
@@ -458,7 +426,7 @@ performance::check_model(janka_ls1, check = "outliers")
 performance::check_model(janka_ls1, check = "linearity") 
 ```
 
-&lt;img src="linear-regression_files/figure-html/unnamed-chunk-23-1.png" width="70%" /&gt;
+&lt;img src="linear-regression_files/figure-html/unnamed-chunk-22-1.png" width="70%" /&gt;
 
 ---
 
