@@ -26,7 +26,7 @@ All lecture materials will be available here.
 
     
 - 06: Regression
-    - [Slides](slides/linear-regression.html)
+    - [Slides](slides/Linear-Regression.html)
 
     
 - 07: ANOVA
