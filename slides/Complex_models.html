@@ -4,7 +4,7 @@
     <title>Complex Linear Models</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2023-07-13" />
+    <meta name="date" content="2023-07-19" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -336,20 +336,43 @@ lsmodel1 %&gt;%
 ## 7 bill_depth_mm:speciesGentoo      0.773    0.265         2.92 3.72e- 3
 ```
 
+---
+
+## F-test between nested models
+
+`$$F = \frac{{(SSE_1 - SSE_2) / (df_1 - df_2)}}{{SSE_2 / df_2}}$$`
+Where `\(SSE_1\)` is the simpler/nested model; `\(SSE_2\)` is the full/original model
+
+`\(df_1\)`is the degrees of freedom for the simpler model (number of observations - number of model parameters for the simpler model).
+
+`\(df_2\)`is the degrees of freedom for the more complex model (number of observations - number of model parameters for the more complex model).
+
+---
+
+## F-test between nested models
+
+`$$F = \frac{{(SSE_1 - SSE_2) / (df_1 - df_2)}}{{SSE_2 / df_2}}$$`
+
+
 ```r
-drop1(lsmodel1,
-      test = "F")
+lsmodel2 &lt;- lm(bill_length_mm ~ 
+              bill_depth_mm +
+              body_mass_g + 
+              species,
+            data = penguins)
+
+
+anova(lsmodel2, lsmodel1)
 ```
 
 ```
-## Single term deletions
+## Analysis of Variance Table
 ## 
-## Model:
-## bill_length_mm ~ bill_depth_mm + body_mass_g + species + species:bill_depth_mm
-##                       Df Sum of Sq    RSS    AIC F value    Pr(&gt;F)    
-## &lt;none&gt;                             1729.6 568.32                      
-## body_mass_g            1   278.504 2008.1 617.38 53.9437 1.583e-12 ***
-## bill_depth_mm:species  2    92.677 1822.2 582.17  8.9754 0.0001595 ***
+## Model 1: bill_length_mm ~ bill_depth_mm + body_mass_g + species
+## Model 2: bill_length_mm ~ bill_depth_mm + body_mass_g + species + species:bill_depth_mm
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1    337 1822.2                                  
+## 2    335 1729.6  2    92.677 8.9754 0.0001595 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```

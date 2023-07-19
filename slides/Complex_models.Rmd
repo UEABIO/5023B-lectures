@@ -302,9 +302,34 @@ knitr::include_graphics("images/interaction.png")
 ```{r}
 lsmodel1 %>% 
   broom::tidy()
+```
 
-drop1(lsmodel1,
-      test = "F")
+---
+
+## F-test between nested models
+
+$$F = \frac{{(SSE_1 - SSE_2) / (df_1 - df_2)}}{{SSE_2 / df_2}}$$
+Where $SSE_1$ is the simpler/nested model; $SSE_2$ is the full/original model
+
+$df_1$is the degrees of freedom for the simpler model (number of observations - number of model parameters for the simpler model).
+
+$df_2$is the degrees of freedom for the more complex model (number of observations - number of model parameters for the more complex model).
+
+---
+
+## F-test between nested models
+
+$$F = \frac{{(SSE_1 - SSE_2) / (df_1 - df_2)}}{{SSE_2 / df_2}}$$
+
+```{r}
+lsmodel2 <- lm(bill_length_mm ~ 
+              bill_depth_mm +
+              body_mass_g + 
+              species,
+            data = penguins)
+
+
+anova(lsmodel2, lsmodel1)
 
 ```
 
