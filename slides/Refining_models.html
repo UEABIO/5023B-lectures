@@ -4,7 +4,7 @@
     <title>Refining models</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2023-07-13" />
+    <meta name="date" content="2023-07-19" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -112,7 +112,7 @@ We can see that when our model predictions &gt;50 there is larger error than &lt
 
 ## Collinearity and High Leverage
 
-The next two plots analyze for collinearity and high leverage points. 
+The next two plots analyze for collinearity and high leverage points. Through Variance Inflation Factors (VIF). 
 
 .left-code[
 
@@ -228,7 +228,7 @@ MASS::boxcox(lsmodel1)
 ## Multicollinearity
 
 Correlation between predictor variables in a linear model
-
+High VIF
 --
 
 One pair = collinearity, 
@@ -380,7 +380,7 @@ When data are balanced these will all be **the same**. For unbalanced designs th
 
 ##drop1()
 
-The `drop1()` function compares all possible models that can be constructed by dropping a single model term. As such it produces the most robust sum of squares for F-test with unbalanced model design
+The `drop1()` function compares all possible models that can be constructed by dropping a single model term. As such it produces the most robust sum of squares for F-test with unbalanced model design.
 
 
 ```r
@@ -402,6 +402,9 @@ drop1(lsmodel1, test = "F")
 
 Note it drops all terms that *can* be dropped e.g. species cannot be dropped here, because it is in the interaction term.
 
+Equivalent to
+
+`anova(reduced model, full model)`
 
 ---
 
@@ -442,12 +445,12 @@ If an interaction is dropped from a full model, then `drop1()` could be re-run. 
 gtsummary::tbl_regression(lsmodel1)
 ```
 
-<div id="gcijhfgodz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="uytgifcuvj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#gcijhfgodz .gt_table {
+#uytgifcuvj .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -472,7 +475,7 @@ gtsummary::tbl_regression(lsmodel1)
   border-left-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_heading {
+#uytgifcuvj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -484,7 +487,7 @@ gtsummary::tbl_regression(lsmodel1)
   border-right-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_title {
+#uytgifcuvj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -494,7 +497,7 @@ gtsummary::tbl_regression(lsmodel1)
   border-bottom-width: 0;
 }
 
-#gcijhfgodz .gt_subtitle {
+#uytgifcuvj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -504,13 +507,13 @@ gtsummary::tbl_regression(lsmodel1)
   border-top-width: 0;
 }
 
-#gcijhfgodz .gt_bottom_border {
+#uytgifcuvj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_col_headings {
+#uytgifcuvj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -525,7 +528,7 @@ gtsummary::tbl_regression(lsmodel1)
   border-right-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_col_heading {
+#uytgifcuvj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -545,7 +548,7 @@ gtsummary::tbl_regression(lsmodel1)
   overflow-x: hidden;
 }
 
-#gcijhfgodz .gt_column_spanner_outer {
+#uytgifcuvj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -557,15 +560,15 @@ gtsummary::tbl_regression(lsmodel1)
   padding-right: 4px;
 }
 
-#gcijhfgodz .gt_column_spanner_outer:first-child {
+#uytgifcuvj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gcijhfgodz .gt_column_spanner_outer:last-child {
+#uytgifcuvj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gcijhfgodz .gt_column_spanner {
+#uytgifcuvj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -577,7 +580,7 @@ gtsummary::tbl_regression(lsmodel1)
   width: 100%;
 }
 
-#gcijhfgodz .gt_group_heading {
+#uytgifcuvj .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -599,7 +602,7 @@ gtsummary::tbl_regression(lsmodel1)
   vertical-align: middle;
 }
 
-#gcijhfgodz .gt_empty_group_heading {
+#uytgifcuvj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -614,15 +617,15 @@ gtsummary::tbl_regression(lsmodel1)
   vertical-align: middle;
 }
 
-#gcijhfgodz .gt_from_md > :first-child {
+#uytgifcuvj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gcijhfgodz .gt_from_md > :last-child {
+#uytgifcuvj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gcijhfgodz .gt_row {
+#uytgifcuvj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -641,7 +644,7 @@ gtsummary::tbl_regression(lsmodel1)
   overflow-x: hidden;
 }
 
-#gcijhfgodz .gt_stub {
+#uytgifcuvj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -653,7 +656,7 @@ gtsummary::tbl_regression(lsmodel1)
   padding-left: 12px;
 }
 
-#gcijhfgodz .gt_summary_row {
+#uytgifcuvj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -663,7 +666,7 @@ gtsummary::tbl_regression(lsmodel1)
   padding-right: 5px;
 }
 
-#gcijhfgodz .gt_first_summary_row {
+#uytgifcuvj .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -673,7 +676,7 @@ gtsummary::tbl_regression(lsmodel1)
   border-top-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_grand_summary_row {
+#uytgifcuvj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -683,7 +686,7 @@ gtsummary::tbl_regression(lsmodel1)
   padding-right: 5px;
 }
 
-#gcijhfgodz .gt_first_grand_summary_row {
+#uytgifcuvj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -693,11 +696,11 @@ gtsummary::tbl_regression(lsmodel1)
   border-top-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_striped {
+#uytgifcuvj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gcijhfgodz .gt_table_body {
+#uytgifcuvj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -706,7 +709,7 @@ gtsummary::tbl_regression(lsmodel1)
   border-bottom-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_footnotes {
+#uytgifcuvj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -720,13 +723,13 @@ gtsummary::tbl_regression(lsmodel1)
   border-right-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_footnote {
+#uytgifcuvj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#gcijhfgodz .gt_sourcenotes {
+#uytgifcuvj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -740,41 +743,41 @@ gtsummary::tbl_regression(lsmodel1)
   border-right-color: #D3D3D3;
 }
 
-#gcijhfgodz .gt_sourcenote {
+#uytgifcuvj .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#gcijhfgodz .gt_left {
+#uytgifcuvj .gt_left {
   text-align: left;
 }
 
-#gcijhfgodz .gt_center {
+#uytgifcuvj .gt_center {
   text-align: center;
 }
 
-#gcijhfgodz .gt_right {
+#uytgifcuvj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gcijhfgodz .gt_font_normal {
+#uytgifcuvj .gt_font_normal {
   font-weight: normal;
 }
 
-#gcijhfgodz .gt_font_bold {
+#uytgifcuvj .gt_font_bold {
   font-weight: bold;
 }
 
-#gcijhfgodz .gt_font_italic {
+#uytgifcuvj .gt_font_italic {
   font-style: italic;
 }
 
-#gcijhfgodz .gt_super {
+#uytgifcuvj .gt_super {
   font-size: 65%;
 }
 
-#gcijhfgodz .gt_footnote_marks {
+#uytgifcuvj .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;

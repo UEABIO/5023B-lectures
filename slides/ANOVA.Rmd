@@ -297,7 +297,7 @@ class: center, middle, inverse
 ## Example
 
 .left-code[
-```{r}
+```{r, echo = FALSE}
 bulbs <- read_csv(here::here("data", "bulbs.csv"))
 bulbs %>% 
   head() %>% 
@@ -309,16 +309,22 @@ bulbs %>%
 .right-plot[
 .tiny[
 
-```{r}
+```{r, echo = FALSE}
 bulb_lsmodel0 <- lm(lifetime_hours ~ bulb_type, data = bulbs)
 
 summary(bulb_lsmodel0)
 
-anova(bulb_lsmodel0)
-
 ```
 
 ]]
+
+---
+
+```{r}
+
+anova(bulb_lsmodel0)
+
+```
 
 ---
 
@@ -393,11 +399,7 @@ class: middle, center, inverse
 # Next time: Multivariate models
 
 
-### Reading 
-
- Chapters ANOVA: Discovering Statistics using R/SPSS - Andy Field
-
- Chapter ANOVA: The New Statistics - Andy Hector
+### Q & A
 
 
 

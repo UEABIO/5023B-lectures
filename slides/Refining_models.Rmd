@@ -141,7 +141,7 @@ check_model(lsmodel1, check = c("linearity", "homogeneity"))
 
 ## Collinearity and High Leverage
 
-The next two plots analyze for collinearity and high leverage points. 
+The next two plots analyze for collinearity and high leverage points. Through Variance Inflation Factors (VIF). 
 
 .left-code[
 
@@ -265,7 +265,7 @@ MASS::boxcox(lsmodel1)
 ## Multicollinearity
 
 Correlation between predictor variables in a linear model
-
+High VIF
 --
 
 One pair = collinearity, 
@@ -417,7 +417,7 @@ When data are balanced these will all be **the same**. For unbalanced designs th
 
 ##drop1()
 
-The `drop1()` function compares all possible models that can be constructed by dropping a single model term. As such it produces the most robust sum of squares for F-test with unbalanced model design
+The `drop1()` function compares all possible models that can be constructed by dropping a single model term. As such it produces the most robust sum of squares for F-test with unbalanced model design.
 
 ```{r}
 drop1(lsmodel1, test = "F")
@@ -426,6 +426,9 @@ drop1(lsmodel1, test = "F")
 
 Note it drops all terms that *can* be dropped e.g. species cannot be dropped here, because it is in the interaction term.
 
+Equivalent to
+
+`anova(reduced model, full model)`
 
 ---
 

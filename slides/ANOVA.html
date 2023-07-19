@@ -4,7 +4,7 @@
     <title>ANOVA</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2023-07-13" />
+    <meta name="date" content="2023-07-19" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -233,20 +233,12 @@ class: center, middle, inverse
 ## Example
 
 .left-code[
-
-```r
-bulbs &lt;- read_csv(here::here("data", "bulbs.csv"))
-bulbs %&gt;% 
-  head() %&gt;% 
-  gt()
-```
-
-<div id="qfrxlszvqk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="mbvcjvqzeh" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#qfrxlszvqk .gt_table {
+#mbvcjvqzeh .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -271,7 +263,7 @@ bulbs %&gt;%
   border-left-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_heading {
+#mbvcjvqzeh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -283,7 +275,7 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_title {
+#mbvcjvqzeh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -293,7 +285,7 @@ bulbs %&gt;%
   border-bottom-width: 0;
 }
 
-#qfrxlszvqk .gt_subtitle {
+#mbvcjvqzeh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -303,13 +295,13 @@ bulbs %&gt;%
   border-top-width: 0;
 }
 
-#qfrxlszvqk .gt_bottom_border {
+#mbvcjvqzeh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_col_headings {
+#mbvcjvqzeh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -324,7 +316,7 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_col_heading {
+#mbvcjvqzeh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -344,7 +336,7 @@ bulbs %&gt;%
   overflow-x: hidden;
 }
 
-#qfrxlszvqk .gt_column_spanner_outer {
+#mbvcjvqzeh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -356,15 +348,15 @@ bulbs %&gt;%
   padding-right: 4px;
 }
 
-#qfrxlszvqk .gt_column_spanner_outer:first-child {
+#mbvcjvqzeh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qfrxlszvqk .gt_column_spanner_outer:last-child {
+#mbvcjvqzeh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qfrxlszvqk .gt_column_spanner {
+#mbvcjvqzeh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -376,7 +368,7 @@ bulbs %&gt;%
   width: 100%;
 }
 
-#qfrxlszvqk .gt_group_heading {
+#mbvcjvqzeh .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -398,7 +390,7 @@ bulbs %&gt;%
   vertical-align: middle;
 }
 
-#qfrxlszvqk .gt_empty_group_heading {
+#mbvcjvqzeh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -413,15 +405,15 @@ bulbs %&gt;%
   vertical-align: middle;
 }
 
-#qfrxlszvqk .gt_from_md > :first-child {
+#mbvcjvqzeh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qfrxlszvqk .gt_from_md > :last-child {
+#mbvcjvqzeh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qfrxlszvqk .gt_row {
+#mbvcjvqzeh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -440,7 +432,7 @@ bulbs %&gt;%
   overflow-x: hidden;
 }
 
-#qfrxlszvqk .gt_stub {
+#mbvcjvqzeh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -452,7 +444,7 @@ bulbs %&gt;%
   padding-left: 12px;
 }
 
-#qfrxlszvqk .gt_summary_row {
+#mbvcjvqzeh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -462,7 +454,7 @@ bulbs %&gt;%
   padding-right: 5px;
 }
 
-#qfrxlszvqk .gt_first_summary_row {
+#mbvcjvqzeh .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -472,7 +464,7 @@ bulbs %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_grand_summary_row {
+#mbvcjvqzeh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -482,7 +474,7 @@ bulbs %&gt;%
   padding-right: 5px;
 }
 
-#qfrxlszvqk .gt_first_grand_summary_row {
+#mbvcjvqzeh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -492,11 +484,11 @@ bulbs %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_striped {
+#mbvcjvqzeh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qfrxlszvqk .gt_table_body {
+#mbvcjvqzeh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -505,7 +497,7 @@ bulbs %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_footnotes {
+#mbvcjvqzeh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -519,13 +511,13 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_footnote {
+#mbvcjvqzeh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#qfrxlszvqk .gt_sourcenotes {
+#mbvcjvqzeh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -539,41 +531,41 @@ bulbs %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#qfrxlszvqk .gt_sourcenote {
+#mbvcjvqzeh .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#qfrxlszvqk .gt_left {
+#mbvcjvqzeh .gt_left {
   text-align: left;
 }
 
-#qfrxlszvqk .gt_center {
+#mbvcjvqzeh .gt_center {
   text-align: center;
 }
 
-#qfrxlszvqk .gt_right {
+#mbvcjvqzeh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qfrxlszvqk .gt_font_normal {
+#mbvcjvqzeh .gt_font_normal {
   font-weight: normal;
 }
 
-#qfrxlszvqk .gt_font_bold {
+#mbvcjvqzeh .gt_font_bold {
   font-weight: bold;
 }
 
-#qfrxlszvqk .gt_font_italic {
+#mbvcjvqzeh .gt_font_italic {
   font-style: italic;
 }
 
-#qfrxlszvqk .gt_super {
+#mbvcjvqzeh .gt_super {
   font-size: 65%;
 }
 
-#qfrxlszvqk .gt_footnote_marks {
+#mbvcjvqzeh .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -618,12 +610,6 @@ bulbs %&gt;%
 .tiny[
 
 
-```r
-bulb_lsmodel0 &lt;- lm(lifetime_hours ~ bulb_type, data = bulbs)
-
-summary(bulb_lsmodel0)
-```
-
 ```
 ## 
 ## Call:
@@ -647,6 +633,11 @@ summary(bulb_lsmodel0)
 ## F-statistic:  20.5 on 3 and 10 DF,  p-value: 0.0001362
 ```
 
+]]
+
+---
+
+
 ```r
 anova(bulb_lsmodel0)
 ```
@@ -661,8 +652,6 @@ anova(bulb_lsmodel0)
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
-
-]]
 
 ---
 
@@ -756,11 +745,7 @@ class: middle, center, inverse
 # Next time: Multivariate models
 
 
-### Reading 
-
- Chapters ANOVA: Discovering Statistics using R/SPSS - Andy Field
-
- Chapter ANOVA: The New Statistics - Andy Hector
+### Q &amp; A
 
 
 
