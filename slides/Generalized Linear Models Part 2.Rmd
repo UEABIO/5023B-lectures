@@ -160,11 +160,11 @@ class: center, middle
 ## Poisson distribution
 
 $$
-(log)\lambda=\beta0+\beta1x
+\LARGE(log)\lambda=\beta0+\beta1x
 $$
 
 $$
-Y\text{~}~Pois(\lambda)
+\LARGE Y\text{~}~Pois(\lambda)
 $$
 
 ```
@@ -403,13 +403,13 @@ class:center, middle
 ## The logit (logistic) model
 
 $$
-logit(p)=log({p\over1-p})=\beta0+\beta1x
+\LARGE logit(p)=log({p\over1-p})=\beta0+\beta1x
 $$
 
 Exponentiated:
 
 $$
-p={e^{\beta0+\beta1x}\over{1+e^{\beta0+\beta1x}}}
+\LARGE p={e^{\beta0+\beta1x}\over{1+e^{\beta0+\beta1x}}}
 $$
 
 ---
@@ -511,9 +511,16 @@ No matter how you slice it, interpreting coefficients w.r.t. log-odds or odds is
 
 .right-plot[
 
+```
+x <- predict(model)
+y <- resid(model)
+arm::binnedplot(x,y)
+
+```
+
 ```{r, echo = FALSE, out.width="100%"}
 
-knitr::include_graphics("images/Rplot.png")
+knitr::include_graphics("images/binned.png")
 
 ```
 

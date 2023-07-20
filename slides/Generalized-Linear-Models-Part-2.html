@@ -4,7 +4,7 @@
     <title>GLM</title>
     <meta charset="utf-8" />
     <meta name="author" content="Philip Leftwich" />
-    <meta name="date" content="2023-07-15" />
+    <meta name="date" content="2023-07-20" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
@@ -139,11 +139,11 @@ class: center, middle
 ## Poisson distribution
 
 $$
-(log)\lambda=\beta0+\beta1x
+\LARGE(log)\lambda=\beta0+\beta1x
 $$
 
 $$
-Y\text{~}~Pois(\lambda)
+\LARGE Y\text{~}~Pois(\lambda)
 $$
 
 ```
@@ -503,13 +503,13 @@ class:center, middle
 ## The logit (logistic) model
 
 $$
-logit(p)=log({p\over1-p})=\beta0+\beta1x
+\LARGE logit(p)=log({p\over1-p})=\beta0+\beta1x
 $$
 
 Exponentiated:
 
 $$
-p={e^{\beta0+\beta1x}\over{1+e^{\beta0+\beta1x}}}
+\LARGE p={e^{\beta0+\beta1x}\over{1+e^{\beta0+\beta1x}}}
 $$
 
 ---
@@ -599,7 +599,14 @@ No matter how you slice it, interpreting coefficients w.r.t. log-odds or odds is
 
 .right-plot[
 
-&lt;img src="images/Rplot.png" width="100%" /&gt;
+```
+x &lt;- predict(model)
+y &lt;- resid(model)
+arm::binnedplot(x,y)
+
+```
+
+&lt;img src="images/binned.png" width="100%" /&gt;
 
 ]
 

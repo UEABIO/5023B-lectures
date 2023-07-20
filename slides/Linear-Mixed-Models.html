@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>LMM</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Philip Leftwich" />
+    <meta name="date" content="2023-07-20" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: title-slide, left, top
+
+# LMM
+
+## Linear Mixed-Models
+
+### Philip Leftwich
+
+&lt;br&gt;
+
+
+
+&lt;span style='color:white;'&gt;Slides released under&lt;/span&gt; [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&amp;nbsp;&amp;nbsp;<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg><svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z"/></svg> ]   
+
+&lt;div style = "position: absolute;top: 0px;right: 0px;"&gt;&lt;img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"&gt;&lt;/img&gt;&lt;/div&gt;
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Philip Leftwich - Physalia Courses&lt;/span&gt;&lt;/div&gt;
+
+
+---
+
+## Why mixed model?
+
+The key feature of a linear mixed-effects model is the inclusion of random effects - variables where our observations are grouped into subcategories that systematically affect our outcome - to account for important structure in our data. 
+
+Mixed-effects model can be used in many situations instead of one of our more straightforward tests when this structure may be important:
+
+i) mixed-effects models incorporate group and even individual-level differences
+
+ii) mixed-effects models cope well with missing data, unequal group sizes and repeated measurements
+
+---
+
+## Examples of structured data
+
+*Hierarchy*
+
+- Estimating scores on a standardised maths test - students from the same maths class should be grouped
+
+*Repeated measures*
+
+- Medical interventions on blood sugar levels - each person is measured multiple times over a year
+
+
+---
+
+.pull-left[
+
+### Fixed Effect
+
+Fixed effects are variables that we expect will affect the dependent/response variable: they’re what you call explanatory variables in a standard linear regression.
+
+`\({y_i = \beta0 + \beta1x+\epsilon}\)`
+
+
+```
+y ~ x, data = data)
+```
+
+]
+
+.pull-right[
+
+### Random Effect
+
+A random effect is a parameter that is allowed to vary across groups or individuals. Random effects do not take a single fixed value, rather they follow a distribution (usually the normal distribution). Random effects can be added to a model to account for variation around an intercept or slope. Each individual or group then gets their own estimated random effect, representing an adjustment from the mean.
+
+`\({y_i = \beta0_{[i]} + \beta1x+\epsilon}\)`
+
+
+
+```
+y ~ x + (1|group), data = data)
+```
+
+]
+---
+
+
+
+
+
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-3-1.png" width="70%" /&gt;
+
+---
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-4-1.png" width="70%" /&gt;
+
+---
+
+.pull-left[
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-5-1.png" width="120%" /&gt;
+]
+
+.pull-right[
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-6-1.png" width="120%" /&gt;
+
+]
+
+---
+
+## No pooling
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-7-1.png" width="60%" /&gt;
+
+---
+
+## Partial pooling
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-8-1.png" width="60%" /&gt;
+
+
+---
+
+## Shrinkage
+
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-9-1.png" width="60%" /&gt;
+
+---
+
+## Model in R
+
+
+```r
+lmer1 &lt;- lmer(y ~ x + (1|group), data = data)
+summary(lmer1)
+```
+
+```
+## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+## lmerModLmerTest]
+## Formula: y ~ x + (1 | group)
+##    Data: data
+## 
+## REML criterion at convergence: 3224.4
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -2.61968 -0.63654 -0.03584  0.66113  3.13597 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  group    (Intercept) 205      14.32   
+##  Residual             101      10.05   
+## Number of obs: 430, groups:  group, 5
+## 
+## Fixed effects:
+##             Estimate Std. Error       df t value Pr(&gt;|t|)    
+## (Intercept)  23.2692     6.4818   4.1570    3.59   0.0215 *  
+## x             2.0271     0.1703 424.0815   11.90   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##   (Intr)
+## x -0.131
+```
+
+---
+
+**Group** the variation associated with the group effect (after fixed effects are fitted)
+
+**Residual** The residual/leftover deviations or variance not due to fixed or random effects
+
+
+```
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ group    (Intercept) 205      14.32   
+ Residual             101      10.05   
+Number of obs: 430, groups:  group, 5
+
+```
+
+---
+
+Similar in interpretation to fixed effects from models you have constructed before
+
+**However** p-values for mixed models aren’t as straightforward as they are for the linear model. There are multiple approaches, and there’s a discussion surrounding these, with sometimes wildly differing opinions about which approach is the best.
+
+`lmerTest` lmer model fits via Satterthwaite's degrees of freedom method estimation.
+
+```
+Fixed effects:
+            Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)  23.2692     6.4818   4.1570    3.59   0.0215 *  
+x             2.0271     0.1703 424.0815   11.90   &lt;2e-16 ***
+
+```
+---
+
+## Random slopes and intercepts
+
+
+
+.pull-left[
+
+`\({y_i = \beta0_{[i]} + \beta1x+\epsilon}\)`
+
+```
+y ~ x + (1|group), data = data)
+```
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-12-1.png" width="120%" /&gt;
+
+]
+
+.pull-right[
+
+`\({y_i = \beta0_{[i]} + \beta1_{[i]}x+\epsilon}\)`
+
+
+```
+y ~ x + (x|group), data = data)
+```
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-13-1.png" width="120%" /&gt;
+
+]
+
+---
+
+## Checking models
+
+.left-code[
+
+Checking models with random effects is more complex
+
+`check_model` will add plots to investigate the distribution of random effects
+
+`DHARMa` when dealing with increasingly complex models - residual simulations may be preferred
+
+]
+
+.right-plot[
+
+&lt;img src="Linear-Mixed-Models_files/figure-html/unnamed-chunk-14-1.png" width="120%" /&gt;
+
+```
+## Object of Class DHARMa with simulated residuals based on 250 simulations with refit = FALSE . See ?DHARMa::simulateResiduals for help. 
+##  
+## Scaled residual values: 0.036 0.112 0.808 0.22 0.364 0.72 0.656 0.48 0.464 0.172 0.908 0.604 0.228 0.276 0.94 0.428 0.164 0.372 1 0.58 ...
+```
+]
+
+---
+
+## Comparing models
+
+Comparisons of random effects may be checked with the Likelihood Ratio Test (LRT) and a `\(\chi^2\)` distribution
+
+
+```r
+anova(random_slope_intercept, random_intercept)
+```
+
+
+```
+## Data: data
+## Models:
+## lmer1: y ~ x + (1 | group)
+## lmer3: y ~ x + (x | group)
+##       npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)   
+## lmer1    4 3236.1 3252.3 -1614.0   3228.1                        
+## lmer3    6 3228.4 3252.8 -1608.2   3216.4 11.649  2   0.002954 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## Fixed effects
+
+Comparisons of fixed effects may be checked with the Likelihood Ratio Test (LRT) and an `\(F\)` distribution
+
+
+```r
+anova(model, test = "F")
+```
+
+
+
+```
+## Single term deletions using Satterthwaite's method:
+## 
+## Model:
+## y ~ x + (1 | group)
+##   Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
+## x  14303   14303     1 424.08  141.61 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## Choosing your model
+
+- Explore your data and understand it
+
+- Think carefully before deciding on the structure of your model
+
+- Often better to 'keep it maximal' with regards to random effects (if you can) - don't be guided solely by LRT.
+
+---
+
+## Issues
+
+### Convergence warning
+
+Model may need simplification or an alternative algorithm
+
+
+```r
+lmer3 &lt;- lmer(y ~ x + (x | group), data = data)
+```
+
+
+### Boundary fit
+
+Your model did fit, but it generated that warning because some of your random effects are very small
+
+
+---
+
+## Reporting models
+
+1. Describe and justify your model (summarize the model fit).
+
+  - Specify all fixed and random effects, interactions, intercepts, and slopes
+  - Specify sample size: number of observations, and number of levels for each grouping factor
+
+2. Mention that you checked assumptions (and how), and that the assumptions are satisfied.
+
+3. Fixed effects: Report significance (test statistic (t/F), degrees of freedom, p-value) and actual estimates for coefficients (effect size: magnitude and direction, standard errors, and confidence intervals). Report Post-hoc tests (`emmeans()`).
+
+4. Random effects: Report the variances, standard deviations
+
+5. Cite the relevant packages.
+
+- (recommended) Plots of data and models
+
+---
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "dracula",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

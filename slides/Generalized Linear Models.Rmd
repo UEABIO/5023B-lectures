@@ -177,11 +177,9 @@ There are three components in a generalized linear model:
 
 **OLS Linear Model**
 
-```{r, echo = FALSE, out.width="100%", fig.cap = "Linear model equation includes mean estimate and error as a single equation"}
-
-knitr::include_graphics("images/linear_equation.png")
-
-```
+$$
+\LARGE{y_i = \beta0 + \beta1x+\epsilon}
+$$
 
 ]
 
@@ -191,13 +189,18 @@ knitr::include_graphics("images/linear_equation.png")
 
 **Generalized Linear Model**
 
-```{r, echo = FALSE, out.width="100%", fig.cap = "GLM models the estimate of the mean as a separate equation to estimates of the error distribution"}
+Linear predictor of the mean - with a link function to specify transformation
 
-knitr::include_graphics("images/glm equation.png")
+$$
+\LARGE{(Identity)\mu = \beta0 + \beta1x}
+$$
+The error distribution, here indicated as normal distribution of variance
 
-```
-
+$$
+\LARGE{y_i ~ N(\mu, \sigma^2) }
+$$
 ]
+
 
 ---
 
@@ -382,19 +385,19 @@ summary(fly_lm)
 
 A generalized linear model can be characterised in terms of two types of deviance:
 
-1. The **null deviance**, which is a measure of the overall variability in the response variable:
+1. The **null deviance**, which is a measure of the overall variability in the response variable (equivalent to Sum of Squares Total):
 
 $\Large{Dev_{null}=2(LnL_{saturated}-LnL_{null})}$
 
-2. The **residual deviance**, which is a measure of the variability in the response variable that remains unexplained by the proposed model (equivalent to Sum of Square Errors):
+2. The **residual deviance**, which is a measure of the variability in the response variable that remains unexplained by the proposed model (equivalent to Sum of Squares Errors):
 
 $\Large{Dev_{residual}=2(LnL_{saturated}-LnL_{proposed})}$
 
 In the previous example we had:
 
-**Null deviance**: 38253 k = 3
+**Null deviance**: 38253 k-1 = 3
 
-**Residual deviance**: 15211 with df = 121
+**Residual deviance**: 15211 with df(N-k) = 121
 
 
 
@@ -403,7 +406,7 @@ In the previous example we had:
 ## F distribution
 
 .right-plot[
-```{r, echo = FALSE, out.width="80%", fig.alt = "The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter."}
+```{r, echo = FALSE, out.width="60%", fig.alt = "The Saturated Model: is a model that assumes each data point has its own parameters, which means you have n parameters to estimate. The Proposed Model: assumes you can explain your data points with k parameters plus an intercept term, so you have k+1 parameters. The Null Model: assumes the exact “opposite”, it assumes one parameter for all of the data points, which means you only estimate 1 parameter."}
 
 knitr::include_graphics("images/deviance_explained.png")
 
@@ -413,17 +416,19 @@ knitr::include_graphics("images/deviance_explained.png")
 
 .left-code[
 
-**Null deviance**: 38253 with k = 3
+**Null deviance**: 38253 with k-1 = 3
 
-**Residual deviance**: 15211 with df = 121
+**Residual deviance**: 15211 with residual df = 121
 
 We can compare these values: 
 
-$\Delta Deviance=Null~deviance–Residual~deviance/$
+$\Delta Deviance=Null~deviance–Residual~deviance$
 
 $\Delta Deviance$ = 38253-15211 = 23042
 
-(23042/3)/(15211/121) = 61.09 = F
+F = $\frac{\Delta Deviance/k-1}{Residual~deviance/N-k}$
+
+F = $\frac{23042/3}{15211/121} = 61.09$
 
 ]
 ---
@@ -509,6 +514,27 @@ $k$ is the number of parameters
 $L$ is maximum likelihood
 
 >If a model is more than 2 AIC units lower than another it can be considered a better model
+
+
+---
+
+```{r}
+summary(fly_glm)
+
+
+fly_glm_sqrt <- glm(longevity ~ type + thorax, data = fruitfly, family= gaussian(link = "sqrt")) 
+
+AIC(fly_glm, fly_glm_sqrt)
+
+```
+
+---
+
+```{r}
+
+drop1(fly_glm, test = "F")
+
+```
 
 ---
 

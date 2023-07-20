@@ -1,0 +1,509 @@
+---
+title: "LMM"
+subtitle: "Linear Mixed-Models"
+author: "Philip Leftwich"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/my-theme.css", "css/my-fonts.css"]
+    seal: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE,
+        eval = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 7, out.width = "120%")
+
+library(tidyverse)
+library(lmerTest)
+library(gt)
+library(gtExtras)
+library(rstatix)
+library(palmerpenguins)
+library(here)
+library(performance)
+
+```
+
+
+class: title-slide, left, top
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+
+<br>
+
+
+
+<span style='color:white;'>Slides released under</span> [CC-BY 2.0](https://creativecommons.org/licenses/by/2.0/)&nbsp;&nbsp;`r fontawesome::fa("creative-commons", "white")``r fontawesome::fa("creative-commons-by", "white")` ]   
+
+<div style = "position: absolute;top: 0px;right: 0px;"><img src="images/logo.png" alt="The hex logo for plumbertableau package" width="500"></img></div>
+
+---
+
+layout: true
+
+<div class="my-footer"><span>Philip Leftwich - Physalia Courses</span></div>
+
+
+---
+
+## Why mixed model?
+
+The key feature of a linear mixed-effects model is the inclusion of random effects - variables where our observations are grouped into subcategories that systematically affect our outcome - to account for important structure in our data. 
+
+Mixed-effects model can be used in many situations instead of one of our more straightforward tests when this structure may be important:
+
+i) mixed-effects models incorporate group and even individual-level differences
+
+ii) mixed-effects models cope well with missing data, unequal group sizes and repeated measurements
+
+---
+
+## Examples of structured data
+
+*Hierarchy*
+
+- Estimating scores on a standardised maths test - students from the same maths class should be grouped
+
+*Repeated measures*
+
+- Medical interventions on blood sugar levels - each person is measured multiple times over a year
+
+
+---
+
+.pull-left[
+
+### Fixed Effect
+
+Fixed effects are variables that we expect will affect the dependent/response variable: they’re what you call explanatory variables in a standard linear regression.
+
+${y_i = \beta0 + \beta1x+\epsilon}$
+
+
+```
+y ~ x, data = data)
+```
+
+]
+
+.pull-right[
+
+### Random Effect
+
+A random effect is a parameter that is allowed to vary across groups or individuals. Random effects do not take a single fixed value, rather they follow a distribution (usually the normal distribution). Random effects can be added to a model to account for variation around an intercept or slope. Each individual or group then gets their own estimated random effect, representing an adjustment from the mean.
+
+${y_i = \beta0_{[i]} + \beta1x+\epsilon}$
+
+
+
+```
+y ~ x + (1|group), data = data)
+```
+
+]
+---
+```{r, include = F}
+
+library(lmerTest)
+library(tidyverse)
+library(sjPlot)
+
+theme_set(theme_classic())
+
+```
+
+
+```{r, echo = F}
+# Generating a fake dataset with different means for each group
+set.seed(123)  # Setting seed for reproducibility
+
+
+rand_eff <- data.frame(group = as.factor(seq(1:5)),
+            b0 = rnorm(5, mean = 0, sd = 20),
+            b1 = rnorm(5, 0, 0.5))
+
+data <- expand.grid(group = as.factor(seq(1:10)), 
+                    obs = as.factor(seq(1:100))) %>%
+  left_join(rand_eff,
+            by = "group") %>%
+  mutate(x = runif(n = nrow(.), 0, 10),
+         B0 = 20,
+         B1 = 2,
+         E = rnorm(n = nrow(.), 0, 10)) %>%
+  mutate(y = B0 + b0 + x * (B1 + b1) + E)
+
+data <- expand.grid(group = as.factor(seq(1:4)), 
+                    obs = as.factor(seq(1:100)))
+
+data.1 <- expand.grid(group = as.factor(5),
+          obs = as.factor(seq(1:30)))
+
+data <- bind_rows(data, data.1) %>% 
+  left_join(rand_eff,
+            by = "group") %>%
+  mutate(x = runif(n = nrow(.), 0, 10),
+         B0 = 20,
+         B1 = 2,
+         E = rnorm(n = nrow(.), 0, 10)) %>%
+  mutate(y = B0 + b0 + x * (B1 + b1) + E)
+
+```
+
+
+```{r, echo = F, out.width = "70%"}
+plot(data$x, data$y)
+
+```
+
+---
+
+```{r, echo = F, out.width = "70%"}
+
+ggplot(data, aes(x = x, 
+                 y = y)) +
+  geom_point() +
+  labs(x = "Independent Variable", 
+       y = "Dependent Variable")+
+  geom_smooth(method = "lm")
+
+```
+
+---
+
+.pull-left[
+
+```{r, echo = F}
+
+ggplot(data, aes(x = group, 
+                 y = y)) +
+  geom_boxplot() +
+  labs(x = "Groups", 
+       y = "Dependent Variable")
+
+```
+]
+
+.pull-right[
+
+```{r, echo = F}
+
+# Color tagged by group
+plot_group <- ggplot(data, aes(x = x, 
+                               y = y)) +
+  geom_point(alpha = 0.6, size = 2,
+             aes(color = group,
+                               group = group)) +
+  labs(title = "Data Coloured by Group", 
+       x = "Independent Variable", 
+       y = "Dependent Variable")+
+    geom_smooth(method = "lm")+
+  theme(legend.position="none")
+
+plot_group
+
+```
+
+]
+
+---
+
+## No pooling
+
+```{r, echo = F, out.width = "60%"}
+
+# Plotting the relationship between x and y with group-level smoothing
+ggplot(data, aes(x = x, y = y, color = group, group = group)) +
+  geom_point(alpha = 0.6) +  # Scatter plot of x and y with transparency
+  labs(title = "Data Colored by Group", x = "Independent Variable", y = "Dependent Variable") +
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm") +  # Group-level linear regression smoothing
+  facet_wrap(~group)  # Faceting the plot by group
+
+```
+
+---
+
+## Partial pooling
+
+```{r, echo = F, out.width = "60%"}
+
+plot_function2 <- function(model, title = "Data Coloured by Group"){
+  
+data <- data %>% 
+  mutate(fit.m = predict(model, re.form = NA),
+         fit.c = predict(model, re.form = NULL))
+
+data %>%
+  ggplot(aes(x = x, y = y, col = group)) +
+  geom_point(pch = 16, alpha = 0.6) +
+  geom_line(aes(y = fit.c, col = group), size = 2)  +
+  coord_cartesian(ylim = c(-40, 100))+
+  labs(title = title, 
+       x = "Independent Variable", 
+       y = "Dependent Variable") 
+}
+
+mixed_model <- lmer(y ~ x + (1|group), data = data)
+
+plot_function2(mixed_model, "Random intercept")
+
+```
+
+
+---
+
+## Shrinkage
+
+
+```{r, echo = F, out.width = "60%"}
+# Nesting the data by group
+nested_data <- data %>% 
+    group_by(group) %>% 
+    nest()
+
+# Fitting linear regression models and obtaining predictions for each group
+nested_models <- map(nested_data$data, ~ lm(y ~ x, data = .)) %>% 
+    map(predict)
+
+# Creating a new dataframe and adding predictions from different models
+data1 <- data %>% 
+  mutate(fit.m = predict(mixed_model, re.form = NA),
+         fit.c = predict(mixed_model, re.form = NULL)) %>% 
+  arrange(group,obs) %>% 
+  mutate(fit.l = unlist(nested_models)) 
+
+# Creating a plot to visualize the predictions
+data1 %>% 
+  ggplot(aes(x = x, y = y, colour = group)) +
+    geom_point(pch = 16, size = 2, alpha = 0.4) + 
+  geom_line(aes(y = fit.l, linetype = "lm"), colour = "black", size = 1.1)+
+  geom_line(aes(y = fit.c, linetype = "lmer"), size = 1.1)+ 
+  geom_line(aes(y = fit.m, linetype = "Mean"),size = 1.1, colour = "darkgrey")+
+   scale_linetype_manual(name = "Model Type", 
+                        labels = c("Mean", "lmer", "lm"),
+                        values = c("dotdash", "solid", "dashed"))+
+  facet_wrap( ~ group)+
+  guides(colour = "none")
+
+```
+
+---
+
+## Model in R
+
+```{r}
+lmer1 <- lmer(y ~ x + (1|group), data = data)
+summary(lmer1)
+
+```
+
+---
+
+**Group** the variation associated with the group effect (after fixed effects are fitted)
+
+**Residual** The residual/leftover deviations or variance not due to fixed or random effects
+
+
+```
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ group    (Intercept) 205      14.32   
+ Residual             101      10.05   
+Number of obs: 430, groups:  group, 5
+
+```
+
+---
+
+Similar in interpretation to fixed effects from models you have constructed before
+
+**However** p-values for mixed models aren’t as straightforward as they are for the linear model. There are multiple approaches, and there’s a discussion surrounding these, with sometimes wildly differing opinions about which approach is the best.
+
+`lmerTest` lmer model fits via Satterthwaite's degrees of freedom method estimation.
+
+```
+Fixed effects:
+            Estimate Std. Error       df t value Pr(>|t|)    
+(Intercept)  23.2692     6.4818   4.1570    3.59   0.0215 *  
+x             2.0271     0.1703 424.0815   11.90   <2e-16 ***
+
+```
+---
+
+## Random slopes and intercepts
+
+```{r, include = FALSE}
+
+plot_function <- function(model, title = ""){
+  
+data <- data %>% 
+  mutate(fit.m = predict(model, re.form = NA),
+         fit.c = predict(model, re.form = NULL))
+
+data %>%
+  ggplot(aes(x = x, y = y, col = group)) +
+  geom_point(pch = 16, alpha = 0.4) +
+  geom_line(aes(y = fit.c, col = group), size = 1)  +
+  coord_cartesian(ylim = c(-40, 100))+
+  labs(title = title)+
+  theme(legend.position ="none")
+}
+
+```
+
+.pull-left[
+
+${y_i = \beta0_{[i]} + \beta1x+\epsilon}$
+
+```
+y ~ x + (1|group), data = data)
+```
+
+```{r, echo = FALSE}
+
+# random intercept model
+lmer1 <- lmer(y ~ x + (1|group), data = data)
+plot_function(lmer1, "Random intercept")
+```
+
+]
+
+.pull-right[
+
+${y_i = \beta0_{[i]} + \beta1_{[i]}x+\epsilon}$
+
+
+```
+y ~ x + (x|group), data = data)
+```
+
+```{r, echo = FALSE}
+# Random slope and intercept model
+
+lmer3 <- lmer(y ~ x + (x | group), data = data, control = lmerControl(optimizer = "Nelder_Mead"))
+plot_function(lmer3, "Random intercept & slope")
+```
+
+]
+
+---
+
+## Checking models
+
+.left-code[
+
+Checking models with random effects is more complex
+
+`check_model` will add plots to investigate the distribution of random effects
+
+`DHARMa` when dealing with increasingly complex models - residual simulations may be preferred
+
+]
+
+.right-plot[
+
+```{r, echo = F, warning = F, message = F}
+
+DHARMa::simulateResiduals(lmer1, plot = T)
+
+```
+]
+
+---
+
+## Comparing models
+
+Comparisons of random effects may be checked with the Likelihood Ratio Test (LRT) and a $\chi^2$ distribution
+
+```{r, eval = F}
+
+anova(random_slope_intercept, random_intercept)
+
+```
+
+```{r, echo = F}
+
+anova(lmer3, lmer1)
+
+```
+
+---
+
+## Fixed effects
+
+Comparisons of fixed effects may be checked with the Likelihood Ratio Test (LRT) and an $F$ distribution
+
+```{r, eval = F}
+
+anova(model, test = "F")
+
+```
+
+
+```{r, echo = F}
+
+drop1(lmer1, test = "F")
+
+```
+
+---
+
+## Choosing your model
+
+- Explore your data and understand it
+
+- Think carefully before deciding on the structure of your model
+
+- Often better to 'keep it maximal' with regards to random effects (if you can) - don't be guided solely by LRT.
+
+---
+
+## Issues
+
+### Convergence warning
+
+Model may need simplification or an alternative algorithm
+
+```{r}
+lmer3 <- lmer(y ~ x + (x | group), data = data)
+
+```
+
+
+### Boundary fit
+
+Your model did fit, but it generated that warning because some of your random effects are very small
+
+
+---
+
+## Reporting models
+
+1. Describe and justify your model (summarize the model fit).
+
+  - Specify all fixed and random effects, interactions, intercepts, and slopes
+  - Specify sample size: number of observations, and number of levels for each grouping factor
+
+2. Mention that you checked assumptions (and how), and that the assumptions are satisfied.
+
+3. Fixed effects: Report significance (test statistic (t/F), degrees of freedom, p-value) and actual estimates for coefficients (effect size: magnitude and direction, standard errors, and confidence intervals). Report Post-hoc tests (`emmeans()`).
+
+4. Random effects: Report the variances, standard deviations
+
+5. Cite the relevant packages.
+
+- (recommended) Plots of data and models
+
+---
+
