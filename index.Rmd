@@ -43,5 +43,5 @@ All lecture materials will be available here.
   - [Slides: Binomial and Poisson distributions](slides/Generalized-Linear-Models-Part-2.html)
 
 - 10: Mixed effects models
-
+  - [Slides: Introduction to Mixed effects models](slides/Linear-Mixed-Models.html)
     
