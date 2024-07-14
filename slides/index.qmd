@@ -164,12 +164,153 @@ I hope you end up with more questions than answers after this workshop!
 
 * R makes plots, graphics, reports and presentations
 
-## What is RStudio/Posit
+## Why use R?
+
+- Specialized in data analysis and statistical computing
+
+- Large repository of packages (CRAN)
+
+- Active community and extensive documentation
+
+- Excellent for reproducible research 
+
+## Basic R Syntax
+
+```{r, echo = T}
+
+5 + 10
+
+```
+
+```{r, echo = T}
+
+x <- 5 + 10
+x
+
+y <- 20
+```
+
+
+## Basic operations
+
+```{r, echo = T}
+sum <- x + y
+diff <- x - y
+prod <- x * y
+quot <- x / y
+
+```
+
+## Data types
+
+```{r, echo = T}
+x
+
+y <- "apple"
+
+z <- TRUE
+
+str(x)
+str(y)
+str(z)
+
+```
+
+## Data Structures
+
+- Vectors
+
+```{r, echo = T}
+
+vec <- c(1, 2, 3, 4, 5)
+vec
+```
+
+- Data Frames
+
+```{r, echo = T}
+
+df <- data.frame(name=c("Alice", "Bob"), age=c(25, 30))
+df
+```
+
+- Lists
+
+```{r, echo = T}
+
+lst <- list(name="Alice", age=25, scores=c(90, 85, 88))
+lst
+```
+
+## R terms
+
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("images/terms.png")
+```
+
 
 ## What is RStudio/Posit?
 
 ```{r, echo = FALSE, out.width="70%"}
 knitr::include_graphics("images/engine.png")
+```
+
+## What is RStudio/Posit
+
+
+```{r, echo = FALSE, out.width="70%"}
+knitr::include_graphics("images/environment.jpg")
+```
+
+## Navigating RStudio
+
+Layout:
+
+- Source Pane: Writing and editing scripts
+
+- Console Pane: Executing R commands
+
+- Environment/History Pane: Viewing and managing variables and command history
+
+- Files/Plots/Packages/Help Pane: Managing files, viewing plots, accessing packages, and getting help
+
+## Scripts
+
+- Scripts: Write reusable code in .R files
+
+```{r, echo = T}
+
+# This is a comment
+
+print("Hello, R!")
+
+
+```
+
+- Run code by executing lines or selections
+
+- Automate running scripts
+
+## Using Packages
+
+R packages are collections of code and data that extend or improve functionality
+
+```{r, echo = T, eval = F}
+install.packages("ggplot2")
+```
+
+Once installed, packages must be loaded into the working environment to function
+
+```{r, echo = T, eval = F}
+library(ggplot2)
+
+```
+
+
+```{r, echo = T, eval = F}
+
+ggplot(data, aes(x=variable1, y=variable2)) + geom_point()
+
 ```
 
 
@@ -205,77 +346,71 @@ knitr::include_graphics("images/reproducible-data-analysis-02.png")
 ## Main features of R
 
 
-Comprehensive Packages: Thousands of packages available through CRAN, Bioconductor, and GitHub to extend R’s capabilities.
+- Comprehensive Packages: Thousands of packages available through CRAN, Bioconductor, and GitHub to extend R’s capabilities.
 
-Data Manipulation: Powerful libraries like dplyr and tidyr for data wrangling.
+- Data Manipulation: Powerful libraries like `dplyr` and `tidyr` for data wrangling.
 
-Statistical Analysis: Built-in functions for a wide range of statistical tests and models.
+- Statistical Analysis: Built-in functions for a wide range of statistical tests and models.
 
-Visualization: Excellent plotting libraries such as ggplot2 for creating stunning visualizations.
+- Visualization: Excellent plotting libraries such as `ggplot2` for creating stunning visualizations.
 
 ## Main Features of RStudio
 
 User-Friendly Interface: Four-pane layout (script, console, environment, files) for easy navigation.
+
 Integrated Package Management: Simplifies the installation and management of R packages.
+
 Version Control: Built-in support for Git to manage code versions and collaboration.
+
 Projects: Organize workspaces efficiently using RStudio Projects.
-Using Projects to Maintain a Working Environment
 
 
-## Why Use RStudio Projects?
 
-Organization: Keeps related files (scripts, data, outputs) in one place.
-Reproducibility: Facilitates reproducible research by maintaining a consistent environment.
-Isolation: Projects can have their own libraries and settings, reducing conflicts between different projects.
+## RStudio Projects?
+
+::::{.columns}
+
+:::{.column}
+
+- Organization: Keeps related files (scripts, data, outputs) in one place.
+
+- Reproducibility: Facilitates reproducible research by maintaining a consistent environment.
+
+- Isolation: Projects can have their own libraries and settings, reducing conflicts between different projects.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "R project organisation"}
+knitr::include_graphics("images/Project.png")
+```
+
+:::
+
+::::
 
 ## Creating a Project in RStudio
 
-Start a New Project: Go to File > New Project.
-Choose a Type: Select whether to create a new directory, use an existing one, or version control.
-Maintain Structure: Follow a structured directory format (e.g., /data, /scripts, /results).
+- Start a New Project: Go to File > New Project.
 
-## Best Practices for Projects
+- Choose a Type: Select whether to create a new directory, use an existing one, or version control.
 
-Regularly save and document your code.
-Use version control with Git for collaboration.
-Keep your working directory clean and organized.
-Conclusion
+- Maintain Structure: Follow a structured directory format (e.g., /data, /scripts, /results).
 
-## Emphasises reproduciblity here
 
-## Getting Started
+## Workflow
 
-Encourage attendees to install R and RStudio.
-Provide resources for learning R (e.g., online courses, tutorials).
-Emphasize the importance of starting with projects for better organization.
+```{r, echo = FALSE, out.width="80%", fig.alt = "Allison Horst"}
+knitr::include_graphics("images/annotated.png")
+```
 
-## Questions and Discussion
 
-Open the floor for questions.
-Discuss participants' goals for learning R and how they envision using RStudio.
+# Questions? {background-color="#D9DBDB"}
+
 
 # Data wrangling {background-color="#D9DBDB"}
 
-##  Object-Oriented Programming
-
-
-R is an object-oriented language. Everything in R is an object, including:
-
-Vectors
-
-Data frames
-
-Lists
-
-Objects allow you to store data and manipulate it using functions.
-
-## Creating Objects
-
-You can create objects using the assignment operator <-:
-R
-Copy code
-my_data <- data.frame(name = c("Alice", "Bob"), age = c(25, 30))
-This creates a data frame called my_data.
 
 ## Tidy data
 
@@ -408,7 +543,8 @@ data %>%
 
 ## What is the Tidyverse?
 
-:::{columns}
+::::{.columns}
+
 :::{.column}
 
 - The **tidyverse** is a collection of R packages designed for data science.
@@ -431,12 +567,13 @@ data %>%
   - **tibble**: Modern data frames
 
 :::
-:::
+
+::::
 
 ## Loading the Tidyverse
 - Load the tidyverse with:
   
-```{r, echo = T, eval = T}
+```{r, echo = T, eval = T, message = T, warning = T}
   library(tidyverse)
 ```
 
@@ -622,7 +759,8 @@ penguins_cleaned <- penguins %>%
 
 ## Recap and Next Steps
 
-We introduced the tidyverse and focused on dplyr for data wrangling using the palmerpenguins dataset.
+We introduced the tidyverse and focused on dplyr for data wrangling using the palmer penguins dataset.
+
 
 Emphasized the importance of keeping raw data raw and documenting manipulations for transparency.
 
@@ -697,7 +835,7 @@ Originally created by Alberto Cairo in [Download the Datasaurus: Never trust sum
 
 ## The problem with dynamite plots
 
-```{r, echo = FALSE, out.width="100%", fig.alt = "A multitude of different patterns appear when visualising the data", fig.cap = "These datasets all have the same mean and standard deviation"}
+```{r, echo = FALSE, out.width="90%", fig.alt = "A multitude of different patterns appear when visualising the data", fig.cap = "These datasets all have the same mean and standard deviation"}
 knitr::include_graphics("images/dynamite-plots.png")
 ```
 
@@ -1399,8 +1537,8 @@ ggplot(aes(x = species, #<<
 plot + 
   annotate("text",
            x = 1:3,
-           y = c(156, 72, 128),
-           label = c(152, 68, 124))
+           y = c(72, 128, 156),
+           label = c(68, 124, 152))
   
 
 ```
@@ -1881,23 +2019,74 @@ ggplot(aes(x = species,
 
 The first issue we will cover is missing data. There is a whole host of reasons that your data could have missing values.
 
+## Missing data {.smaller}
+
 This can be broken down into three broad categories:
 
+:::{.incremental}
 
 - **MCAR (Missing Completely at Random)**	The probability of missing data is independent of any observed or unobserved data.	
 
-Leaf samples lost randomly due to a labeling error in a plant growth study.
+- Leaf samples lost randomly due to a labeling error in a plant growth study.
 
 - **MAR (Missing at Random)	** The probability of missing data is related to some observed data but not to the missing data itself.	
 
-Blood pressure readings missing more frequently for older patients in a drug trial.
+- Blood pressure readings missing more frequently for older patients in a drug trial.
 
-**MNAR (Missing Not at Random)**	The probability of missing data is related to the value of the missing data itself.	
-Heavier birds in a wildlife study are harder to capture and weigh, leading to missing weight data.
+- **MNAR (Missing Not at Random)**	The probability of missing data is related to the value of the missing data itself.	
+
+- Heavier birds in a wildlife study are harder to capture and weigh, leading to missing weight data.
+
+:::
+
+## Missing data
+
+Lots of ways to gather information on missing data:
+
+```{r, echo = T}
+
+summary(penguins)
+
+```
+
+And ways to remove it:
+
+```{r, echo = T, eval = F}
+
+drop_na(penguins)
+
+drop_na(penguins, -delta_15n, -delta_13c, -comments)
+
+```
+
+## Mean imputation
+
+- Preserves power
+
+- Mean imputation can introduce bias if data is not missing at random.
+
+- Reduces variability in the dataset.
+
+- More sophisticated methods include median imputation, regression imputation, and multiple imputation.
+
+```{r, echo = T, eval = F}
+penguins %>% 
+  group_by(species, sex) %>% 
+  mutate(body_mass_g = replace_na(body_mass_g, mean(body_mass_g, na.rm = T))) %>% 
+  ungroup()
+
+```
 
 ## Duplications
 
 Duplications can skew results and reduce reliability of our data insights
+
+```{r, eval = T, echo = T}
+# check for duplicate rows in the data
+penguins %>% 
+  duplicated() %>% # produces a list of TRUE/FALSE statements for duplicated or not
+  sum() # sums all the TRUE statements
+```
 
 ## Data types and consistency
 
@@ -1905,13 +2094,30 @@ Example: Data is treated as a factor when it should be numerical
 
 Ensuring correct data types is essential for performing accurate analyses
 
+```{r}
+
+str(penguins)
+
+```
+
 ## Implausible values
 
 Values that fall outside of a possible range for a given variable.
 
 - **Categorical**: "Male", "Female", "Mle"
 
+```{r}
+penguins %>% 
+  distinct(species)
+
+```
+
 - **Continuous**: Negative values for an age, or a date given in the future
+
+```{r}
+summary(penguins)
+
+```
 
 ## Outliers
 
@@ -1923,7 +2129,44 @@ Observations that fall outside of a tolerated range from other observations
 
 Important to identify, but crucially these are *real* values
 
-## Distributons
+```{r}
+penguins %>% ggplot(aes(x = species, y = body_mass_g)) + geom_boxplot() +coord_flip()
+```
+
+
+## Histograms
+
+```{r}
+library(ggridges)
+penguins %>% drop_na(sex) %>% 
+ggplot(aes(x = body_mass_g, y = species)) + 
+  ggridges::stat_binline(aes(fill = sex),
+                alpha = 0.8)
+
+```
+
+```{r}
+
+library(ggridges)
+penguins %>% drop_na(sex) %>% 
+ggplot(aes(x = body_mass_g, y = species)) + 
+  ggridges::stat_binline(aes(fill = sex),
+                alpha = 0.8,
+                bins = 10)
+
+```
+```{r}
+
+library(ggridges)
+penguins %>% drop_na(sex) %>% 
+ggplot(aes(x = body_mass_g, y = species)) + 
+  ggridges::stat_binline(aes(fill = sex),
+                alpha = 0.8,
+                bins = 50)
+
+```
+
+## Distributions
 
 How values are spread across a range:
 
@@ -1932,6 +2175,114 @@ How values are spread across a range:
 - Skewed distribution
 
 - Uniform distribution
+
+Hard to tell even when using a histogram
+
+## QQ plots
+
+::::{.columns}
+
+:::{.column}
+
+If data is normally distributed, then if we plot the [*quantiles*](https://www.youtube.com/watch?v=okjYjClSjOg) vs. theoretical normal quantiles (with same *n*), then we find a linear relationship
+
+:::
+
+:::{.column}
+
+
+```{r, echo = FALSE, out.width="90%", fig.alt = "QQ plot examples"}
+knitr::include_graphics("images/qq_example.png")
+```
+
+:::
+
+::::
+
+## Right-skewed
+
+```{r}
+# Generate right-skewed data
+data_right_skewed <- rexp(1000)
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+hist(data_right_skewed, main = "Right Skewed", xlab = "Value", col = "lightgreen", border = "black")
+qqnorm(data_right_skewed)
+qqline(data_right_skewed, col = "red")
+
+
+```
+
+## Left-skewed
+
+```{r}
+# Generate left-skewed data
+data_left_skewed <- -rexp(1000)
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+hist(data_left_skewed, main = "Left Skewed", xlab = "Value", col = "lightcoral", border = "black")
+qqnorm(data_left_skewed)
+qqline(data_left_skewed, col = "red")
+
+
+```
+
+## Bimodal
+
+```{r}
+# Generate bimodal data
+data_bimodal <- c(rnorm(500, mean = -2), rnorm(500, mean = 2))
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+hist(data_bimodal, main = " Bimodal", xlab = "Value", col = "lightyellow", border = "black")
+qqnorm(data_bimodal)
+qqline(data_bimodal, col = "red")
+
+
+
+```
+
+## Heavy tailed
+
+```{r}
+# Generate heavy-tailed data
+data_heavy_tailed <- rt(1000, df = 5)  # T-distribution with low degrees of freedom
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+hist(data_heavy_tailed, main = "Heavy-tailed", xlab = "Value", col = "lightblue", border = "black")
+qqnorm(data_heavy_tailed)
+qqline(data_heavy_tailed, col = "red")
+
+
+```
+
+## Light tailed
+
+```{r}
+# Load necessary library
+library(ggplot2)
+
+# Generate light-tailed data with high kurtosis using Beta distribution
+set.seed(123)
+data_beta <- rbeta(1000, shape1 = 2, shape2 = 2) * 2 - 1  # Scale to [-1, 1]
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+
+# Histogram
+hist(data_beta, main = "Light tailed", 
+     xlab = "Value", col = "lightblue", border = "black")
+
+# QQ Plot
+qqnorm(data_beta)
+qqline(data_beta, col = "red")
+
+```
+
 
 ## Strategies to check and improve data quality
 
@@ -2212,8 +2563,6 @@ But we do not know **how the data are distributed or spread around this**
 - Standard deviation
 
 
-
-
 ## Range
 
 Going back to our friends data: 
@@ -2237,7 +2586,6 @@ Going back to our friends data:
 
 :::{.column}
 
-.right-plot[
 
 - The range is affected by extreme values
 
@@ -2339,7 +2687,7 @@ knitr::include_graphics("images/normal-distribution.jpg")
 
 ## N-1?
 
-```{r, echo = FALSE, out.width="40%", fig.alt = "Sampling"}
+```{r, echo = FALSE, out.width="30%", fig.alt = "Sampling"}
 knitr::include_graphics("images/pop_sam.png")
 ```
 
@@ -2375,6 +2723,21 @@ $$
 \sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
 $$
 
+
+## Standard deviation - our example
+
+Lecturer     | Friends | Diff | Squared diff |
+  ------------ | ------- | --- | ------ |
+  Mark         | 5       | 2.4  | 5.76    |
+  Tony         | 3       | 0.4  | 0.16    |
+  Becky        | 3       | 0.4  | 0.16    |
+  Ellen        | 2       | -0.6  | 0.36    |
+  Phil         | 1       | -1.6  | 2.56    |   
+|  **Mean **  | **2.6**      |
+| **variance** | **2.2** |
+| **SD **  | **1.4**      |
+
+
 ## Standard Deviation
 
 Small $s$ = taller, narrower
@@ -2406,6 +2769,7 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
 
 
 ```
+
 ## Visualising a Distribution
 
 ::::{.columns}
@@ -2451,110 +2815,6 @@ pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "
 
 
 
-## QQ plots
-
-::::{.columns}
-
-:::{.column}
-
-If data is normally distributed, then if we plot the [*quantiles*](https://www.youtube.com/watch?v=okjYjClSjOg) vs. theoretical normal quantiles (with same *n*), then we find a linear relationship
-
-:::
-
-:::{.column}
-
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "QQ plot examples"}
-knitr::include_graphics("images/qq_example.png")
-```
-
-:::
-
-::::
-
-## Right-skewed
-
-```{r}
-# Generate right-skewed data
-data_right_skewed <- rexp(1000)
-
-# Create histogram and QQ plot
-par(mfrow = c(1, 2))
-hist(data_right_skewed, main = "Right Skewed", xlab = "Value", col = "lightgreen", border = "black")
-qqnorm(data_right_skewed)
-qqline(data_right_skewed, col = "red")
-
-
-```
-
-## Left-skewed
-
-```{r}
-# Generate left-skewed data
-data_left_skewed <- -rexp(1000)
-
-# Create histogram and QQ plot
-par(mfrow = c(1, 2))
-hist(data_left_skewed, main = "Left Skewed", xlab = "Value", col = "lightcoral", border = "black")
-qqnorm(data_left_skewed)
-qqline(data_left_skewed, col = "red")
-
-
-```
-
-## Bimodal
-
-```{r}
-# Generate bimodal data
-data_bimodal <- c(rnorm(500, mean = -2), rnorm(500, mean = 2))
-
-# Create histogram and QQ plot
-par(mfrow = c(1, 2))
-hist(data_bimodal, main = " Bimodal", xlab = "Value", col = "lightyellow", border = "black")
-qqnorm(data_bimodal)
-qqline(data_bimodal, col = "red")
-
-
-
-```
-
-## Heavy tailed
-
-```{r}
-# Generate heavy-tailed data
-data_heavy_tailed <- rt(1000, df = 5)  # T-distribution with low degrees of freedom
-
-# Create histogram and QQ plot
-par(mfrow = c(1, 2))
-hist(data_heavy_tailed, main = "Heavy-tailed", xlab = "Value", col = "lightblue", border = "black")
-qqnorm(data_heavy_tailed)
-qqline(data_heavy_tailed, col = "red")
-
-
-```
-
-## Light tailed
-
-```{r}
-# Load necessary library
-library(ggplot2)
-
-# Generate light-tailed data with high kurtosis using Beta distribution
-set.seed(123)
-data_beta <- rbeta(1000, shape1 = 2, shape2 = 2) * 2 - 1  # Scale to [-1, 1]
-
-# Create histogram and QQ plot
-par(mfrow = c(1, 2))
-
-# Histogram
-hist(data_beta, main = "Histogram: Beta Distribution", 
-     xlab = "Value", col = "lightblue", border = "black")
-
-# QQ Plot
-qqnorm(data_beta)
-qqline(data_beta, col = "red")
-title("QQ Plot: Beta Distribution")
-```
 
 # Understanding Bias  {background-color="#D9DBDB"}
 
@@ -2574,7 +2834,13 @@ title("QQ Plot: Beta Distribution")
 **Example:**
 - In a model predicting house prices, having both "square footage" and "number of rooms" may lead to multicollinearity.
 
+## Multicollinearity
 
+```{r, echo = T, warning = F, message = F}
+penguins %>% 
+  GGally::ggpairs(columns = 2:6, ggplot2::aes(colour = species))
+
+```
 
 ## Omitted Variable Bias
 
@@ -2593,7 +2859,47 @@ title("QQ Plot: Beta Distribution")
 **Example:**
 - If studying the effect of education on income without including "work experience," the model may incorrectly attribute income differences solely to education.
 
+## Sample Bias
 
+This type of bias occurs when there’s not a representative sample of a group/groups in the dataset, thus skewing results and performance
+
+
+```{r, message = F, warning = F}
+
+island_species_summary <- penguins %>% 
+  group_by(island, species) %>% 
+  summarise(n=n()) %>% 
+  ungroup() %>% # needed to remove group calculations
+  mutate(freq=n/sum(n)) # 
+
+penguins %>% 
+  ggplot(aes(x=island, fill=species))+
+  geom_bar(position=position_dodge2(preserve="single"))+ 
+  #keeps bars to appropriate widths
+    labs(x="Island",
+       y = "Number of observations")+
+  geom_text(data=island_species_summary, # use the data from the summarise object
+            aes(x=island,
+                y= n+10, # offset text to be slightly to the right of bar
+                group=species, # need species group to separate text
+                label=scales::percent(freq) # automatically add %
+                ),
+            position=position_dodge2(width=0.8))+ # set width of dodge
+  scale_fill_manual(values=c("cyan",
+                            "darkorange",
+                            "purple"
+                            ))+
+  coord_flip()+
+  theme_minimal()+
+  theme(legend.position="bottom") # put legend at the bottom of the graph
+
+```
+
+## Survivorship Bias
+
+```{r, echo = FALSE, out.width="90%", fig.alt = "WW2 planes returning from battle with bullet holes"}
+knitr::include_graphics("images/survivor.png")
+```
 
 ## Confirmation Bias
 
@@ -2693,7 +2999,7 @@ SE = {s\over \sqrt n}
 $$
 
 
-```{r}
+```{r, echo = FALSE, out.width="100%", fig.alt = "Data sampling"}
 
 knitr::include_graphics("images/standard_error.png")
 
@@ -2737,6 +3043,7 @@ $Mean~difference = \overline x_1 - \overline x_2$
 
 $SED = \sqrt{s_1^2\over n_1}+{s_2^2\over n_2}$
 
+Standard Error of the difference is calculated from two $s$ so will always be larger than a single population estimate
 
 :::
 
@@ -2927,7 +3234,7 @@ Calculate Confidence intervals based on *t-distribution*
 ${95\%~CI} = {\overline x \pm t*SE}$
 
 
-```{r, out.width = "80%"}
+```{r, out.width = "60%"}
 
 knitr::include_graphics("images/z_vs_t.png")
 
@@ -2985,7 +3292,7 @@ ${95\%~CI} = {-2.617 \pm 2.048*1.07}$
 
 ${95\%CI;[-4.81:-0.417]}$
 
-$ = {-2.617 \pm 2.19}$
+${=-2.617\pm2.19}$
 
 :::
 
@@ -3010,11 +3317,1152 @@ p = 0.05 when observed t > than critical t:
 
 # Introduction to Linear Models {background-color="#D9DBDB"}
 
-# Common statistical tests are linear models
+## Two-sample t-tests
 
-# Hypothesis testing 
+**Q. When testing the difference between two population means, what is the null hypothesis for the difference in their means?**
 
-# Regression
+
+We know that even when samples **are** drawn from the same population, the samples means won't be exactly the same
+
+```{r, echo = FALSE, out.width="50%", fig.alt = ""}
+knitr::include_graphics("images/sample_means.png")
+```
+
+
+## Different enough?
+
+When can we determine that two sample means are different **enough**? To have come from *different* populations?
+
+```{r, echo = FALSE, out.width="40%", fig.alt = ""}
+knitr::include_graphics("images/sample_means.png")
+knitr::include_graphics("images/sample_means_diff.png")
+```
+
+
+
+## Two-sample t-test
+
+* Compare the means of two samples
+
+* Null hypothesis: there is no difference between the population means
+
+--
+
+* t-statistic: based on difference in sample **means, sd & n**
+
+* For a given sample size and t-value, how unlikely is to have two random samples *at least* this different IF both samples are drawn from identical/same populations. 
+
+---
+
+## Variance matters
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Equal means, but different variance"}
+knitr::include_graphics("images/variance_matters.png")
+
+```
+
+
+
+## T-test Example
+
+Example: A botanist is studying the mass of pollen transported by individual bees from two different hives (Hive A and Hive B). 
+
+She collects pollen samples from 62 bees in Hive A (mean pollen mass = 31.4 mg) and 67 bees in Hive B (mean pollen mass = 36.7 mg). Variances for each hive are 225.0 mg^2 and 186.0 mg^2, respectively. 
+
+
+**Is there a significant difference in pollen mass transported per bee for the two hives studied?**
+
+
+
+Variance $s^2$ = Sum of squared residuals/ n
+
+
+Standard deviation (s) = $\sqrt Variance$
+
+
+## Standard error of the difference
+
+ **Calculate the difference in means, and the standard error of the difference in means**
+
+::::{.columns}
+
+:::{.column}
+
+Mean Difference = 36.7 - 31.4
+
+Mean Difference = 5.3
+
+:::
+
+:::{.column}
+
+
+
+$$
+SED = \sqrt{s^2_1\over n_1} + {s^2_2\over n_2}
+$$
+
+
+
+$$
+SED = \sqrt{225\over 62} + {186\over 67}
+$$
+
+
+
+
+$$
+SED = \sqrt{3.63} + {2.78}
+$$
+
+
+
+
+$$
+SED = 2.53
+$$
+
+
+
+:::
+
+:::
+
+## Standard error of the difference
+
+::::{.columns}
+
+:::{.column}
+
+Mean difference = 5.3
+
+
+**Calculate 95% confidence intervals**
+
+Assuming a normal distribution this would be 1.96 * SED = 4.96
+
+
+
+Assuming a *t* distribution = ( $\alpha$ = 0.975, *df* = 129-2, *SED* = 2.53 ) = 5.008
+
+
+
+95% CI range = 5.3 [± 5.008] = 0.292 - 10.308 
+
+:::
+
+:::{.column}
+
+$$
+SED = 2.53
+$$
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "T distributions"}
+knitr::include_graphics("images/t_distribution_comparisons.png")
+```
+
+:::
+
+::::
+
+
+##
+
+**Calculate the difference in means, and the standard error of the difference in means**
+
+::::{.columns}
+
+:::{.column}
+
+
+
+Mean difference = 5.3
+
+:::
+
+:::{.column}
+
+$$
+SED = 2.53
+$$
+
+:::
+
+::::
+
+##
+
+**Calculate 95% confidence intervals**
+
+95% CI range = 5.3 [± 5.008] = 0.292 - 10.308 
+
+* **Describe the estimated mean difference**
+
+**The mass of pollen transported per bee in Hive B is on average 5.3mg more than Hive A [0.29 - 10.3] (mean [± 95% CI])**
+
+##
+
+**The mass of pollen transported per bee in Hive B is on average 5.3mg more than Hive A [0.29 - 10.3] (mean [± 95% CI])**
+
+**Q. Will this be a statistically significant difference?**
+
+$$
+\alpha = 1 - C
+$$
+
+:::{.fragment}
+
+As the 95% CI calculated from the *t* distribution *do not* cross 0, we can say that their is a > 5% probability of observing at least this difference in means under the assumption that the null hypothesis is true
+
+:::
+
+:::{.fragment}
+
+**"At P ≤ 0.05 bees from Hive B transport at least 0.29mg of pollen more per bee than Hive A"**
+
+:::
+
+## Calculate precise p-values
+
+FIND THE CRITICAL VALUE OF t
+
+**You are not expected to be able to do this by hand. This requires finding the degrees of freedom and use a critical t value table (R will calculate this for you)**
+
+Critical value for t at 127 df and 𝛼 = 0.05 is **1.98**
+
+FIND THE t-STATISTIC FOR YOUR SAMPLES (here, equal variances)
+
+$$
+t_{sample}={difference \over SED}={5.3 \over 2.53}=2.09
+$$
+
+For a *t*-value of 2.09 at *df* 127, *p* = 0.0115
+
+## P-value
+
+## p = 0.0115
+
+IF the null hypothesis is true (samples are taken from populations with the same mean), the probability that we would have taken two samples that are at least this different by random chance (means, taking into account data spread, etc.) is 1.15%.
+
+
+**“Pollen mass transported by individual bees in Hive A (32 ± 15 mg [mean ± sd],  n = 62) and Hive B (38 ± 13.6 mg [mean ± sd], n = 67) differed significantly (t(127) = 2.09, p = 0.0115).”**
+
+::::{.column}
+
+:::{.columns}
+
+```{r, echo = T, eval = FALSE}
+
+hive_data %>% 
+  t_test(pollen_mass ~ hive,
+         var.equal = T)
+
+```
+
+:::
+
+:::{.column}
+
+
+```
+
+	Two Sample t-test
+
+data:  hive_a and hive_b
+
+t = 2.09, df = 127, p-value = 0.01152
+
+alternative hypothesis: true difference in means is not equal to 0
+
+95 percent confidence interval:
+0.294166 10.30808
+
+
+```
+
+:::
+
+::::
+
+
+## Linear models
+
+- A linear approach to modeling the relationship between a dependent variable and one or more independent variables.
+
+
+### Simple Linear Regression
+- Models the relationship between two variables by fitting a linear equation.
+- Equation: \( Y = \beta_0 + \beta_1X + \epsilon \)
+  - \( Y \): Dependent variable
+  - \( X \): Independent variable
+  - \( \beta_0 \): Intercept
+  - \( \beta_1 \): Slope
+  - \( \epsilon \): Error term
+
+## Testing with linear models {.smaller}
+
+- Tests if the coefficients (\( \beta \)) of the model are significantly different from zero.
+- Null hypothesis (H0): \( \beta_i = 0 \) (no effect).
+- Alternative hypothesis (H1): \( \beta_i \neq 0 \) (significant effect).
+
+### Steps
+1. **Fit the model**
+   - Use methods like Ordinary Least Squares (OLS).
+2. **Calculate the test statistic**
+   - Typically a t-statistic for each coefficient.
+3. **Determine the p-value**
+   - Indicates the probability of observing the data if H0 is true.
+4. **Make a decision**
+   - If p-value < α, reject H0.
+
+## Linear models
+
+
+::::{.columns}
+
+:::{.column}
+
+* Difference tests: t-test, ANOVA, ANCOVA
+
+* Association tests: Regressions
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Introduction to linear models"}
+knitr::include_graphics("images/linear_model_difference.png")
+knitr::include_graphics("images/linear_model_regression.png")
+```
+:::
+
+::::
+
+
+
+## R does most of the work for you
+
+```{r, echo = T, eval = FALSE}
+
+hive_lsmodel <- lm(pollen_mass ~ hive, data = hive_data)
+
+```
+
+```
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    29.160      1.792  16.274   <2e-16 ***
+hiveb		  -5.33       2.53    2.09   0.0115 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+```
+
+
+
+## Linear model assumptions
+
+::::{.columns}
+
+:::{.column}
+
+Are the same as those that apply to a Student's T-test
+
+1) Normality of the residual variance
+
+2) Equality of the residual variance
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Introduction to linear models"}
+knitr::include_graphics("images/lm_t_test.png")
+
+```
+
+:::
+
+::::
+
+
+## Common statistical tests are linear models
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Linear model tests"}
+knitr::include_graphics("images/commmon_statistical_tests_linear_models.png")
+```
+
+
+# P-values
+
+## What is a P-value
+
+:::{.fragment}
+
+### The probability of getting results at least as extreme as the ones we observed. Assuming the Null Hypothesis is true
+
+:::
+
+## Hypothesis formation
+
+:::{.incremental}
+
+- **Null hypothesis:** there is **no** difference between groups. Or no relationship between dependent and independent variables
+
+
+- **Alternative hypothesis:** there *is* a difference between groups. Or there *is* a relationship between dependent and independent variables
+
+:::
+
+## Null hypothesis probability distribution
+
+```{r, echo = FALSE, out.width="50%"}
+
+knitr::include_graphics("images/null_hypothesis.png")
+
+```
+
+These areas represent 2.5% of the values in the left tail of the distribution, and 2.5% of the values in the right tail of the distribution. 
+
+Together, they make up 5% of the most extreme mean differences we would expect to observe, given our number of observations, 
+
+when the true mean difference is exactly 0 – this represents the use of an $\alpha$ level of 5%
+
+
+
+## Sample size can affect distributions
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/null_5000.png")
+
+```
+
+A probability distribution can be affected by variance and sample size. 
+
+
+
+## Hypothesis testing
+
+The **null hypothesis** is that there is no relationship between your variables of interest or that there is no difference among groups
+
+e.g you want to know whether there is a difference in longevity between two groups of mice fed on different diets, diet A and diet B. 
+
+:::{.incremental}
+
+- **Null hypothesis:** there is **no** difference in longevity between the two groups.
+
+
+
+- **Alternative hypothesis:** there *is* a difference in longevity between the two groups.
+
+
+
+
+- We can use a linear model to perform a t-test on the data
+
+:::
+
+```
+lm(longevity ~ diet, data = mice)
+```
+
+
+```{r, echo = F}
+data_sim <- function(mean1, mean2, sd){
+set.seed(123)
+mice_a <- rnorm(n = 12, mean = mean1, sd = sd)
+mice_b <- rnorm(n = 12, mean = mean2, sd = sd)
+mice <- data.frame(cbind(mice_a,mice_b)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "diet",
+               values_to = "longevity")
+
+model <- lm(longevity ~ diet, data = mice)
+
+tidy_model <- model %>% 
+  broom::tidy(., conf.int =T)
+
+tidy_model
+}
+
+tidy_model <- data_sim(mean1 = 4, mean2 = 3, sd =1)
+
+```
+
+
+
+## Visualising the t distribution of the difference
+
+```{r, fig.show="hold", out.width="50%", echo = F}
+
+tidy_model
+
+x <- seq(-5, 5, by = 0.1)
+y1 <- dt(x, df = 22)
+
+estimate <- tidy_model[[2,2]]
+std.error <- tidy_model[[2,3]]
+
+conf.low <- tidy_model[[2,6]]
+conf.high <- tidy_model[[2,7]]
+
+x1 <- (x*std.error)+estimate
+
+
+plot(x1, y1, type = "l", col = "darkgrey", lty=1,
+     xlab = "Mean difference", 
+     ylab = "Density", 
+     main = "T Distribution",
+     ylim = c(0,0.4),
+     xlim = c(min(x1), max(x1)))
+polygon(c(x1[x1>=conf.high], max(x1), conf.high), c(y1[x1>=conf.high], 0, 0), col="red")
+
+
+legend("topright", legend = "95% CI", lty = 1, col = "red")
+
+#GGally::ggcoef_model(model)
+```
+
+
+## Compare these write-ups
+
+“Diets can change the longevity of mice (*p* = 0.0016).”
+
+:::{.incremental}
+
+- “Mice on diet B lived significantly shorter lives than mice on diet A (*t*<sub>22</sub> = -3.6, *p* = 0.006).”
+
+
+- "Mice on diet B had a reduced mean lifespan of 1.41 years[95% CI; -0.595:-2.22] from the mice on diet A (mean 4.19 years (95% CI, 3.62-4.77). While statistically significant (*t*<sub>22</sub> = -3.6, *p* = 0.006), this is a relatively small sample size, and further testing is recommended to confirm this effect."
+
+
+
+- Which has the greatest level of useful detail?
+
+:::
+
+## Common misundertandings\n about P values
+
+[Common misconceptions about P-values](https://daniellakens.blogspot.com/2017/12/understanding-common-misconceptions.html?m=1)
+
+[Evidence of P-hacking](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4359000/#:~:text=Evidence%20for%20p%2Dhacking%20from,test%20function%20in%20R)
+
+
+
+
+## Comparing hypothetical distributions
+
+In the real world we will never know whether there is a true mean difference, but let's assume that we could. 
+
+The figure below shows the expected data pattern when the null hypothesis is true (grey line) and the expected data pattern when an alternative hypothesis is true (black line). 
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/null-and-alternate.png")
+
+```
+
+
+## A non-significant p-value DOES NOT mean the null hypothesis is true
+
+::::{.columns}
+
+:::{.column}
+
+
+Here we can illustrate why a non-significant result does not always mean that the null hypothesis is true.
+
+We *know* that the true mean difference is 0.5, but we only *observe* a mean difference of 0.35.  *p* > $\alpha$. 
+
+BUT - we can see that the observed mean difference is much more likely under the alternative hypothesis than the null. All the *p*-value tells us is that seeing an observed difference of 0.35 is not that surprising under the null hypothesis.
+
+:::
+
+:::{.column}
+
+
+```{r, echo = FALSE, out.width="90%"}
+
+knitr::include_graphics("images/type-2.png")
+
+```
+
+:::
+
+::::
+
+
+## Why a significant p-value does not mean the null hypothesis is false
+
+
+What we can conclude, based on our data, is that we have observed an extreme outcome, that should be considered surprising. But such an outcome is not *impossible* when the null-hypothesis is true.
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/type-1.png")
+
+```
+
+
+
+## Why a significant p-value is not the same as an important effect
+
+::::{.columns}
+
+:::{.column}
+
+If we plot the null model for a very large sample size, we can see that even very small mean differences will be considered 'surprising'. 
+
+However, just because data is surprising, does not mean we need to care about it. It is mainly the verbal label ‘significant’ that causes confusion here – it is perhaps less confusing to think of a ‘significant’ effect as a ‘surprising’ effect.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="90%"}
+
+knitr::include_graphics("images/sample-size.png")
+
+```
+
+:::
+
+::::
+
+
+
+## Type 1 and Type 2 Errors:
+
+We have now seen that it is possible to make incorrect decisions about rejecting or keeping the null hypothesis.
+
+
+|             | H0 True   | H0 False     
+| ----------- | ----------- |----------- |
+| Reject H0 | Type 1 Error $$\alpha$$ | Correct rejection $$1-\beta$$
+| Fail to reject H0    | Correct decision $$1-\alpha$$ | Type 2 Error  $$\beta$$   
+
+## Type 1
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "P > 0.05."}
+
+knitr::include_graphics("images/type_1_errors.png")
+
+```
+
+Type 1 error = Rejecting the null hypothesis (because *p* < $\alpha$), but actually this was a random sampling effect, not a *true difference*
+
+## Type 2
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "P < 0.05."}
+
+knitr::include_graphics("images/type_2_errors.png")
+
+```
+
+Type 2 error = Keeping the null hypothesis (because *p* > $\alpha$) the random sampling effect made it look like they come from the *same* parent distribution, but in reality the populations are distinct. 
+
+
+
+## Type 2 error
+
+:::{.incremental}
+
+* Probability of a Type 2 error is known as $\beta$ 
+
+
+
+* Power is the inverse of a Type 2 error $\beta=1-Power$ 
+
+
+* A Type 2 error is the scenario where you fail to detect a *true* difference/effect
+
+
+* Power is the probability you **will** detect a *true* difference/effect 
+    *if the alternative hypothesis is true*
+
+:::
+
+## Power
+
+There are three primary factors affecting power:
+
+
+
+* Effect size: The magnitude of a result present in a population
+
+* Sample size: The number of observations per sample
+
+* Alpha: the threshold at which you would accept statistical significance (often 0.05)
+
+
+
+
+Raising the value of any of effect size, sample size or $\alpha$ all increase Power $1-\beta$
+
+
+
+
+## Are the statistics correct?
+
+Reporting effect sizes, levels of uncertainty and understanding the statistical power of your experiment are all important. 
+
+
+But a single experiment is **never** enough to know which hypothesis is correct. 
+
+
+Only multiple experiments will allow true statistical trends to emerge
+
+::::{.columns}
+
+:::{.column}
+
+```{r, figures-side, fig.show="hold", echo = F, out.width = "40%"}
+
+#### write function 
+simT <- function(n, mean2 = 0){
+  x1 <- rnorm(n,0,1)
+  x2 <- rnorm(n,mean2,1)
+  t.test(x1, x2)$p.value 
+}
+
+
+#### repeat function for n = 10 and for different nrep and plot
+
+simTRep <- replicate(1000, simT(20))
+hist(simTRep, breaks = 21, col = c('red',rep('grey',20)), 
+     main = "Null hypothesis true", sub = "nrep = 1000, n = 20", xlab = "pvalue")
+
+
+```
+
+:::
+
+:::{.column}
+
+```{r, figures-sidea, fig.show="hold", echo = F, out.width = "40%"}
+
+simTRep <- replicate(1000, simT(20, 0.5))
+hist(simTRep, breaks = 21, col = c('red',rep('grey',20)), 
+     main = "Alternate hypothesis true", sub = "nrep = 1000, n = 20", xlab = "pvalue")
+```
+
+:::
+
+::::
+
+
+## Are most published results wrong?
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/effects_wrong.png")
+
+```
+
+```{r, eval = FALSE, warning = FALSE, out.width = "100%", fig.cap = "9/(16+9) = 36% of significant p values would be false positives"}
+
+
+grViz("
+digraph boxes_and_circles {
+  rankdir = LR
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 8]
+
+
+
+
+  # several 'node' statements
+  node [shape = box,
+        fontname = Helvetica]
+
+  
+# label names
+
+A[label = '200\n experiments']
+B[label = '20 \n real effect ']
+C[label = '180 \n no real effect']
+
+F[label = '171 \n true null \n rejection']
+G[label = '9 \n false null \n rejection',
+color = blue]
+
+E[label = '4 \n real effect \nnot found',
+
+color = red]
+D[label = '16 \n real effect \n found']
+
+  # several 'edge' statements
+  A->B 
+  A->C
+  C->F[label = 0.95]
+  C->G[label = 0.05]
+  B->D[label = 0.8]
+  B->E[label = 0.2]
+}
+")
+
+
+```
+
+
+
+[Smaldino & McElreath 2016](https://royalsocietypublishing.org/doi/full/10.1098/rsos.160384?wm=3049_a111)
+[Ioannidis 2005](https://doi.org/10.1371%2Fjournal.pmed.0020124)
+
+
+
+## Irreproducible science
+
+* Publication bias
+
+* Low statistical power
+
+* P-hacking
+
+* P-HARKing (*H*ypothesis *A*fter *R*esults *K*nown)
+
+[Bishop 2019](https://www.nature.com/articles/d41586-019-01307-2)
+
+
+
+
+## What can be done?
+
+- Open, reproducible analyses can disclose analysis choices and sample sizes
+
+- Preconsidered statistical models
+
+- Pre-registered studies can detect P-hacking and HARKing
+
+
+# Regression {background-color="#D9DBDB"}
+
+## Linear models for regression analysis
+
+
+::::{.columns}
+
+:::{.column}
+
+Difference tests: t-test, ANOVA, ANCOVA
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Difference model"}
+knitr::include_graphics("images/linear_model_difference.png")
+
+```
+
+
+
+:::
+
+:::{.column}
+
+Association tests: Regressions
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Regression model"}
+knitr::include_graphics("images/linear_model_regression.png")
+```
+
+:::
+
+::::
+
+
+
+## Basic linear models
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares"}
+
+knitr::include_graphics("images/basic_linear.png")
+
+```
+
+Basic linear models aim to describe a linear relationship between a:
+
+:::{.incremental}
+
+- response (dependent) variable and a predictor (independent) variable. 
+
+- usually by the method of ordinary least squares.
+
+:::
+
+---
+
+## Straight line equation
+
+$$
+\LARGE{y = a + bx}
+$$
+
+::::{.columns}
+
+:::{.column}
+
+### Where:
+
+$y$ is the predicted value of the response variable
+
+
+
+$a$ is the intercept (value of y when x = 0)
+
+
+
+$b$ is the slope of the regression line
+
+
+
+$x$ is the value of the explanatory variable
+
+:::
+
+:::{.column}
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "regression"}
+
+knitr::include_graphics("images/reg.png")
+
+```
+
+:::
+
+::::
+
+
+## Line of best fit
+
+```{r, echo = FALSE, out.width="70%", fig.alt = "Line fitting"}
+
+knitr::include_graphics("images/fit-linear.png")
+
+```
+
+
+## Ordinary Least Squares
+
+The line of best fit minimises the sum of the **squared distance** that *each* sample point is from the value predicted by the model
+
+This is called the method of 
+
+
+
+### Ordinary Least Squares
+
+
+
+## Residuals
+
+
+The difference between the ACTUAL value of the observation $y_i$ and the value that the model predicts $\hat{y_i}$ at that $x$ value are the residuals (residual error).
+
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "residuals"}
+
+knitr::include_graphics("images/ols.png")
+
+```
+
+The regression model fitted by **O**rdinary **L**east **S**quares (OLS) will produce the equation for the line that **MINIMIZES** the sum of squares of the residuals
+
+
+## Sum of Squares Errors
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="40%", fig.alt = "sum of squares error"}
+
+knitr::include_graphics("images/ols-2.png")
+
+```
+
+:::
+
+:::{.column}
+
+This produces the line with the *smallest* total area size for the squares. 
+
+$$
+SSE = \underset{i=1}{n \atop{\sum}}(y_i - \hat{y_i})^2
+$$
+
+
+SUM OF RESIDUAL ERROR = $(2)+(-1)+(4)+(-3)+(-2)=0$
+
+
+
+SUM OF SQUARES OF RESIDUAL ERROR = $(2^2)+(-1^2)+(4^2)+(-3^2)+(-2^2)=34$
+
+:::
+
+::::
+
+
+## Sums of Squares
+
+::::{.columns}
+
+:::{.column}
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "OLS fits a line to produce the smallest amount of SSE"}
+
+knitr::include_graphics("images/Sum of squares.png")
+
+```
+
+:::
+
+:::{.column}
+
+**SST** The squared differences between the observed dependent variable $y_i$ and its overall mean $\overline{y}$.
+
+**SSR** The sum of the differences between the predicted value $\hat{y_i}$ of the dependent variable and its overall mean $\overline{y}$.
+
+**SSE** The error is the difference between the observed dependent value $y_i$  and the predicted value $\hat{y_i}$.
+
+:::
+
+::::
+
+
+## Linear model equation
+
+$$
+\LARGE{y_i = a + bx+\epsilon}
+$$
+
+::::{.columns}
+
+:::{.column}
+
+$y_i$ is the predicted value of the response variable
+
+$a$ is the intercept (value of y when x = 0)
+
+$b$ is the slope of the regression line
+
+$x$ is the value of the explanatory variable
+
+$\epsilon$ is the value of the residual error
+
+:::
+
+:::{.column}
+
+
+```{r, echo = F}
+janka <- read_csv(here::here("data", "janka.csv"))
+
+```
+
+```{r, echo = T}
+janka_ls1 <- lm(hardness ~ dens, data = janka) 
+summary(janka_ls1)
+```
+
+:::
+
+::::
+
+
+
+
+
+## Coefficient of determination
+
+
+$\LARGE{R^2}$ : The proportion of variation in the dependent variable that can be predicted from the independent variable
+
+
+$$
+\LARGE{R^2=1-{Sum~of~Squared~Distances~between~y_i~and~\hat{y_i}\over{Sum~of~Squared~Distances~between~y_i~and~\overline{y}}} }
+$$
+
+
+
+$$
+\LARGE{R^2=1-{SSE\over{SST}}}
+$$
+
+
+
+## Adjusted $\LARGE{R^2}$
+
+Adjusted $R^2$ is a corrected goodness-of-fit measure for linear models.
+
+
+
+$R^2$ always increases as the number of effects are included in the model. Good for overall prediction, but does not check efficiency. 
+
+
+
+Adjusted $R^2$ can fall if a model term does not *improve* the fit of the model
+
+
+
+```{r, echo = FALSE, out.width="30%"}
+
+knitr::include_graphics("images/adj_r.png")
+
+```
+
+
+
+$N$ = numerator degrees of freedom = Total number of observations across all groups
+
+
+
+$k$ = Total number of groups
+
+
+
+
+
+## Summary
+
+```{r, echo = T}
+summary(janka_ls1)
+```
+
+
+
+## A write-up
+
+
+ **I** fitted a linear model (estimated using OLS) to predict **timber hardness from wood density**. The model explains a statistically significant and substantial proportion of variance (F<sub>1,34</sub>) = 636.98, p < .001, adj. R<sup>2</sup> = 0.95). The model shows that for each unit increase in wood density (kg/m^3) there is an **increase** of 57.51 (lbf) on the Janka wood hardness scale (Beta = 57.51, 95% CI [52.88, 62.14], t<sub>34</sub> = 25.24, p < .001). Model residuals were checked against the assumptions of a standard linear model.
+
+
+
+
+## Assumptions of the Linear Model
+
+:::{.incremental}
+
+-  *Errors* should be normally distributed
+
+- Homoscedasticity of the errors
+
+- Independent observations
+
+- A Linear relationship
+
+:::
+
+## Model fit checks
+
+```{r, echo = T, out.width="100%"}
+performance::check_model(janka_ls1) 
+```
+
+
+
+# Questions?
 
 # ANOVA {background-color="#D9DBDB"}
 
@@ -3364,14 +4812,13 @@ anova(bulb_lsmodel0)
 
 :::
 
-## Post hoc
+## Post hoc {.smaller}
 
 | Method     | Equation | Notes|
 | ----------- | ----------- |----------- |
 | Bonferroni/Dunn-Sidak    | $p = {\alpha \over k}$      | Correct critical p for the number of independent tests
 | Holm's    | $p_{1} < \alpha/(k–1+1) = \alpha/k$      | we start with the smallest p-value (i = 1) and determine whether there is a significant result (i.e. p1 < α/(k–1+1) = α/k. If so we move on to the second test. We continue in this manner until we get a non-significant result
 | Tukey HSD  | $t_{crit} = q * \sqrt{MSE \over N}$  | Essential a t-test, correcting for multiple comparison, q-values can be looked up for test df and number of treatments
-
 
 
 
@@ -3890,7 +5337,7 @@ A model with poor diagnostics is a bad fit for the data – confidence intervals
 
 
 
-### Model checks
+## Model checks
 
 ::::{.columns}
 
@@ -4336,7 +5783,7 @@ head(model_dredge, n = 3)
 
 ```
 
-## Model averaging
+## Model averaging {.smaller}
 
 ```{r, eval = F, echo = T}
 model.avg(model_dredge)
@@ -5000,31 +6447,6 @@ janka |>
 ```
 
 
-## Challenge: Fit a Linear Model
-
-<br><br>
-
-* Fit the Linear Model `lm(hardness ~ dens, data = janka)` to the janka data.
-
-* Evaluate the model fit
-
-```{r}
-#| label: ex-lm-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-
 ## Model diagnostics
 
 ```{r}
@@ -5048,43 +6470,16 @@ plot(janka_ls, which=3)
 #| fig-height: 8
 #| message: false
 
-library(lmtest)
+library(performance)
 
 # Breusch-Pagan Test of Homoscedasticity
-lmtest::bptest(janka_ls)
+check_heteroscedasticity(janka_ls)
 
 # Shapiro-Wilk test for normality of residuals
-shapiro.test(residuals(janka_ls))
+check_normality(residuals(janka_ls))
 
 
 
-```
-
-
-## Challenge
-
-<br><br>
-
-* What can we try to improve the fit of our `lm(hardness ~ dens, data = janka)` ?
-
-<br>
-
-* Let's make suggestions then try them out:
-
-```{r}
-#| label: ex-transform-lm-timer
-countdown::countdown(
-  minutes = 15,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
 ```
 
 
@@ -5299,6 +6694,8 @@ summary(janka_wls)
 
 - We don't understand the true structure of our data
 
+- [Implications of log-transformation](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4120293/)
+
 :::
 
 
@@ -5310,23 +6707,6 @@ summary(janka_wls)
 * Fit a `glm(gaussian(link = "identity"))` to the data
 
 * Check that the model is identical to the `lm()`
-
-
-```{r}
-#| label: ex-glm-timer
-countdown::countdown(
-  minutes = 5,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
 
 ```{r}
 #| eval: true
@@ -5423,122 +6803,11 @@ plot(janka_glm, which=3)
 ```
 
 
-## Choosing an Error Family
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-#| fig-height: 7
-#| message: false
-
-library(fitdistrplus)
-
-descdist(janka$hardness, boot = 500)
-
-```
-
-:::
-
-:::{.column}
-
-- A Cullen and Frey plot (skewness-kurtosis)
-
-- A graphical view of the distribution of the dependent variable
-
-- Reference lines represent expected skew and kurtosis for different distributions
-
-- Beta family sits outside of GLM exponential families
-
-:::
-
-::::
 
 ## Choosing an Error family
 
-::::{.columns}
 
-:::{.column}
-
-```{r}
-#| eval: false
-#| echo: true
-#| fig-height: 8
-#| message: false
-#| warning: false
-
-library(fitdistrplus)
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-fg <- fitdist(janka$hardness, "gamma")
-fn <- fitdist(janka$hardness, "norm")
-plot.legend <- c("normal", "gamma")
-denscomp(list(fn, fg), legendtext = plot.legend)
-qqcomp(list(fn, fg), legendtext = plot.legend)
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 7
-#| message: false
-#| warning: false
-
-library(fitdistrplus)
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-fg <- fitdist((janka$hardness), "gamma")
-fn <- fitdist((janka$hardness), "norm")
-plot.legend <- c("normal", "gamma")
-denscomp(list(fn, fg), legendtext = plot.legend)
-qqcomp(list(fn, fg), legendtext = plot.legend)
-```
-
-:::
-
-::::
-
-## Choosing based on AIC
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-#| message: false
-
-summary(fg)
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-#| message: false
-
-summary(fn)
-```
-
-:::
-
-::::
-
-
-
-
-## Gamma
+### Gamma
 
 :::: columns
 
@@ -5620,11 +6889,7 @@ summary(janka_gamma)
 #| message: false
 
 
-ggplot(janka, aes(x = dens, y = hardness)) +
-  geom_point() +  # scatter plot of original data points
-  geom_smooth(method = "glm", method.args = list(Gamma(link = "sqrt"))) +  # regression line
-  labs(title = "Linear Regression with ggplot2",
-       x = "X", y = "Y")  # axis labels and title
+check_model(janka_gamma, detrend =F) 
 
 
 ```
@@ -5640,11 +6905,7 @@ ggplot(janka, aes(x = dens, y = hardness)) +
 #| message: false
 
 
-ggplot(janka, aes(x = dens, y = hardness)) +
-  geom_point() +  # scatter plot of original data points
-  geom_smooth(method = "glm", method.args = list(Gamma(link = "sqrt"))) +  # regression line
-  labs(title = "Linear Regression with ggplot2",
-       x = "X", y = "Y")  # axis labels and title
+check_model(janka_gamma, detrend =F) 
 
 
 ```
@@ -5652,31 +6913,6 @@ ggplot(janka, aes(x = dens, y = hardness)) +
 :::
 
 ::::
-
-## Exercise: Gamma
-
-* Fit the Gamma distribution linear model to the data.
-
-* `glm(hardness ~ dens, data = janka, family = Gamma(link = "sqrt")`
-
-* Evaluate the model fit against other glm fits.
-
-```{r}
-#| label: ex-gamma-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
 
 
 # Questions? {background-color="#D9DBDB"}
@@ -5806,27 +7042,6 @@ log_likelihood_visual()
 
 ::::
 
-## Exercise: log-likelihood
-
-<br><br>
-
-* Use the log-likelihood function with varying values of the mean and sd
-
-```{r}
-#| label: ex-log-timer
-countdown::countdown(
-  minutes = 5,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
 
 ## Deviance
 
@@ -5977,32 +7192,6 @@ r.squaredLR(janka_gamma)
 
 ::::
 
-## Exercise: Compare models
-
-* Revisit the janka models
-
-* Compare R-squared fits and AIC values
-
-* `r.squaredLR()` and `AIC()`
-
-```{r}
-#| label: ex-fits-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-
-
 ## Likelihood ratio test
 
 The likelihood ratio test (LRT) “unifies” frequentist statistical tests. Brand-name tests like t-test, F-test, chi-squared-test, are specific cases (or even approximations) of the LRT.
@@ -6096,185 +7285,6 @@ anova(null_model, fitted_model, test = "F")
 
 drop1(fitted_model, test = "F")
 
-```
-
-
-## Challenge: Fruitfly
-
-
-* Using the `fruitfly.csv` dataset
-
-* Build a model to investigate the effect of sleep, mating status and body size on longevity
-
-* Check the model fits and report findings
-
-```{r}
-#| label: ex-fly-glm-timer
-countdown::countdown(
-  minutes = 30,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-## Confidence intervals
-
-```{r}
-#| echo: false
-#| eval: true
-
-fruitfly <- read_csv("../data_2/fruitfly.csv")
-
-fly_gamma <- glm(longevity ~ type + thorax + sleep, family = Gamma(link = "identity"), data = fruitfly)
-
-```
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-# Assuming 'model' is your fitted GLM model
-
-# Extract coefficients and confidence intervals
-coef_ci <- confint(fly_gamma)
-
-# Extract estimates
-estimates <- coef(fly_gamma)
-
-# Combine estimates with confidence intervals
-estimates_df <- data.frame(
-  estimates = estimates,
-  lower_ci = coef_ci[,1],
-  upper_ci = coef_ci[,2]
-)
-
-# Display dataframe
-estimates_df
-
-```
-
-## Confidence intervals
-
-[`Broom`](https://broom.tidymodels.org/) is a tidyverse package for with helpers to extract and convert models into tibbles:
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-# Alternatively, using package-specific functions
-# Example with 'broom' package
-library(broom)
-tidy(fly_gamma, conf.int = T)
-
-```
-
-## Extracting main effects
-
-- Estimates and confidence intervals are set agains the intercept
-
-- Hypothesis testing of factors with more than one level requires lrt:
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-drop1(fly_gamma, test = "F")
-
-```
-
-## Estimates and post-hoc
-
-The `emmeans` package in R computes estimated marginal means (EMMs) it can also provides post-hoc comparisons and contrasts for fitted models.
-
-By default the package computes marginal means with 95% confidence intervals for the average of each variable
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-emmeans::emmeans(fly_gamma, 
-                 specs = pairwise ~ type + thorax + sleep,
-                 type = "response")
-
-```
-
-## Tables
-
-- There are multiple packages available that provide ways to present publication ready model summaries
-
-```{r}
-#| echo: true
-#| eval: false
-#| message: false
-
-library(gtsummary)
-
-tbl_regression(fly_gamma)
-
-library(sjPlot)
-
-tab_model(fly_gamma)
-
-```
-
-## Summary table & Figures
-
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| layout-ncol: 2
-#| fig-height: 8
-
-library(gtsummary)
-
-tbl_regression(fly_gamma)
-
-
-# Co-erce emmeans to a tibble  - provide range of required predictions for thorax 
-means <- emmeans::emmeans(fly_gamma, 
-                 specs = ~ type + thorax,
-                 at = list(thorax=c(0.64,0.94)),
-                 type = "response") |> 
-  as_tibble()
-
-# set figure colours
-colours <- c("cyan", "darkorange", "purple")
-
-# Overly model predictions with observed values
-fruitfly |> 
-  ggplot(aes(x=thorax, y = longevity, colour = type, fill = type))+
-  geom_ribbon(data = means,
-              aes(x = thorax, 
-                  y = emmean,
-                  ymin=lower.CL, 
-                  ymax=upper.CL), alpha = 0.2)+
-  geom_line(data = means,
-            aes(linetype = "dashed",
-                x = thorax,
-                y = emmean),
-                show.legend = FALSE)+
-  geom_point(data = fruitfly, aes(x = thorax, y = longevity),
-             show.legend = FALSE)+
-  scale_colour_manual(values = colours)+
-  scale_fill_manual(values = colours)+
-  labs(y = "Lifespan in days",
-       x = "Thorax length (mm)",
-       fill = "Type of female exposure")+
-  guides(colour = "none")+
-  theme_classic(base_size = 16)
 ```
 
 
@@ -6533,23 +7543,7 @@ plot(independent_variable, log_odds, type = "l", col = "green", xlab = "Independ
 
 ## Example
 
-* Can you recreate the binomial glm for mayfly~ccu data?
 
-```{r}
-#| label: ex-ccu-timer
-countdown::countdown(
-  minutes = 15,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
 
 ```{r}
 #| eval: true
@@ -6706,36 +7700,6 @@ broom::tidy(mayfly_glm, exponentiate = T)
 :::::
 
 
-## Challenge
-
-
-* Work with the odds and probability calculators
-
-* Check how comfortable you are with 
-
-- additive log-odds 
-
-- multiplicative odds 
-
-- changing probability
-
-* Can you work out the probability of mayfly occupancy at each CCU level?
-
-```{r}
-#| label: ex-odds-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
 
 
 ## Model fit
@@ -6915,128 +7879,6 @@ ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
   theme_classic(base_size = 14)
 
 ```
-
-:::
-
-::::
-
-
-
-## Practice - Bacteria
-
-```{r}
-#| label: ex-bact-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-<br><br>
-
-Using the 'bacteria' dataset, model the presence of *H. influenzae* as a function of `treatment` and `week` of test.
-
-Start with a full model between these two variables (include an interaction term) and use the likelihood ratio test to see if this should be retained
-
-```{r}
-
-#| eval: true
-#| echo: false
-#| message: false
-
-library(MASS)
-data(bacteria)
-glimpse(bacteria)
-
-```
-
-## Solution - Bacteria
-
-- Fit the model and check whether residuals are ok?
-
-- Full model:
-
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-
-model.bact1 <- glm(y ~ trt * week, data = bacteria, family = binomial)
-
-drop1(model.bact1, test = "Chi")
-
-
-```
-
-
-## Solution - Bacteria
-
-
-We found no significant difference in deviance when the interaction term was dropped from the full model $\chi^2_1$ = 0.68, p = 0.7098. So this was removed from the model and estimates were calculated from an additive model containing treatment and week
-
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-#| layout-ncol: 2
-
-model.bact2 <- glm(y ~ trt + week, data = bacteria, family = binomial)
-
-drop1(model.bact2, test = "Chi")
-
-summary(model.bact2)
-
-
-```
-
-## Challenge
-
-```{r}
-#| label: ex-malaria-timer
-countdown::countdown(
-  minutes = 40,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-:::: columns
-
-::: {.column}
-
-![](images/warbler.jpeg){fig-align="center" fig-alt="Seychelles warbler" width=60%}
-:::
-
-:::{.column}
-
-<br><br>
-
-* Using the malaria dataset fit a binomial glm to look at the predictors of malaria in the Seychelles warbler
-
-* Check the model fit
-
-* Make predictions
-
-* Produce a suitable figure
 
 :::
 
@@ -7681,16 +8523,14 @@ The **Poisson** distribution has the following characteristics:
 
 ::: {.column}
 
-![](images/cuckoo.jpg){fig-align="center" fig-alt="Cuckoo" width=50%}
+![](images/3 Spined Stickleback.jpg){fig-align="center" fig-alt="Stickleback" width=50%}
 :::
 
 :::{.column}
 
-In a study by [Kilner *et al.* (1999)](http://www.nature.com/nature/journal/v397/n6721/abs/397667a0.html), the authors
-studied the begging rate of nestlings in relation to total mass of the brood of **reed warbler chicks** and **cuckoo chicks**.
-The question of interest is:
+In this study the authors investigated the effect of the parasitic tapeworm *Schistocephalus solidus* infection on the susceptibility of infection from a second parasite, the trematode *Diplostomum pseudospathaceum*
 
-> How does nestling mass affect begging rates between the different species?
+> How does Treatment/Infection status affect trematode counts?
 
 :::
 
@@ -7698,8 +8538,7 @@ The question of interest is:
 
 ##
 
-This model is inadequate. It is predicting **negative** begging calls *within* the 
-range of the observed data, which clearly does not make any sense.
+This model looks ok
 
 ```{r}
 #| eval: false
@@ -7707,14 +8546,14 @@ range of the observed data, which clearly does not make any sense.
 #| fig-height: 8
 #| message: false
 
-cuckoo_lm <- lm(Beg ~ Mass + Species + Mass:Species, data = cuckoo)
+stick_lm <- lm(Diplo_intensity ~ Treatment, data = parasite)
 ```
 
 
 ```{r}
 #| include: FALSE
 
-cuckoo <- read_csv("../data_2/cuckoo.csv")
+parasite <- read_csv("../data_2/parasite_exp.csv")
 
 ```
 
@@ -7724,16 +8563,15 @@ cuckoo <- read_csv("../data_2/cuckoo.csv")
 #| fig-height: 7
 #| message: false
 
-cuckoo_lm <- lm(Beg ~ Mass + Species + Mass:Species, data = cuckoo)
+stick_lm <- lm(Diplo_intensity ~ Treatment, data = parasite)
 
-broom::augment(cuckoo_lm, type.predict = "response") %>% 
-ggplot(aes(x=Mass, y=.fitted, colour=Species)) + 
-  geom_point() +
-  geom_line()+
-  geom_hline(yintercept = 0, linetype = "dashed")+
-  scale_colour_manual(values=c("green3","turquoise3"))+
-  scale_x_continuous(limits = c(0,40)) +
-  theme_minimal()
+emmeans::emmeans(stick_lm, specs = ~Treatment) %>% 
+  as_tibble() %>% 
+ggplot(aes(x=Treatment, y=emmean)) + 
+  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL)) +
+  geom_jitter(data = parasite, aes( x= Treatment, y = Diplo_intensity),
+              alpha = .2, width = .2)+
+  theme_minimal(base_size = 18)
 
 
 
@@ -7749,9 +8587,9 @@ Let us display the model diagnostics plots for this linear model.
 #| layout-ncol: 2
 #| fig-height: 8
 
-plot(cuckoo_lm, which=2)
+plot(stick_lm, which=2)
 
-plot(cuckoo_lm, which=3)
+plot(stick_lm, which=3)
 ```
 
 
@@ -7759,61 +8597,6 @@ plot(cuckoo_lm, which=3)
 
 * Funnelling effect
 
-
-## Biological data and distributions
-
-We can look at the kurtosis and skewness of our univariate variable - Begging: 
-
-```{r}
-#| echo: true
-#| fig-height: 7
-
-descdist(cuckoo$Beg, boot = 500, discrete = T)
-
-```
-
-## Univariate distributions
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| echo: true
-#| eval: false
-#| fig-height: 7
-#| warning: false
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-fp <- fitdist(cuckoo$Beg, "pois")
-fn <- fitdist(cuckoo$Beg, "norm")
-fnb<- fitdist(cuckoo$Beg, "nbinom")
-plot.legend <- c("normal", "poisson", "negative binomial")
-denscomp(list(fn, fp, fnb), legendtext = plot.legend)
-qqcomp(list(fn, fp, fnb), legendtext = plot.legend)
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| echo: false
-#| fig-height: 7
-#| warning: false
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-fp <- fitdist(cuckoo$Beg, "pois")
-fn <- fitdist(cuckoo$Beg, "norm")
-fnb<- fitdist(cuckoo$Beg, "nbinom")
-plot.legend <- c("normal", "poisson", "negative binomial")
-denscomp(list(fn, fp, fnb), legendtext = plot.legend)
-qqcomp(list(fn, fp, fnb), legendtext = plot.legend)
-```
-
-:::
-
-::::
 
 
 ## Poisson model
@@ -7831,81 +8614,24 @@ x, which means that we just relaxed the homogeneity of variance assumption!
 * The model will never predict negative values (Poisson is strictly positive)
 
 $$
-    \log{\lambda} = \beta_0 + \beta_1 M_i + \beta_2 S_i + \beta_3 M_i S_i
+    \log{\lambda} = \beta_0 + \beta_1 T_i + \beta_2 T_j + \beta_2 T_k 
 $$
-
-## Poisson model
-
-$$
-    \log{\lambda} = \beta_0 + \beta_1 M_i + \beta_2 S_i + \beta_3 M_i S_i
-$$
-
-where $M_i$ is nestling mass and $S_i$ a **dummy** variable
-
-$S_i = \left\{\begin{array}{ll}1 & \text{if } i \text{ is warbler},\\0 & \text{otherwise}.\end{array}\right.$
-
-The term $M_iS_i$ is an **interaction** term. Think of this as an additional explanatory variable in our model.
-Effectively it lets us have **different** slopes for different species (without an interaction term we assume that
-both species have the same slope for the relationship between begging rate and mass, and only the intercept differ).
-
-## Regression lines
-
-The mean regression lines for the two species look like this:
-
-::: {.incremental}
-
-* **Cuckoo** ($S_i=0$)
-
-* $\begin{aligned}\log{\lambda} & = \beta_0 + \beta_1 M_i + (\beta_2 \times 0)  + (\beta_3 \times M_i \times 0)\\\log{\lambda} & = \beta_0 + \beta_1 M_i\end{aligned}$
-    
-
-
-* **Warbler** ($S_i=1$)
-
-* $\begin{aligned}\log{\lambda} & = \beta_0 + \beta_1 M_i + (\beta_2 \times 1)  + (\beta_3 \times M_i \times 1)\\\log{\lambda} & = \beta_0 + \beta_1 M_i + \beta_2 + \beta_3M_i\\\end{aligned}$
-
-:::
 
 
 ## Fit the Poisson model
 
-Fit the model with the interaction term in R:
+Fit the poisson model
 
 ```{r}
 #| echo: true
 
-cuckoo_glm1 <- glm(Beg ~ Mass + Species + Mass:Species, data=cuckoo, family=poisson(link="log"))
+stick_poisson <- glm(Diplo_intensity ~ Treatment, family = "poisson", data = parasite)
 
-summary(cuckoo_glm1)
+summary(stick_poisson)
 ```
 
-> Note there appears to be a negative interaction effect for Species:Mass, indicating that Begging calls do not increase with mass as much as you would expect for Warblers as compared to Cuckoos.
 
-
-## Exercise 
-
-
-* Fit a Poisson model to the cuckoo data
-
-* Look at the residual plots - how have they changed? 
-
-
-```{r}
-#| label: ex-pois-timer
-countdown::countdown(
-  minutes = 15,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
+## Poisson model fit 
 
 :::{.fragment}
 
@@ -7916,17 +8642,31 @@ countdown::countdown(
 
 par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
 
-plot(cuckoo_lm, which=2)
+plot(stick_lm, which=2)
 
-plot(cuckoo_lm, which=3)
+plot(stick_lm, which=3)
 
-plot(cuckoo_glm1, which=2)
+plot(stick_poisson, which=2)
 
-plot(cuckoo_glm1, which=3)
+plot(stick_poisson, which=3)
 ```
 
 :::
 
+## Effect of treatment
+
+To perform a global test on the effect of treatment.
+
+The likelihood ratio test allows us to determine the overall deviance explained by treatment
+
+```{r}
+#| eval: true
+#| echo: true
+
+# For a fixed  mean-variance model we use a Chisquare distribution
+drop1(stick_poisson, test = "Chisq")
+
+```
 
 
 ## Model summary
@@ -7938,7 +8678,7 @@ plot(cuckoo_glm1, which=3)
 ```{r}
 #| echo: true
 
-summary(cuckoo_glm1)
+summary(stick_poisson)
 
 ```
 
@@ -7950,145 +8690,20 @@ summary(cuckoo_glm1)
 #| eval: true
 #| echo: false
 #| fig-height: 5
-broom::augment(cuckoo_glm1, type.predict = "response") %>% 
-    ggplot(aes(x=Mass, y=.fitted, colour=Species)) + 
-    geom_point() +
-    geom_line()+
-    scale_colour_manual(values=c("green3","turquoise3"))+
-    theme_minimal()
+
+emmeans::emmeans(stick_poisson, specs = ~Treatment,
+                 type = "response") %>% 
+  as_tibble() %>% 
+ggplot(aes(x=Treatment, y=rate)) + 
+  geom_pointrange(aes(ymin = asymp.LCL, ymax = asymp.UCL)) +
+  geom_jitter(data = parasite, aes( x= Treatment, y = Diplo_intensity),
+              alpha = .2, width = .2)+
+  theme_minimal(base_size = 18)
 ```
 
 :::
 
 ::::
-
-
-## Poisson model check
-
-```{r}
-#| echo: false
-#| layout-ncol: 2
-#| fig-height: 8
-
-plot(cuckoo_glm1, which=2)
-
-plot(cuckoo_glm1, which=3)
-```
-
-## VIF
-
-::::{.columns}
-
-:::{.column}
-
-VIF, or Variance Inflation Factor, measures the extent of multicollinearity among independent variables in regression analysis.
-
-
-High multicollinearity, indicated by elevated VIF values, can distort regression coefficients and inflate standard errors, undermining the reliability of the model's predictions
-
-```{r}
-#| eval: true
-#| echo: true
-#| fig-height: 8
-
-
-car::vif(cuckoo_glm1)
-
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-#| fig-height: 8
-
-check_model(cuckoo_glm1, check = "vif")
-
-```
-
-:::
-
-::::
-
-## Mean-centering
-
-True VIF is highly problematic 
-
-- Mean centering can remove apparent VIF as means become zero
-
-- This often decreases potential correlation
-
-```{r}
-#| eval: true
-#| echo: true
-
-cuckoo$mass.c <- cuckoo$Mass - mean(cuckoo$Mass, na.rm =T)
-
-cuckoo_glm2 <- glm(Beg ~ mass.c + Species + mass.c:Species, data=cuckoo, family=poisson(link="log"))
-
-summary(cuckoo_glm2)
-
-```
-
-
-## Exercise 
-
-<br><br>
-
-
-* `cuckoo$mass.c <- cuckoo$Mass - mean(cuckoo$Mass, na.rm =T)`
-
-* Mean center the mass variable and recheck VIF. `car::vif()`
-
-
-```{r}
-#| label: ex-vif-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-## Model selection
-
-For a term with only one degree of freedom $z^2$ = the chi-square value
-
-The likelihood ratio test allows us to determine whether we can remove an interaction term
-
-```{r}
-#| eval: true
-#| echo: true
-
-# For a fixed  mean-variance model we use a Chisquare distribution
-drop1(cuckoo_glm2, test = "Chisq")
-
-```
-
-
-## Offset - for rates
-
-In Poisson GLMs, using an offset allows us to model rates rather than counts, by including the logarithm of the exposure variable as an offset, ensuring that the model accounts for the differing exposure levels across observations.
-
-```{r}
-#| eval: true
-#| echo: true
-
-cuckoo_glm3 <- glm(Call_Total ~ mass.c + Species + mass.c:Species, data=cuckoo, offset = log(Mins), family=poisson(link="log"))
-
-summary(cuckoo_glm3)
-
-```
 
 
 ## Poisson limitations
@@ -8136,13 +8751,15 @@ You can fit models with the same dependent and independent variables and differe
 ## Overdispersion in the cuckoo model
 
 
-$\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{436}{47} = 9.2$
+$\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{697.25}{217} = 3.21$
 
 ```{r}
 #| eval: true
 #| echo: true
 
-summary(cuckoo_glm2)
+summary(stick_poisson)
+
+performance::check_overdispersion(stick_poisson)
 
 ```
 
@@ -8168,31 +8785,14 @@ Where:
 
 Confidence intervals and p-values WILL change.
 
-## Exercise
 
-```{r}
-#| label: ex-quasi-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-* Fit a quasipoisson model to the cuckoo data
+## Fit a quasipoisson model to the data
 
 ```{r}
 #| eval: true
 #| echo: true
 
-cuckoo_glmq <- glm(Beg ~ mass.c + Species + mass.c:Species, data=cuckoo, family=quasipoisson(link="log"))
+stick_quasipoisson <- glm(Diplo_intensity ~ Treatment, family = quasipoisson, data = parasite)
 ```
 
 * Look at the residual plots - how have they changed? 
@@ -8208,9 +8808,9 @@ cuckoo_glmq <- glm(Beg ~ mass.c + Species + mass.c:Species, data=cuckoo, family=
 #| echo: true
 #| layout-ncol: 2
 
-summary(cuckoo_glm2)
+summary(stick_poisson)
 
-summary(cuckoo_glmq)
+summary(stick_quasipoisson)
 
 ```
 
@@ -8224,55 +8824,11 @@ Though here for a term with only one degree of freedom $t^2$ = the F distributio
 #| eval: true
 #| echo: true
 
-drop1(cuckoo_glmq, test = "F")
+drop1(stick_quasipoisson, test = "F")
 
 ```
 
 
-## Challenge: Monarch butterflies
-
-:::: columns
-
-
-::: {.column width="60%"}
-
-This dataset contains standardised counts of Monarch butterflies across three different gardens. 
-
-> Is there a difference in observance of the butterflies between these three sites?
-
-> Check the poisson model is a good fit for this data
-
-> Get the monarchs.csv dataset
-
-
-
-:::
-
-::: {.column width="40%"}
-
-```{r}
-#| label: ex-monarch-timer
-countdown::countdown(
-  minutes = 15,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-<br><br>
-
-![](images/monarch.jpeg){fig-align="center" fig-alt="Monarch butterfly" width=60%}
-
-:::
-
-::::
 
 # Negative Binomial {background-color="#D9DBDB"}
 
@@ -8358,99 +8914,6 @@ model <- glm.nb(y ~ x1 + x2, link = "log", data = dataframe)
 ```
 
 
-## Negbin: Example
-
-:::: columns
-
-```{r}
-#| label: ex-stickpois-timer
-countdown::countdown(
-  minutes = 10,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-::: {.column}
-
-![](images/3 Spined Stickleback.jpg){fig-align="center" fig-alt="Stickleback" width=50%}
-
-<br>
-
-Open the parasite dataset and script
-
-Determine whether the poisson model is suitable for this dataset?
-
-:::
-
-:::{.column}
-
-<br><br>
-
-The example is an experiment measuring the effect of the parasitic tapeworm *Schistocephalus solidus* infection on the susceptibility of infection from a second parasite, the trematode *Diplostomum pseudospathaceum*
-
-The question of interest is:
-
-> How does Treatment/Infection status affect trematode counts?
-
-:::
-
-
-
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| fig-width: 10
-#| message: false
-
-parasite <- read_csv("../data_2/parasite_exp.csv")
-
-stick_poisson <- glm(Diplo_intensity ~ Treatment, family = "poisson", data = parasite)
-
-```
-
-
-::::
-
-
-
-## Univariate distribution
-
-```{r}
-#| echo: true
-#| fig-height: 6
-#| warning: false
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-fp <- fitdist(parasite$Diplo_intensity, "pois")
-fn <- fitdist(parasite$Diplo_intensity, "norm")
-fnb<- fitdist(parasite$Diplo_intensity, "nbinom")
-plot.legend <- c("normal", "poisson", "negative binomial")
-denscomp(list(fn, fp, fnb), legendtext = plot.legend)
-qqcomp(list(fn, fp, fnb), legendtext = plot.legend)
-```
-
-## Check Poisson model
-
-```{r}
-#| echo: true
-#| fig-height: 7
-#| warning: false
-
-summary(stick_poisson)
-
-```
-
-
 ## Check zero-inflation
 
 The model is underfitting zeros (but not by much). 
@@ -8459,7 +8922,8 @@ The model is underfitting zeros (but not by much).
 #| echo: true
 #| fig-height: 7
 #| warning: false
-check_zeroinflation(stick_poisson)
+
+check_zeroinflation(stick_quasipoisson)
 
 100*sum(parasite$Diplo_intensity == 0)/nrow(parasite)
 # Only 2% of our data has zeros
@@ -8472,35 +8936,11 @@ check_zeroinflation(stick_poisson)
 #| echo: true
 #| fig-height: 7
 #| warning: false
-# Quasilikelihood
-stick_quasi <- glm(Diplo_intensity ~ Treatment, family = quasipoisson, data = parasite)
-
-```
-
-
-```{r}
-#| echo: true
-#| fig-height: 7
-#| warning: false
 # Neg bin
 stick_nb <- glm.nb(Diplo_intensity ~ Treatment, link = "log", data = parasite)
 
 ```
 
-
-```{r}
-#| echo: true
-#| fig-height: 7
-#| warning: false
-# Zero-inflated model
-stick_zip <- zeroinfl(Diplo_intensity ~ Treatment| 
-                   Treatment,
-                dist = "poisson",
-                link = "logit",
-                data = parasite)
-
-
-```
 
 ## Compare models
 
@@ -8511,9 +8951,9 @@ stick_zip <- zeroinfl(Diplo_intensity ~ Treatment|
 
 
 AIC(stick_poisson)
-AIC(stick_quasi)
+AIC(stick_quasipoisson)
 AIC(stick_nb)
-AIC(stick_zip)
+
 
 ```
 
@@ -8525,12 +8965,9 @@ AIC(stick_zip)
 #| layout-ncol: 2
 #| warning: false
 
-library(DHARMa)
-plot(simulateResiduals(stick_nb))
+performance::check_model(stick_nb)
 
-par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-
-plot(stick_nb)
+performance::check_zeroinflation(stick_nb)
 
 ```
 
@@ -8541,9 +8978,15 @@ plot(stick_nb)
 
 ```{r}
 
-colors <- c("Quasi" = "cyan", "NegBin" = "darkorange", "ZeroInfl" = "purple")
+colors <- c("Quasi" = "darkgreen", "NegBin" = "darkorange", "Poisson" = "purple")
 
-means_quasi <- emmeans::emmeans(stick_quasi, 
+
+means_poisson <- emmeans::emmeans(stick_poisson, 
+                 specs = ~ Treatment, 
+                 type='response') |> 
+  as_tibble()
+
+means_quasi <- emmeans::emmeans(stick_quasipoisson, 
                  specs = ~ Treatment, 
                  type='response') |> 
   as_tibble()
@@ -8553,14 +8996,10 @@ means_nb <- emmeans::emmeans(stick_nb,
                  type='response') |> 
   as_tibble()
 
-means_zip <- emmeans::emmeans(stick_zip, 
-                 specs = ~ Treatment, 
-                 type='response') |> 
-  as_tibble()
 
 ggplot(parasite, aes(x=Treatment, y=Diplo_intensity)) + 
   geom_jitter(width = .2,
-              alpha = .4)+
+              alpha = .2)+
  geom_pointrange(data = means_quasi,
                  aes(x = Treatment,
                      y = rate,
@@ -8572,323 +9011,20 @@ geom_pointrange(data = means_nb,
                      ymin = asymp.LCL, ymax = asymp.UCL,
                      color = "NegBin"),
                 position = position_nudge(x= .2))+
-geom_pointrange(data = means_zip,
+geom_pointrange(data = means_poisson,
                  aes(x = Treatment,
-                     y = emmean,
+                     y = rate,
                      ymin = asymp.LCL, ymax = asymp.UCL,
-                     color = "ZeroInfl"),
+                     color = "Poisson"),
                 position = position_nudge(x= -.2))+  
-  theme_classic(base_size = 14)+
-  scale_color_manual(values = colors)
+  theme_classic(base_size = 18)+
+  scale_color_manual(values = colors)+
+  scale_y_continuous(limits = c(0,30))
 
 ```
 
 
-# Zero-inflation  {background-color="#D9DBDB"}
-
-## Zero-inflation
-
-"Zero-inflation" refers to the problem of "too many zeros". 
-
-The dependent variable contains more zeros than would be expected under the standard statistical distribution for zero-bounded count data (Poisson or negative binomial). 
-
-Zero-inflation is a common feature of count datasets. Large numbers of zeros can arise because
-
-1) There was nothing there to count (**true zeros**)
-
-2) Things were there but missed (**false zeros**)
-
-## Zero-inflation
-
-:::: columns
-
-::: {.column}
-
-| Model | Acronym/Abbr | Source of Overdispersion |
-|---------|:-----|:-----|
-| Zero-inflated Poisson | ZIP | Zeros |
-| Negative Binomial | NegBin | Positive integers |
-| Zero-inflated Negative Binomial | ZINB | Zeros + Positive integers |
-
-:::
-
-::: {.column}
-
-![](images/zip.png){fig-align="center" fig-alt="Zip" width=100%}
-
-:::
-
-::::
-
-## ZIP in R
-
-In a ZIP model we define two halves of the model; the first half models the count process (**i.e. a Poisson GLM explaining non-zero integers**) and the second half models the binomial (**i.e. explains the zeros**).
-
-```{r}
-#| eval: false
-#| echo: true
-
-install.packages("pscl")
-```
-
-```{r}
-#| eval: false
-#| echo: true
-library(pscl)
-zip1 <- zeroinf(y ~ x1 + x2 | x1 + x2,
-                dist = "poisson",
-                link = "logit",
-                data = dataframe)
-```
-
-## Alternative model design
-
-You can change the zero-inflation model's link function and use AIC to decide on the best model
-
-```{r}
-#| eval: false
-#| echo: true
-
-# zeros modelled with a constant
-y ~ x1 + x2
-
-# zeros modelled with the same variables
-y ~ x1 + x2 | x1 + x2
-
-# zeros modelled with different variables
-y ~ x1 + x2 | z1 +z2
-
-```
-
-
-## Checking for zero-inflation
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-
-hist(cuckoo$Beg)
-
-100*sum(cuckoo$Beg== 0)/nrow(cuckoo)
-# 25% of data is zeros
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-
-performance::check_zeroinflation(cuckoo_glm2)
-
-```
-
-:::
-
-::::
-
-
-## Fit the model
-
-Fit the model 
-
-```{r}
-#| echo: true
-
-cuckoo_zip <- zeroinfl(Beg ~ mass.c + Species + mass.c:Species| 
-                   mass.c + Species + mass.c:Species,
-                dist = "poisson",
-                link = "logit",
-                data = cuckoo)
-
-summary(cuckoo_zip)
-
-```
-
-
-## Check for zero-inflated negbin
-
-```{r}
-#| echo: true
-
-cuckoo_zinb <- zeroinfl(Beg ~ mass.c + Species + mass.c:Species| 
-                   mass.c + Species + mass.c:Species,
-                dist = "negbin",
-                link = "logit",
-                data = cuckoo)
-
-summary(cuckoo_zinb)
-
-```
-
-## Model validation
-
-Model validation is not straightforward for zero-inflated models
-
-
-Neither the `performance` package or `DHARMa` will produce outputs at this time. 
-
-We have to create manual checks of the residuals:
-
-```{r}
-#| echo: true
-
-sresid <- residuals(cuckoo_zip, type = "pearson")
-
-pred <- predict(cuckoo_zip)
-
-sresidnb <- residuals(cuckoo_zinb, type = "pearson")
-
-prednb <- predict(cuckoo_zinb)
-
-
-```
-
-##
-
-::::{.columns}
-
-:::{.column}
-
-Zero-inflated poisson
-
-```{r}
-#| echo: true
-
-par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-
-hist(sresid)
-plot(sresid ~ pred)
-qqnorm(sresid)
-qqline(sresid, col = "red")
-
-```
-:::
-
-:::{.column}
-
-Zero-inflated negative binomial
-
-```{r}
-#| echo: true
-
-par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-
-hist(sresidnb)
-plot(sresidnb ~ prednb)
-qqnorm(sresidnb)
-qqline(sresidnb, col = "red")
-
-```
-
-
-:::
-
-::::
-
-## Model comparisons
-
-How do we know which of is the best model of our data?
-
-Do I really NEED zero-inflation? Check against negative binomial
-
-Here I am comparing 
-
-```{r}
-#| echo: false
-
-cuckoo_glm1 <- glm(Beg ~ Mass + Species + Mass:Species, data=cuckoo, family=poisson(link="log"))
-
-cuckoo_zip <- zeroinfl(Beg ~ mass.c + Species + mass.c:Species| 
-                           mass.c + Species + mass.c:Species,
-                       dist = "poisson",
-                       link = "logit",
-                       data = cuckoo)
-
-cuckoo_nb <- glm.nb(Beg ~ Mass + Species + Mass:Species, data=cuckoo, link="log")
-
-cuckoo_zinb <- zeroinfl(Beg ~ mass.c + Species + mass.c:Species| 
-                           mass.c + Species + mass.c:Species,
-                       dist = "negbin",
-                       link = "logit",
-                       data = cuckoo)
-
-```
-
-
-```{r}
-#| echo: true
-
-AIC(cuckoo_glm1, 
-    cuckoo_nb, 
-    cuckoo_zip, 
-    cuckoo_zinb)
-
-```
-
-
-## Choosing Zero-inflation models
-
-- Check for overdispersion
-
-- Is your model underfitting zeros?
-
-- AND do zeros make up a substantial part of your data?
-
-- Do you think there might be a different process controlling 0/1 from count?
-
-- You probably want to compare zip and zinb for best fit.
-
-
-## Challenge - Zeroinflation
-
-```{r}
-#| label: ex-zinf-timer
-countdown::countdown(
-  minutes = 20,
-  color_border = "#00AEEF",
-  color_text = "#00AEEF",
-  color_running_text = "white",
-  color_running_background = "#00AEEF",
-  color_finished_text = "#00AEEF",
-  color_finished_background = "white",
-  top = 0,
-  margin = "1.2em",
-  font_size = "2em"
-)
-```
-
-:::: columns
-
-::: {.column}
-
-![](images/Slugs.png){fig-align="center" fig-alt="Slugs" width=60%}
-:::
-
-:::{.column}
-
-<br><br>
-
-* Using the revegetation dataset
-
-* Check the model fit
-
-* Determine if zero-inflation is required
-
-* Validate the model
-
-:::
-
-::::
-
-
-# Linear Mixed Models {background-color = "D9DBDB"}
+# Linear Mixed Models {background-color="#D9DBDB"}
 
 ## Why mixed model?
 
