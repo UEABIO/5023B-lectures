@@ -97,6 +97,17 @@ Norwich - "A Fine City!"
 
 ## Outline of the course
 
+- Learning R and data wrangling
+
+- Checking data quality and producing insights
+
+- Statistics with linear models
+
+- Generalized Linear Models
+
+- Mixed modelling
+
+
 
 ## What to expect during this workshop
 
@@ -130,7 +141,7 @@ I hope you end up with more questions than answers after this workshop!
 :::
 :::
 
-## What you need for this workshop
+
 
 
 
@@ -138,11 +149,9 @@ I hope you end up with more questions than answers after this workshop!
 
 <br><br>
 
-- Slides available [here]
+- Slides available [here](https://philip-leftwich.github.io/physalia-lectures-intro-stats/#/title-slide)
 
-- Data available [here]
-
-- Scripts available [here]
+- Coursebook available [here](https://ueabio.github.io/physalia-intro-stats-2023/index.html)
 
 - Posit Cloud workspace available [here]
 
@@ -408,6 +417,21 @@ knitr::include_graphics("images/annotated.png")
 
 # Questions? {background-color="#D9DBDB"}
 
+```{r}
+#| label: ex-getting-started
+countdown::countdown(
+  minutes = 30,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 # Data wrangling {background-color="#D9DBDB"}
 
@@ -758,6 +782,22 @@ penguins_cleaned <- penguins %>%
 
 
 ## Recap and Next Steps
+
+```{r}
+#| label: ex-data-wrangling
+countdown::countdown(
+  minutes = 40,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 We introduced the tidyverse and focused on dplyr for data wrangling using the palmer penguins dataset.
 
@@ -2011,6 +2051,24 @@ ggplot(aes(x = species,
 
 [The ggplot extensions library](https://exts.ggplot2.tidyverse.org/)
 
+## Exercise: getting to grips with ggplot
+
+```{r}
+#| label: ex-ggplot
+countdown::countdown(
+  minutes = 40,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
+
 # Understanding Data Quality  {background-color="#D9DBDB"}
 
 ## Importance of data quality
@@ -2284,7 +2342,23 @@ qqline(data_beta, col = "red")
 ```
 
 
-## Strategies to check and improve data quality
+## Exercise practice data checking
+
+```{r}
+#| label: ex-data-quality
+countdown::countdown(
+  minutes = 30,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 - We need to have strategies for removing or correcting errors in the data.
 
@@ -2930,6 +3004,23 @@ knitr::include_graphics("images/survivor.png")
 
 - Discuss methods or tools you use to identify and address bias in your work.
 
+## Exercise - Data Insights
+
+```{r}
+#| label: ex-data-insights
+countdown::countdown(
+  minutes = 30,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 # Inferential Statistics  {background-color="#D9DBDB"}
 
@@ -3314,6 +3405,23 @@ p = 0.05 when observed t > than critical t:
 
 ::::
 
+## Exercise - introduction to statistics
+
+```{r}
+#| label: ex-intro-stats
+countdown::countdown(
+  minutes = 30,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 # Introduction to Linear Models {background-color="#D9DBDB"}
 
@@ -3658,7 +3766,23 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 
 ```
 
+## Exercise - Linear models
 
+```{r}
+#| label: ex-linear models
+countdown::countdown(
+  minutes = 25,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 ## Linear model assumptions
 
@@ -3692,6 +3816,24 @@ knitr::include_graphics("images/lm_t_test.png")
 knitr::include_graphics("images/commmon_statistical_tests_linear_models.png")
 ```
 
+
+## Assumption checking
+
+```{r}
+#| label: ex-assumptions
+countdown::countdown(
+  minutes = 40,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 # P-values
 
@@ -3841,6 +3983,28 @@ legend("topright", legend = "95% CI", lty = 1, col = "red")
 - Which has the greatest level of useful detail?
 
 :::
+
+## Exercise - Testing
+
+- Testing
+
+- Paired designs
+
+```{r}
+#| label: ex-t-test
+countdown::countdown(
+  minutes = 40,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 ## Common misundertandings\n about P values
 
@@ -4421,7 +4585,23 @@ $N$ = numerator degrees of freedom = Total number of observations across all gro
 $k$ = Total number of groups
 
 
+## Exercise - Regression
 
+```{r}
+#| label: ex-regression
+countdown::countdown(
+  minutes = 40,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 
 ## Summary
@@ -4838,6 +5018,25 @@ confint(means)
 
 ```
 
+
+## Exercise 
+
+```{r}
+#| label: ex-anova
+countdown::countdown(
+  minutes = 50,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
+
 # Complex models  {background-color="#D9DBDB"}
 
 ## Basic linear models
@@ -5058,7 +5257,7 @@ If everything else about two penguins is the same (bill depth and body mass), we
 
 The species of penguin *changes* the relationship between bill length and bill depth (e.g. the shape of their beaks are different).
 
-##
+
 
 ```{r, echo = T}
 lsmodel1 <- lm(bill_length_mm ~ 
@@ -5175,6 +5374,24 @@ $(0.002*body~mass)+(1*-10.2)+(0.002*1.09*1)$
 * You can add the interaction term as a way to TEST the hypothesis for a significant interaction, then drop it from your model if not required. 
 
 :::
+
+## Exercise multiple regression
+
+```{r}
+#| label: ex-mult-regression
+countdown::countdown(
+  minutes = 40,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
 
 # Turning a hypothesis into a model {background-color="#D9DBDB"}
 
@@ -5630,6 +5847,24 @@ Think **HARD** about what terms should be included in a model to test a hypothes
 
 ::::
 
+## Exercise - complex linear models
+
+```{r}
+#| label: ex-complex-models
+countdown::countdown(
+  minutes = 45,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = "1.2em",
+  font_size = "2em"
+)
+```
+
 ## Stepwise-removal
 
 - Stepwise regression is a popular tool for simplifying models and removing non-significant predictors
@@ -5814,6 +6049,9 @@ knitr::kable(ma_coefs, digits = 2)
 - [Does model averaging make sense](https://drewtyre.rbind.io/post/rebutting_cade/)
 
 - [Model averaging and muddled multimodel inferences](https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/14-1639.1?saml_referrer)
+
+
+# Issues and pitfalls with models {background-color="#D9DBDB"}
 
 # Generalized Linear Models {background-color="#D9DBDB"}
 
@@ -9506,8 +9744,6 @@ Your model did fit, but it generated that warning because some of your random ef
 
 ## Additional resources
 
-* GLMs resource list: 
-
 * Discovering Statistics - Andy Field
 
 * An Introduction to Generalized Linear Models - Dobson & Barnett
@@ -9519,6 +9755,53 @@ Your model did fit, but it generated that warning because some of your random ef
 * Ecological Statistics with contemporary theory and application
 
 * The Big Book of R (https://www.bigbookofr.com/)
+
+* [British Ecological Society Guides to Better Science](https://www.britishecologicalsociety.org/publications/better-science/)
+
+*[(SORTEE)](https://www.sortee.org/reading/)
+
+
+## Reading list {.smaller}
+
+::::{.columns}
+
+:::{.column}
+
+[Writing statistical methods for ecologists](https://doi.org/10.1002/ecs2.4539)
+
+[Reporting statistical methods and outcome of statistical analyses in research articles](https://link.springer.com/article/10.1007/s43440-020-00110-5)
+
+[Design principles for data analysis](https://doi.org/10.1080/10618600.2022.2104290)
+
+[Log-transformation and its implications for data analysis.](https://doi.org/10.3969%2Fj.issn.1002-0829.2014.02.009)
+
+[Effect size, confidence interval and statistical significance: a practical guide for biologists](https://doi.org/10.1111/j.1469-185X.2007.00027.x)
+
+[Same data, different analysts: variation in effect sizes due to analytical decisions in ecology and evolutionary biology](https://ecoevorxiv.org/repository/view/6000/)
+
+[Misconceptions, Misuses, and Misinterpretations of P Values and Significance Testing](https://doi.org/10.2106/jbjs.16.01314)
+
+:::
+
+:::{.column}
+
+[Ten common statistical mistakes to watch out for when writing or reviewing a manuscript.](https://elifesciences.org/articles/48175)
+
+[Why most published research findings are false](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124)
+
+[Step away from stepwise](https://doi.org/10.1186/s40537-018-0143-6)
+
+[Model averaging and muddled multimodel inference](https://doi.org/10.1890/14-1639.1)
+
+[Make scientific data FAIR](https://www.nature.com/articles/d41586-019-01720-7)
+
+[A brief introduction to mixed effects modelling and multi-model inference in ecology](https://peerj.com/articles/4794/)
+
+[The Practical Alternative to the p Value Is the Correctly Used p Value](https://doi.org/10.1177/1745691620958012)
+
+:::
+
+::::
 
 ## 
 
