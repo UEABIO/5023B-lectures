@@ -482,7 +482,7 @@ Chapter 3 is setting up a fresh project and loading data
 ```{r}
 #| label: ex-getting-started
 countdown::countdown(
-  minutes = 30,
+  minutes = 40,
   color_border = "#00AEEF",
   color_text = "#00AEEF",
   color_running_text = "white",
@@ -843,7 +843,7 @@ penguins_cleaned <- penguins %>%
 ```
 
 
-## Recap and Next Steps
+# Recap and Next Steps
 
 ```{r}
 #| label: ex-data-wrangling
@@ -2113,7 +2113,7 @@ ggplot(aes(x = species,
 
 [The ggplot extensions library](https://exts.ggplot2.tidyverse.org/)
 
-## Exercise: getting to grips with ggplot
+# Exercise: getting to grips with ggplot
 
 ```{r}
 #| label: ex-ggplot
@@ -2220,7 +2220,7 @@ str(penguins)
 
 ```
 
-## Implausible values
+## Implausible values {.smaller}
 
 Values that fall outside of a possible range for a given variable.
 
@@ -2241,6 +2241,10 @@ summary(penguins)
 
 ## Outliers
 
+::::{.columns}
+
+:::{.column}
+
 Observations that fall outside of a tolerated range from other observations
 
 - > 3* Standard Deviation from the mean
@@ -2249,14 +2253,21 @@ Observations that fall outside of a tolerated range from other observations
 
 Important to identify, but crucially these are *real* values
 
-```{r}
+:::
+
+:::{.column}
+
+```{r, echo = T}
 penguins %>% ggplot(aes(x = species, y = body_mass_g)) + geom_boxplot() +coord_flip()
 ```
 
+:::
+
+::::
 
 ## Histograms
 
-```{r}
+```{r, fig.width = 7}
 library(ggridges)
 penguins %>% drop_na(sex) %>% 
 ggplot(aes(x = body_mass_g, y = species)) + 
@@ -2265,7 +2276,7 @@ ggplot(aes(x = body_mass_g, y = species)) +
 
 ```
 
-```{r}
+```{r, fig.width = 7}
 
 library(ggridges)
 penguins %>% drop_na(sex) %>% 
@@ -2412,7 +2423,7 @@ skimr::skim(penguins)
 
 ```
 
-## Exercise practice data checking
+# Exercise practice data checking
 
 ```{r}
 #| label: ex-data-quality
