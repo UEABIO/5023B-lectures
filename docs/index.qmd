@@ -490,7 +490,7 @@ countdown::countdown(
   color_finished_text = "#00AEEF",
   color_finished_background = "white",
   top = 0,
-  margin = "1.2em",
+  margin = "0.8em",
   font_size = "2em"
 )
 ```
@@ -843,7 +843,7 @@ penguins_cleaned <- penguins %>%
 ```
 
 
-# Recap and Next Steps
+## Recap and Next Steps
 
 ```{r}
 #| label: ex-data-wrangling
@@ -856,7 +856,7 @@ countdown::countdown(
   color_finished_text = "#00AEEF",
   color_finished_background = "white",
   top = 0,
-  margin = "1.2em",
+  margin = "0.8em",
   font_size = "2em"
 )
 ```
@@ -2113,7 +2113,7 @@ ggplot(aes(x = species,
 
 [The ggplot extensions library](https://exts.ggplot2.tidyverse.org/)
 
-# Exercise: getting to grips with ggplot
+## Exercise: getting to grips with ggplot
 
 ```{r}
 #| label: ex-ggplot
@@ -2126,7 +2126,7 @@ countdown::countdown(
   color_finished_text = "#00AEEF",
   color_finished_background = "white",
   top = 0,
-  margin = "1.2em",
+  margin = "0.8em",
   font_size = "2em"
 )
 ```
@@ -2415,7 +2415,7 @@ qqline(data_beta, col = "red")
 ```
 
 
-## Skimr - generate quick overviews of data
+## Skimr - generate quick overviews of data {.smaller}
 
 ```{r, echo = T}
 
@@ -2423,7 +2423,7 @@ skimr::skim(penguins)
 
 ```
 
-# Exercise practice data checking
+## Exercise practice data checking
 
 ```{r}
 #| label: ex-data-quality
@@ -2436,7 +2436,7 @@ countdown::countdown(
   color_finished_text = "#00AEEF",
   color_finished_background = "white",
   top = 0,
-  margin = "1.2em",
+  margin = "0.8em",
   font_size = "2em"
 )
 ```
@@ -3098,7 +3098,7 @@ countdown::countdown(
   color_finished_text = "#00AEEF",
   color_finished_background = "white",
   top = 0,
-  margin = "1.2em",
+  margin = "0.8em",
   font_size = "2em"
 )
 ```
@@ -3499,7 +3499,7 @@ countdown::countdown(
   color_finished_text = "#00AEEF",
   color_finished_background = "white",
   top = 0,
-  margin = "1.2em",
+  margin = "0.8em",
   font_size = "2em"
 )
 ```
