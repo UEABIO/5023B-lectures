@@ -111,9 +111,11 @@ Norwich - "A Fine City!"
 
 ## What to expect during this workshop
 
-These workshop will run for *4 hours* each.
+These workshop will run for *6 hours* each.
 
-We will have a 30 min break halfway through
+We will have a 40 min break halfway through and some shorter breaks
+
+But take breaks when you need to!
 
 * Combines slides, live coding examples, and exercises for you to participate in.
 
@@ -251,10 +253,61 @@ lst <- list(name="Alice", age=25, scores=c(90, 85, 88))
 lst
 ```
 
+
+## Accessing data structures
+
+```{r, echo = T}
+df
+
+```
+
+```{r, echo = T}
+df$name
+```
+
+```{r, echo = T}
+df[1,]
+
+df[,1]
+```
+
 ## R terms
 
 ```{r, echo = FALSE, out.width="70%"}
 knitr::include_graphics("images/terms.png")
+```
+
+## Functions
+
+Functions are bits of code that complete specific tasks
+
+```
+select(.data, columns)
+```
+
+```{r, echo = T}
+
+dplyr::select(.data = df, name)
+
+```
+
+
+```{r, echo = T}
+
+dplyr::select(df, name)
+
+```
+
+
+## Pipes
+
+Pipes let us string multiple functions together by passing the output from one line of code into the next line
+
+```{r, echo = T}
+df %>% 
+dplyr::select(name) %>% 
+  dplyr::arrange(dplyr::desc(name))
+
 ```
 
 
@@ -391,7 +444,7 @@ Projects: Organize workspaces efficiently using RStudio Projects.
 
 :::{.column}
 
-```{r, echo = FALSE, out.width="100%", fig.alt = "R project organisation"}
+```{r, echo = FALSE, out.width="80%", fig.alt = "R project organisation"}
 knitr::include_graphics("images/Project.png")
 ```
 
@@ -407,15 +460,24 @@ knitr::include_graphics("images/Project.png")
 
 - Maintain Structure: Follow a structured directory format (e.g., /data, /scripts, /results).
 
+- Within Project options - turn off options to save history and generate/import .RData files
+
 
 ## Workflow
 
-```{r, echo = FALSE, out.width="80%", fig.alt = "Allison Horst"}
+```{r, echo = FALSE, out.width="60%", fig.alt = "Allison Horst"}
 knitr::include_graphics("images/annotated.png")
 ```
 
 
 # Questions? {background-color="#D9DBDB"}
+
+
+- We have three introductory sections of coursework
+
+Chapters 1 &2 are basic navigation and R operations
+
+Chapter 3 is setting up a fresh project and loading data
 
 ```{r}
 #| label: ex-getting-started
@@ -2341,6 +2403,14 @@ qqline(data_beta, col = "red")
 
 ```
 
+
+## Skimr - generate quick overviews of data
+
+```{r, echo = T}
+
+skimr::skim(penguins)
+
+```
 
 ## Exercise practice data checking
 
