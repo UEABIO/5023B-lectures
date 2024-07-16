@@ -3535,13 +3535,11 @@ knitr::include_graphics("images/sample_means_diff.png")
 
 * Null hypothesis: there is no difference between the population means
 
---
-
 * t-statistic: based on difference in sample **means, sd & n**
 
 * For a given sample size and t-value, how unlikely is to have two random samples *at least* this different IF both samples are drawn from identical/same populations. 
 
----
+
 
 ## Variance matters
 
@@ -3562,9 +3560,7 @@ She collects pollen samples from 62 bees in Hive A (mean pollen mass = 31.4 mg) 
 **Is there a significant difference in pollen mass transported per bee for the two hives studied?**
 
 
-
 Variance $s^2$ = Sum of squared residuals/ n
-
 
 Standard deviation (s) = $\sqrt Variance$
 
@@ -3612,10 +3608,11 @@ SED = 2.53
 $$
 
 
-
 :::
 
-:::
+::::
+
+
 
 ## Standard error of the difference
 
@@ -3655,29 +3652,6 @@ knitr::include_graphics("images/t_distribution_comparisons.png")
 ::::
 
 
-##
-
-**Calculate the difference in means, and the standard error of the difference in means**
-
-::::{.columns}
-
-:::{.column}
-
-
-
-Mean difference = 5.3
-
-:::
-
-:::{.column}
-
-$$
-SED = 2.53
-$$
-
-:::
-
-::::
 
 ##
 
@@ -3727,18 +3701,20 @@ $$
 
 For a *t*-value of 2.09 at *df* 127, *p* = 0.0115
 
-## P-value
+## P-value {.smaller}
 
-## p = 0.0115
+::::{.columns}
+
+:::{.column}
 
 IF the null hypothesis is true (samples are taken from populations with the same mean), the probability that we would have taken two samples that are at least this different by random chance (means, taking into account data spread, etc.) is 1.15%.
 
 
 **“Pollen mass transported by individual bees in Hive A (32 ± 15 mg [mean ± sd],  n = 62) and Hive B (38 ± 13.6 mg [mean ± sd], n = 67) differed significantly (t(127) = 2.09, p = 0.0115).”**
 
-::::{.column}
+:::
 
-:::{.columns}
+:::{.column}
 
 ```{r, echo = T, eval = FALSE}
 
@@ -3748,9 +3724,7 @@ hive_data %>%
 
 ```
 
-:::
 
-:::{.column}
 
 
 ```
@@ -3781,18 +3755,18 @@ alternative hypothesis: true difference in means is not equal to 0
 
 ### Simple Linear Regression
 - Models the relationship between two variables by fitting a linear equation.
-- Equation: \( Y = \beta_0 + \beta_1X + \epsilon \)
-  - \( Y \): Dependent variable
-  - \( X \): Independent variable
-  - \( \beta_0 \): Intercept
-  - \( \beta_1 \): Slope
-  - \( \epsilon \): Error term
+- Equation: $Y = \beta_0 + \beta_iX + \epsilon$
+  - $Y$: Dependent variable
+  - $X$: Independent variable
+  - $\beta_0$: Intercept
+  - $\beta_i$: Slope
+  - $\epsilon$: Error term
 
 ## Testing with linear models {.smaller}
 
-- Tests if the coefficients (\( \beta \)) of the model are significantly different from zero.
-- Null hypothesis (H0): \( \beta_i = 0 \) (no effect).
-- Alternative hypothesis (H1): \( \beta_i \neq 0 \) (significant effect).
+- Tests if the coefficients ($\beta$) of the model are significantly different from zero.
+- Null hypothesis (H0): $\beta_i$ = 0  (no effect).
+- Alternative hypothesis (H1): $\beta_i \neq 0$ (significant effect).
 
 ### Steps
 1. **Fit the model**
