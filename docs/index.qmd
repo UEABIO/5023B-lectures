@@ -5526,6 +5526,19 @@ $(0.002*body~mass)+(1*-10.2)+(0.002*1.09*1)$
 :::
 
 
+## Estimates and CI
+
+- Estimates and CI **must come from your full model**
+
+
+- It is ok to run F tests on simpler models (interaction term removed) - in order to get F statistics of main effects
+
+```{r, echo =T}
+
+drop1(lsmodel2, test = "F")
+
+```
+
 ## Emmeans in interaction models
 
 Generalisations are no longer valid in interaction models, the effect of a predictor variable on the dependent variable is now conditional on the value of the other predictor variable
@@ -5546,6 +5559,8 @@ emmeans::emmeans(lsmodel1,
             data = penguins)
 ```
 
+>NOTE: Results may be misleading due to involvement in interactions
+
 :::
 
 :::{.column}
@@ -5555,7 +5570,7 @@ emmeans::emmeans(lsmodel1,
 #|message: TRUE
 
 emmeans::emmeans(lsmodel1,
-                 specs = ~ bill_depth_mm,
+                 specs = ~ bill_depth_mm + species,
             data = penguins)
 ```
 
