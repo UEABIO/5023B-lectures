@@ -5624,7 +5624,7 @@ countdown::countdown(
 :::
 
 
-## Simple linear model
+## Control variables
 
 :::{.incremental}
 
@@ -5657,9 +5657,9 @@ countdown::countdown(
 
 :::{.incremental}
 
-- **Question**: How do water and nutrient levels affect plant growth?
+- **Question**: Do water and nutrient levels work together to affect plant growth?
 
-- **Hypothesis**: Both increased water and nutrient levels lead to increased plant growth.
+- **Hypothesis**: Increasing water and nutrient levels has a combined effect that leads to increased plant growth, greater than the effect of either on their own.
 
 - **Control Variables**: Temperature
 
