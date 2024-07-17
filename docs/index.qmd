@@ -6050,6 +6050,18 @@ Think **HARD** about what terms should be included in a model to test a hypothes
 
 ::::
 
+## Model checks by simulation
+
+DHARMa works by simulating residuals from the fitted model, comparing them with observed residuals, and providing diagnostic plots to assess model adequacy and identify potential issues like heteroscedasticity or influential data points.
+
+It can be useful for complex model types (GLM(M)) & when sample sizes are very low
+
+```{r, echo = T}
+
+plot(DHARMa::simulateResiduals(lsmodel1))
+
+```
+
 ## Exercise - complex linear models
 
 ```{r}
