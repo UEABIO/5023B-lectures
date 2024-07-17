@@ -4692,10 +4692,64 @@ summary(janka_ls1)
 ## Model fit checks
 
 ```{r, echo = T, out.width="100%"}
-performance::check_model(janka_ls1) 
+performance::check_model(janka_ls1, 
+                         detrend = F) 
 ```
 
 
+## Linearity
+
+```{r, echo = T, out.width="100%"}
+performance::check_model(janka_ls1,
+                         check = "linearity") 
+```
+
+## Normality
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+performance::check_model(janka_ls1,
+                         check = "normality")
+
+performance::check_normality(janka_ls1)
+```
+
+## Heteroscedasticity
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+performance::check_model(janka_ls1,
+                         check = "homogeneity")
+
+performance::check_heteroscedasticity(janka_ls1)
+```
+
+## Outliers
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+performance::check_model(janka_ls1,
+                         check = "outliers")
+
+performance::check_outliers(janka_ls1)
+```
 
 # Questions?
 
@@ -4996,7 +5050,7 @@ summary(bulb_lsmodel0)
 
 ## Summary table
 
-```{r}
+```{r, echo = T}
 
 anova(bulb_lsmodel0)
 
@@ -5057,7 +5111,7 @@ anova(bulb_lsmodel0)
 
 
 
-## Post hoc testing
+## Estimated means
 
 
 ```{r, echo = F}
@@ -5067,12 +5121,36 @@ library(emmeans)
 ```{r, echo = T}
 
 means <- emmeans::emmeans(bulb_lsmodel0, 
+                 specs =  ~ bulb_type)
+
+means
+
+```
+
+
+## Estimated mean differences
+
+
+```{r, echo = T}
+
+means <- emmeans::emmeans(bulb_lsmodel0, 
+                 specs = pairwise ~ bulb_type)
+
+means
+
+```
+
+
+## Estimated CI of the difference
+
+```{r, echo = T}
+
+means <- emmeans::emmeans(bulb_lsmodel0, 
                  specs = pairwise ~ bulb_type)
 
 confint(means)
 
 ```
-
 
 ## Exercise 
 
@@ -5151,7 +5229,7 @@ knitr::include_graphics("images/culmen.jpg")
 :::{.column}
 
 
-```{r, echo = T, out.width = "60%"}
+```{r, echo = F, out.width = "60%"}
 library(ggpubr)
 penguins %>% 
   filter(species=="Adelie") %>% 
@@ -5207,11 +5285,7 @@ $\large{bill~length=23.31+0.16_{(bill~depth)}+0.004_{(body~mass)}}$
 
 * Bill depth - a continuous quantitative variable
 
-
-
 * Body mass - a continuous quantitative variable
-
-
 
 * Penguin Species - a categorical variable with three levels
 
@@ -5223,8 +5297,7 @@ knitr::include_graphics("images/three_penguins.png")
 ```
 
 
-
-##Dummy variables
+## Dummy variables
 
 In order to represent a categorical variable in a model - we need to convert these cases to ones that are compatible with the maths. 
 
@@ -5247,7 +5320,6 @@ knitr::include_graphics("images/three_penguins.png")
 ```
 
 
-
 ## Practice
 
 ```{r, echo =T}
@@ -5261,7 +5333,7 @@ lm(bill_length_mm ~
 
 
 
-##Practice
+## Practice
 
 $$
 \large{bill~length=bill~depth+body~mass+species}
@@ -5312,9 +5384,11 @@ If everything else about two penguins is the same (bill depth and body mass), we
 
 The species of penguin *changes* the relationship between bill length and bill depth (e.g. the shape of their beaks are different).
 
+::::{.columns}
 
+:::{.column}
 
-```{r, echo = T}
+```{r, echo = T, eval = F}
 lsmodel1 <- lm(bill_length_mm ~ 
               bill_depth_mm +
               body_mass_g + 
@@ -5322,9 +5396,30 @@ lsmodel1 <- lm(bill_length_mm ~
               species:bill_depth_mm, #<<
             data = penguins)
 
-lsmodel1
+summary(lsmodel1)
 
 ```
+
+:::
+
+:::{.column}
+
+```{r, echo = F}
+lsmodel1 <- lm(bill_length_mm ~ 
+              bill_depth_mm +
+              body_mass_g + 
+              species + 
+              species:bill_depth_mm, #<<
+            data = penguins)
+
+summary(lsmodel1)
+
+```
+
+:::
+
+::::
+
 
 ## Additive vs Interaction
 
@@ -5429,6 +5524,44 @@ $(0.002*body~mass)+(1*-10.2)+(0.002*1.09*1)$
 * You can add the interaction term as a way to TEST the hypothesis for a significant interaction, then drop it from your model if not required. 
 
 :::
+
+
+## Emmeans in interaction models
+
+Generalisations are no longer valid in interaction models, the effect of a predictor variable on the dependent variable is now conditional on the value of the other predictor variable
+
+::::{.columns}
+
+:::{.column}
+
+```{r}
+#|echo: TRUE
+#|message: TRUE
+#|info: TRUE
+#|warning: TRUE
+
+
+emmeans::emmeans(lsmodel1,
+                 specs = ~ bill_depth_mm,
+            data = penguins)
+```
+
+:::
+
+:::{.column}
+
+```{r}
+#|echo: TRUE
+#|message: TRUE
+
+emmeans::emmeans(lsmodel1,
+                 specs = ~ bill_depth_mm,
+            data = penguins)
+```
+
+:::
+
+::::
 
 ## Exercise multiple regression
 
@@ -5650,7 +5783,7 @@ check_model(lsmodel1, check = c("linearity", "homogeneity"))
 
 ```
 
-## Collinearity and High Leverage
+## Collinearity and High Leverage {.smaller}
 
 ::::{.columns}
 
@@ -5826,7 +5959,7 @@ Bias created when one or more predictor variables are incorrectly left out of a 
 e.g. this predictor variable should have been included because you could reasonably expect it to influence the outcome. 
 
 
-
+* Model *may* be a poor fit
 
 * Other terms may have their influence over – or underestimated ( it is not always clear which way round this will occur).
 
@@ -6107,6 +6240,327 @@ knitr::kable(ma_coefs, digits = 2)
 
 
 # Issues and pitfalls with models {background-color="#D9DBDB"}
+
+
+## Univoltine butterflies
+
+- Univoltine species of insects are those that have a single generation per year
+
+- In [this paper](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.12492) the authors investigated the effects of avg temperature in June on adult body size
+
+- Looked at historical temperature data and museum specimens of *Hesperia comma*
+
+
+## The data
+
+```{r}
+#| eval: true
+#| echo: false
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+
+butterfly <- readr::read_csv("../data_2/univoltine_butterfly.csv")
+
+
+butterfly <- butterfly %>% 
+  janitor::clean_names()
+
+```
+
+- Year specimen collected
+
+- Forewing length (mm)
+
+- Sex of butterfly
+
+- Average June temp (celsius)
+
+- Average June rainfall (mm)
+
+## Check for errors in continuous data
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+summary(butterfly)
+
+```
+
+
+## Check for errors in categorical data
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+butterfly %>% 
+  distinct(sex)
+
+```
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+butterfly %>% 
+  is.na() %>% 
+  sum()
+
+```
+
+## Fix the dataset
+
+::::{.columns}
+
+:::{.column}
+
+```{r}
+#| eval: false
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+butterfly_correct <- butterfly %>% 
+  mutate(rain_jun = if_else(rain_jun >100, mean(rain_jun), rain_jun)) %>% 
+  mutate(sex = case_when(sex == "Maes" ~ "Males",
+                         sex == "Female" ~ "Females",
+                          .default = as.character(sex)))
+
+butterfly_correct %>% 
+  distinct(sex)
+
+```
+
+:::
+
+:::{.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 7
+#| message: false
+
+butterfly_correct <- butterfly %>% 
+  mutate(rain_jun = if_else(rain_jun >100, mean(rain_jun), rain_jun)) %>% 
+  mutate(sex = case_when(sex == "Maes" ~ "Males",
+                         sex == "Female" ~ "Females",
+                          .default = as.character(sex)))
+
+butterfly_correct %>% 
+  distinct(sex)
+
+```
+
+:::
+
+::::
+
+## Pairwise comparisons
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| layout-ncol: 2
+#| message: false
+
+
+butterfly_correct %>% 
+  GGally::ggpairs(columns = c("forewing_length",
+                              "jun_mean",
+                              "rain_jun"),
+                              ggplot2::aes(colour = sex))
+
+```
+
+
+## Multiple models {.smaller}
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+butterfly_correct %>% 
+  group_split(sex) %>% 
+  map(~lm(forewing_length ~ jun_mean + rain_jun, data = .) %>% 
+        summary())
+
+```
+
+## Issues
+
+- Fitting multiple models is not appropriate
+
+- Each model has reduced power
+
+- Risks overfitting
+
+- No hypothesis testing for a differential response between the sexes has been performed
+
+## Analysis
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+model <- lm(forewing_length ~ jun_mean + rain_jun + sex + jun_mean:sex, data = butterfly_correct)
+
+summary(model)
+
+
+```
+
+## Check model fit
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+performance::check_model(model, detrend = F)
+
+```
+
+
+
+## Test interaction
+
+```{r}
+#| eval: true
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+model_2 <- lm(forewing_length ~ jun_mean + rain_jun + sex, data = butterfly_correct)
+
+anova(model_2, model)
+
+summary(model_2)
+
+```
+
+## Figures
+
+::::{.columns}
+
+:::{.column width="30%"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+butterfly_correct %>% 
+  ggplot(aes(x = jun_mean,
+             y = forewing_length,
+             colour = sex))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  theme_classic(base_size = 18)
+
+```
+
+:::
+
+:::{.column width="70%"}
+
+```{r}
+
+#| fig-height: 7
+#| message: false
+
+butterfly_correct %>% 
+  ggplot(aes(x = jun_mean,
+             y = forewing_length,
+             colour = sex))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  theme_classic(base_size = 18)
+
+```
+
+:::
+
+::::
+
+## A better figure
+
+::::{.columns}
+
+:::{.column width="30%"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| fig-height: 7
+#| message: false
+
+emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
+                 at = list(rain_jun = seq(5,100,5))) %>% as_tibble() %>% 
+  ggplot(aes(x = rain_jun,
+               y = emmean,
+               colour = sex,
+               fill = sex)) +
+  geom_ribbon(aes(ymin = lower.CL,
+                  ymax = upper.CL),
+              alpha = .2)+
+  geom_line()+
+  geom_point(data = butterfly_correct,
+             aes(x = rain_jun,
+                 y = forewing_length))+
+  theme_classic(base_size = 18)
+  
+
+```
+
+:::
+
+:::{.column width="70%"}
+
+```{r}
+
+#| fig-height: 7
+#| message: false
+
+emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
+                 at = list(rain_jun = seq(5,100,5))) %>% as_tibble() %>% 
+  ggplot(aes(x = rain_jun,
+               y = emmean,
+               colour = sex,
+               fill = sex)) +
+  geom_ribbon(aes(ymin = lower.CL,
+                  ymax = upper.CL),
+              alpha = .2)+
+  geom_line()+
+  geom_point(data = butterfly_correct,
+             aes(x = rain_jun,
+                 y = forewing_length))+
+  theme_classic(base_size = 18)
+  
+
+```
+
+:::
+
+::::
 
 # Generalized Linear Models {background-color="#D9DBDB"}
 
