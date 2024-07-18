@@ -9388,7 +9388,7 @@ x, which means that we just relaxed the homogeneity of variance assumption!
 * The model will never predict negative values (Poisson is strictly positive)
 
 $$
-    \log{\lambda} = \beta_0 + \beta_1 T_i + \beta_2 T_j + \beta_2 T_k 
+    \log{\lambda} = \beta_0 + \beta_1 T_i + \beta_1 T_j + \beta_1 T_k 
 $$
 
 
@@ -9407,25 +9407,47 @@ summary(stick_poisson)
 
 ## Poisson model fit 
 
-:::{.fragment}
+::::{.columns}
 
+:::{.column}
+
+Linear Model
 
 ```{r}
 #| echo: false
 #| fig-height: 6
 
-par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
 
 plot(stick_lm, which=2)
 
 plot(stick_lm, which=3)
 
-plot(stick_poisson, which=2)
 
-plot(stick_poisson, which=3)
 ```
 
 :::
+
+:::{.column}
+
+Poisson Model
+
+```{r}
+#| echo: false
+#| fig-height: 6
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+
+plot(stick_poisson, which=2)
+
+plot(stick_poisson, which=3)
+
+
+```
+
+:::
+
+::::
 
 ## Effect of treatment
 
@@ -9627,6 +9649,7 @@ drop1(stick_quasipoisson, test = "F")
 #The variance of the distribution also increases, indicating greater variability.
 
 # Function to generate negative binomial distribution data
+
 generate_nbinom_data <- function(r, p) {
   tibble(failures = 0:(10*r), 
          probability = dnbinom(0:(10*r), size = r, prob = p))
@@ -9745,6 +9768,16 @@ performance::check_zeroinflation(stick_nb)
 
 ```
 
+## Validating a model by simulation
+
+```{r}
+#| echo: true
+#| fig-height: 7
+#| layout-ncol: 2
+#| warning: false
+plot(DHARMa::simulateResiduals(stick_nb))
+```
+
 
 ## Comparison of model predictions
 
@@ -9793,7 +9826,7 @@ geom_pointrange(data = means_poisson,
                 position = position_nudge(x= -.2))+  
   theme_classic(base_size = 18)+
   scale_color_manual(values = colors)+
-  scale_y_continuous(limits = c(0,30))
+  scale_y_continuous(limits = c(0,15))
 
 ```
 
@@ -9810,7 +9843,35 @@ i) mixed-effects models incorporate group and even individual-level differences
 
 ii) mixed-effects models cope well with missing data, unequal group sizes and repeated measurements
 
+## Structure {.smaller}
 
+:::{.incremental}
+
+- Biological datasets are often highly structured, containing clusters of non-independent observational units that are hierarchical in nature, and LMMs allow us to explicitly model the non-independence in such data. 
+
+- Example: 
+
+> We measure several chicks from the same clutch, and several clutches from different females, or we might take repeated measurements of the same chick’s growth rate over time. 
+
+- In both cases, we might expect that measurements within a statistical unit (here, an individual, or a female’s clutch) might be more similar than measurements from different units. 
+
+- Explicit modelling of the random effects structure will aid correct inference about fixed effects, depending on which level of the system’s hierarchy is being manipulated. 
+
+:::
+
+## Error rates
+
+:::{.incremental}
+
+- If the fixed effect varies or is manipulated at the level of the clutch, then treating multiple chicks from a single clutch as independent would represent pseudoreplication
+
+- If fixed effects vary at the level of the chick, then non-independence among clutches or mothers could also be accounted for. 
+
+- Random effects represent grouping and allow the estimation of variance in the response variable within and among these groups. 
+
+- This reduces the probability of false positives and false negatives
+
+:::
 
 ## Examples of structured data
 
@@ -9818,9 +9879,17 @@ ii) mixed-effects models cope well with missing data, unequal group sizes and re
 
 - Estimating scores on a standardised maths test - students from the same maths class should be grouped
 
+```
+lmer(test_score ~ study_time + (1|class))
+```
+
 *Repeated measures*
 
 - Medical interventions on blood sugar levels - each person is measured multiple times over a year
+
+```
+lmer(blood_sugar ~ treatment + time + (1|individual))
+```
 
 ## Fixed and Random Effects
 
@@ -9832,7 +9901,7 @@ ii) mixed-effects models cope well with missing data, unequal group sizes and re
 
 Fixed effects are variables that we expect will affect the dependent/response variable: they’re what you call explanatory variables in a standard linear regression.
 
-${y_i = \beta0 + \beta1x+\epsilon}$
+${y_i = \beta0 + \beta1x+\epsilon_i}$
 
 
 ```
@@ -9847,8 +9916,7 @@ y ~ x, data = data)
 
 A random effect is a parameter that is allowed to vary across groups or individuals. Random effects do not take a single fixed value, rather they follow a distribution (usually the normal distribution) and allow a model to account for variation around an intercept or slope.
 
-${y_i = \beta0_{[i]} + \beta1x+\epsilon}$
-
+${y_{ij} = \beta0_{j} + \beta1x+\epsilon_i}$
 
 
 ```
@@ -9859,7 +9927,7 @@ y ~ x + (1|group), data = data)
 
 ::::
 
-##
+## A regression on simulated data
 
 ```{r, include = F}
 
@@ -9910,13 +9978,6 @@ data <- bind_rows(data, data.1) %>%
 
 
 ```{r, echo = F, fig.width = 12}
-plot(data$x, data$y)
-
-```
-
-##
-
-```{r, echo = F, fig.width = 12}
 
 ggplot(data, aes(x = x, 
                  y = y)) +
@@ -9927,7 +9988,9 @@ ggplot(data, aes(x = x,
 
 ```
 
-##
+- In this example variable x has been modelled against variable y, but the data actually comes from five separate groups
+
+## Mean between groups
 
 ::::{.columns}
 
@@ -9969,7 +10032,11 @@ plot_group
 
 ::::
 
-## No pooling
+The mean value is slightly different between each group
+
+## Stratified analysis
+
+One way to analyse this data would be to conduct independent regressions for each group: 
 
 ```{r, echo = F, fig.width = 12}
 
@@ -9983,11 +10050,20 @@ ggplot(data, aes(x = x, y = y, color = group, group = group)) +
 
 ```
 
+Each analysis will be restricted by its sample size, and the reduction in power will inflate sampling bias - leading to inconclusive results
 
 
 ## Partial pooling
 
-```{r, echo = F, fig.width = 12}
+- Complete pooling models all the information together and ignores structure
+
+- Mixed models employ partial pooling:
+
+- Fixed effects calculated on pooled data
+
+- For each group the random effect estimates the intercept
+
+```{r, echo = F, fig.width = 10}
 
 plot_function2 <- function(model, title = "Data Coloured by Group"){
   
@@ -10041,7 +10117,7 @@ data1 %>%
   geom_line(aes(y = fit.c, linetype = "lmer"), size = 1.1)+ 
   geom_line(aes(y = fit.m, linetype = "Mean"),size = 1.1, colour = "darkgrey")+
    scale_linetype_manual(name = "Model Type", 
-                        labels = c("Mean", "lmer", "lm"),
+                        labels = c("Stratified mean", "Mixed model", "Pooled mean"),
                         values = c("dotdash", "solid", "dashed"))+
   facet_wrap( ~ group)+
   guides(colour = "none")
@@ -10053,6 +10129,7 @@ data1 %>%
 ## Model in R
 
 ```{r, echo = T}
+library(lmerTest)
 lmer1 <- lmer(y ~ x + (1|group), data = data)
 summary(lmer1)
 
@@ -10065,7 +10142,7 @@ summary(lmer1)
 
 
 
-##
+## Model output
 
 Similar in interpretation to fixed effects from models you have constructed before
 
@@ -10082,7 +10159,7 @@ x             2.0271     0.1703 424.0815   11.90   <2e-16 ***
 ```
 
 
-## Random slopes and intercepts
+## Random slopes and intercepts {.smaller}
 
 ```{r, include = FALSE}
 
@@ -10107,7 +10184,7 @@ data %>%
 
 :::{.column}
 
-${y_i = \beta0_{[i]} + \beta1x+\epsilon}$
+${y_{ij} = \beta0_{j} + \beta1x+\epsilon_i}$
 
 ```
 y ~ x + (1|group), data = data)
@@ -10120,11 +10197,13 @@ lmer1 <- lmer(y ~ x + (1|group), data = data)
 plot_function(lmer1, "Random intercept")
 ```
 
+ A random-intercepts model where the outcome variable y is a function of predictor x, with a random intercept for group 
+
 :::
 
 :::{.column}
 
-${y_i = \beta0_{[i]} + \beta1_{[i]}x+\epsilon}$
+${y_{ij}  = \beta0_{j} + \beta1_{j}x+\epsilon_i}$
 
 
 ```
@@ -10137,10 +10216,13 @@ y ~ x + (x|group), data = data)
 lmer3 <- lmer(y ~ x + (x | group), data = data, control = lmerControl(optimizer = "Nelder_Mead"))
 plot_function(lmer3, "Random intercept & slope")
 ```
+A random intercepts and random slopes model, where both intercepts and slopes are permitted to vary by group
 
 :::
 
 ::::
+
+Random slope models give the model far more flexibility to fit the data, but require a lot more data to obtain accurate estimates of separate slopes for each group.
 
 
 
@@ -10250,12 +10332,33 @@ Your model did fit, but it generated that warning because some of your random ef
 4. Random effects: Report the variances, standard deviations
 
 
-## Recommended
+## Recommended {.smaller}
 
-- Cite the relevant packages.
+::::{.columns}
+
+:::{.column}
+
+- Cite the relevant packages for constructing and presenting analyses
 
 - Include plots of data and models
 
+- Report fixed effects as you would for a fixed-effects model
+
+- Make sure to include a summary of random effect specifications and s.d.
+
+
+
+:::
+
+:::{.column}
+```{r, echo = T}
+
+sjPlot::tab_model(lmer3)
+
+```
+:::
+
+::::
 
 # Wrap-up {background-color="#D9DBDB"}
 
