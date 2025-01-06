@@ -1022,9 +1022,34 @@ knitr::include_graphics("images/things_statisticians_say.png")
 :::{.column}
 
 
+```{r, include = FALSE}
+library(patchwork)
+library(ggimage)
+
+fruitfly <- readRDS(here::here("data", "fruitfly.rds"))
+
+flyls2 <- lm(longevity ~ type + thorax + sleep, data = fruitfly)
+
+  model_data <- emmeans::emmeans(flyls2, specs = ~ type + thorax,
+                at=list(thorax=seq(.64,.96, by =.04))) %>% 
+  as_tibble()
+  
+  colours <- c("cyan", "darkorange", "purple")
+  
+  dros_img <- here::here("docs", "images", "dros.jpg")
+```
+
 Easy enough to [*rapidly prototype*](https://johnburnmurdoch.github.io/slides/r-ggplot/#/14) graphics at the "speed of thought"  
-```{r, echo = FALSE, out.width="70%", fig.alt = "A screenshot of a scatterplot with team rank on the x-axis and team rating on the y-axis. The teams are all trending down from rank 1 to rank 20."}
-knitr::include_graphics("https://johnburnmurdoch.github.io/slides/r-ggplot/football-tide-2.png")
+
+```{r, warning = FALSE, echo = FALSE}
+
+fruitfly %>% 
+  ggplot()+
+  aes(x = thorax,
+      y = longevity,
+      colour = type)+
+  geom_point()
+
 ```
 
 :::
@@ -1032,13 +1057,63 @@ knitr::include_graphics("https://johnburnmurdoch.github.io/slides/r-ggplot/footb
 :::{.column}
 
 Powerful enough for [*final "publication"*](https://johnburnmurdoch.github.io/slides/r-ggplot/#/34)  
-```{r, echo = FALSE, out.width = "70%", fig.alt = "A facetted scattergraph by year for the premier league. Team rating is on the Y-axis and rank is on the x-axis. The teams overall are declining."}
-knitr::include_graphics("http://blogs.ft.com/ftdata/files/2016/03/eng.png")
+
+```{r, warning = FALSE, echo = FALSE}
+# density plot of thorax length by treatment
+marginal1 <- fruitfly %>% 
+  ggplot()+
+  geom_density(aes(x = thorax, fill = type),
+               alpha = 0.5)+
+  scale_fill_manual(values = colours)+
+  theme_void()+
+  theme(legend.position = "none")
+
+# density plot of longevity by treatment
+marginal2 <- fruitfly %>% 
+  ggplot()+
+  geom_density(aes(x = longevity, fill = type),
+               alpha = 0.5)+
+  scale_fill_manual(values = colours)+
+  theme_void()+
+  coord_flip()
+
+
+# use the final model to produce model predictions set to the new constant sleep dataframe
+model_plot <- model_data %>%  
+  ggplot(aes(x=thorax, y = emmean, colour = type, fill = type))+
+  geom_ribbon(aes(ymin=lower.CL, ymax=upper.CL), alpha = 0.2)+
+  geom_line(linetype = "dashed", show.legend = FALSE)+
+  geom_point(data = fruitfly, aes(x = thorax, y = longevity),
+             show.legend = FALSE)+
+  scale_colour_manual(values = colours)+
+  scale_fill_manual(values = colours)+
+  labs(y = "Lifespan in days",
+       x = "Thorax length (mm)",
+       fill = "Type of female exposure")+
+  guides(colour = "none")+
+  theme_classic()+
+  theme(legend.position = "none")+
+  geom_image( x = .7, y = 80, aes(image = dros_img),
+              size = .2, by="height",
+              inherit.aes = FALSE)
+
+layout <- "
+AAA#
+BBBC
+BBBC
+BBBC"
+
+
+marginal1+model_plot+marginal2 +plot_layout(design = layout)
+
 ```
+
 
 :::
 
 ::::
+
+
 
 
 ##
@@ -6540,9 +6615,9 @@ butterfly_correct %>%
 #| fig-height: 7
 #| message: false
 
-emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
-                 at = list(rain_jun = seq(5,100,5))) %>% as_tibble() %>% 
-  ggplot(aes(x = rain_jun,
+emmeans::emmeans(model_2, specs = ~ sex + jun_mean,
+                 at = list(jun_mean = seq(12,17,1))) %>% as_tibble() %>% 
+  ggplot(aes(x = jun_mean,
                y = emmean,
                colour = sex,
                fill = sex)) +
@@ -6551,7 +6626,7 @@ emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
               alpha = .2)+
   geom_line()+
   geom_point(data = butterfly_correct,
-             aes(x = rain_jun,
+             aes(x = jun_mean,
                  y = forewing_length))+
   theme_classic(base_size = 18)
   
@@ -6567,9 +6642,9 @@ emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
 #| fig-height: 7
 #| message: false
 
-emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
-                 at = list(rain_jun = seq(5,100,5))) %>% as_tibble() %>% 
-  ggplot(aes(x = rain_jun,
+emmeans::emmeans(model_2, specs = ~ sex + jun_mean,
+                 at = list(jun_mean = seq(12,17,1))) %>% as_tibble() %>% 
+  ggplot(aes(x = jun_mean,
                y = emmean,
                colour = sex,
                fill = sex)) +
@@ -6578,10 +6653,9 @@ emmeans::emmeans(model_2, specs = ~ sex + rain_jun,
               alpha = .2)+
   geom_line()+
   geom_point(data = butterfly_correct,
-             aes(x = rain_jun,
+             aes(x = jun_mean,
                  y = forewing_length))+
   theme_classic(base_size = 18)
-  
 
 ```
 
