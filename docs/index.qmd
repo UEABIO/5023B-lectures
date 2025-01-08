@@ -2536,11 +2536,13 @@ drop_na(penguins, -delta_15n, -delta_13c, -comments)
 
 - Preserves power
 
-- Mean imputation can introduce bias if data is not missing at random.
+- Mean imputation can introduce bias if data is not **missing completely at random**.
 
 - Reduces variability in the dataset.
 
-- More sophisticated methods include median imputation, regression imputation, and multiple imputation.
+- For MAR - we can use multiple imputation methods - see [mice package](https://www.rdocumentation.org/packages/mice/versions/3.17.0/topics/mice).
+
+- MNAR very specialist
 
 ```{r, echo = T, eval = F}
 penguins %>% 
@@ -2620,6 +2622,10 @@ penguins %>% ggplot(aes(x = species, y = body_mass_g)) + geom_boxplot() +coord_f
 
 ## Histograms
 
+::::{.columns}
+
+:::{.column}
+
 ```{r, fig.width = 7}
 library(ggridges)
 penguins %>% drop_na(sex) %>% 
@@ -2628,7 +2634,9 @@ ggplot(aes(x = body_mass_g, y = species)) +
                 alpha = 0.8)
 
 ```
+:::
 
+:::{.column}
 ```{r, fig.width = 7}
 
 library(ggridges)
@@ -2639,6 +2647,10 @@ ggplot(aes(x = body_mass_g, y = species)) +
                 bins = 10)
 
 ```
+:::
+
+:::{.column}
+
 ```{r}
 
 library(ggridges)
@@ -2649,6 +2661,9 @@ ggplot(aes(x = body_mass_g, y = species)) +
                 bins = 50)
 
 ```
+:::
+
+::::
 
 ## Distributions
 
@@ -2682,6 +2697,37 @@ knitr::include_graphics("images/qq_example.png")
 :::
 
 ::::
+
+## Normal distribution
+
+```{r}
+# Generate right-skewed data
+data_normal <- rnorm(1000, mean =0, sd =1)
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+hist(data_normal, main = "Normal distribution", xlab = "Value", col = "lightgreen", border = "black")
+qqnorm(data_normal)
+qqline(data_normal, col = "red")
+
+```
+
+## Outliers
+
+```{r}
+# Generate right-skewed data
+data_normal <- rnorm(500, mean =0, sd =1)
+data_extra <- rnorm(20, mean = 3, sd = 1)
+
+data_normal <- c(data_normal, data_extra)
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+hist(data_normal, main = "Outliers", xlab = "Value", col = "lightgreen", border = "black")
+qqnorm(data_normal)
+qqline(data_normal, col = "red")
+
+```
 
 ## Right-skewed
 
@@ -2767,14 +2813,40 @@ qqline(data_beta, col = "red")
 
 ```
 
+## Uniform
+
+```{r}
+# Load necessary library
+library(ggplot2)
+
+# Generate light-tailed data with high kurtosis using Beta distribution
+set.seed(123)
+data_uni <- runif(1000, min = 0, max = 10) # Scale to [-1, 1]
+
+# Create histogram and QQ plot
+par(mfrow = c(1, 2))
+
+# Histogram
+hist(data_uni, main = "Uniform", 
+     xlab = "Value", col = "lightblue", border = "black")
+
+# QQ Plot
+qqnorm(data_uni)
+qqline(data_uni, col = "red")
+
+```
 
 ## Skimr - generate quick overviews of data {.smaller}
+
+
 
 ```{r, echo = T}
 
 skimr::skim(penguins)
 
 ```
+
+
 
 ## Exercise practice data checking
 
@@ -2864,7 +2936,13 @@ Often we will start with
 
 **Data Spread** - how observations are dispersed
 
+Generally classed as **Descriptive Statistics**
 
+## What is Descriptive Statistics?
+
+- Descriptive statistics summarise and organise data in a clear, understandable way.
+
+- They help us see patterns and trends without diving into deeper analytical methods.
 
 ## Central tendency
 
@@ -2884,7 +2962,7 @@ The three most commonly reported measures of central tendency are the sample **m
 
 
 
-## The mean
+## Mean
 
 One of the simplest statistical models in biology is the **mean**
 
@@ -2913,6 +2991,8 @@ Calculating the mean:
 
 $$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
 $$\frac{5 + 3 + 3 + 2 + 1}{5} = 2.6$$
+
+Sum all the values and divide by n of values
 
 :::
 
@@ -2988,6 +3068,204 @@ ggplot(df, aes(x = x)) +
 ```
 
 
+## Variance
+
+The average of the squared differences from the mean.
+
+
+$$s{^2}_{sample} = \frac{\sum(x - \bar{x})^2}{N -1}$$
+Sample variance is a robust measure of data spread, a higher variance means more spread.
+
+## Calculating variance
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Symmetrical sides"}
+knitr::include_graphics("images/normal-distribution.jpg")
+```
+
+:::
+
+:::{.column}
+
+```
+
+   value residuals squared residuals
+ 1 12.7      2.88         8.27 
+ 2 14.2      4.32        18.7  
+ 3 11.3      1.41         1.99 
+ 4  7.43    -2.44         5.93 
+ 5  8.27    -1.60         2.57 
+ 6 12.7      2.81         7.90 
+ 7  5.34    -4.53        20.5  
+ 8 13.9      4.00        16.0  
+
+```
+
+```
+
+  sum of residuals sum of squares  mean
+1       -0.0577        359        9.87
+
+```
+
+:::
+
+::::
+
+
+## N-1? {.smaller}
+
+```{r, echo = FALSE, out.width="30%", fig.alt = "Sampling"}
+knitr::include_graphics("images/pop_sam.png")
+```
+
+For a *population* the variance $S_p^2$ is exactly the **mean** squared distance of the values from the population mean
+
+$$
+s{^2}_{pop} = \frac{\sum(x - \bar{x})^2}{N}
+$$
+
+
+
+But this is a *biased* estimate for the population variance 
+
+- A biased sample variance will *underestimate* population variance
+
+- n-1 (if you take a large enough sample size, will correct for this)
+
+[More here](https://www.jamelsaadaoui.com/unbiased-estimator-for-population-variance-clearly-explained/#:~:text=The%20expected%20value%20of%20the%20sample%20variance%20is%20equal%20to,definition%20of%20an%20unbiased%20estimator.)
+
+
+
+## Standard Deviation
+
+- Square root of **sample variance**
+
+- A measure of dispersion of the sample
+
+- Smaller SD = more values closer to mean, larger SD = greater data spread from mean
+
+* *variance*:
+
+$$
+\sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
+$$
+
+
+## Standard deviation - our example
+
+Lecturer     | Friends | Diff | Squared diff |
+  ------------ | ------- | --- | ------ |
+  Mark         | 5       | 2.4  | 5.76    |
+  Tony         | 3       | 0.4  | 0.16    |
+  Becky        | 3       | 0.4  | 0.16    |
+  Ellen        | 2       | -0.6  | 0.36    |
+  Phil         | 1       | -1.6  | 2.56    |   
+|  **Mean **  | **2.6**      |
+| **variance** | **2.2** |
+| **SD **  | **1.4**      |
+
+
+## Standard Deviation
+
+Small $s$ = data points are clustered near the mean
+
+Large $s$ = data points are widely dispersed around the mean
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "60%"}
+
+library(patchwork)
+
+`SD = 1` <- rnorm(n = 1000, mean = 0, sd = 1)
+`SD = 2` <- rnorm(n = 1000, mean = 0, sd = 2)
+`SD = 3` <- rnorm(n = 1000, mean = 0, sd = 3)
+
+tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
+pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
+  ggplot(aes(x = values, fill = `Standard Deviation`))+
+  geom_histogram()+
+  facet_wrap(~ `Standard Deviation`)+
+  theme_classic()+
+  theme(legend.position = "none")+
+  labs(x = " ",
+       y = "Frequency")
+
+
+```
+
+
+## Why the Normal Distribution matters
+
+Shape: Symmetrical, bell-shaped curve
+
+- Rule of Thumb: For normally distributed data:
+
+    ~68% within 1 SD
+
+    ~95% within 2 SDs
+
+    ~99.7% within 3 SDs
+
+Relevance: Underpins many statistical tests and probability calculations (e.g., Z-scores)
+
+## Why the Normal Distribution matters
+
+If we assume a normal distribution (or close enough), we can calculate the probability of observing any given value using just the mean and standard deviation. 
+
+$$
+f(x) = \frac{1}{\sqrt{2\pi} \, \sigma}
+       \exp\!\Biggl(-\frac{(x - \mu)^2}{2\,\sigma^2}\Biggr)
+$$
+
+This has applications in hypothesis testing and building confidence intervals
+
+## Visualising a Distribution
+
+::::{.columns}
+
+:::{.column}
+
+**Histograms** plot frequency/density of observations within bins
+
+```{r, echo = FALSE, message = FALSE, out.width="80%"}
+tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
+pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
+  filter(`Standard Deviation` == "SD = 2") %>% 
+  ggplot(aes(x = values), fill = "grey")+
+  geom_histogram()+
+  theme_minimal()+
+  theme(legend.position = "none")+
+  labs(x = bquote(bar(x)),
+       y = " ")
+```
+
+:::
+
+:::{.column}
+
+**Quantile-Quantile plots** plot quantiles of a dataset vs. quantiles of a *theoretical* (usually normal) distribution
+
+```{r, echo = FALSE, warning = F, message  = F, out.width="80%"}
+
+tibble(`SD = 1`,`SD = 2`, `SD = 3`) %>% 
+pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
+  filter(`Standard Deviation` == "SD = 2") %>% 
+  ggplot(aes(sample = values))+
+  geom_qq()+
+  geom_qq_line()+
+  theme(legend.position = "none")+
+  labs(x = " ",
+       y = " ")
+```
+
+:::
+
+::::
+
 
 ## Why is data distribution important?
 
@@ -3052,26 +3330,21 @@ ggplot(df1, aes(x = x)) +
 
 ```
 
+## When data are not normal
 
+- Median: Middle value of sorted data—resistant to skew/outliers
 
-## Assessing the fit of a central tendency
+- Range: Max − Min (simple but sensitive to outliers)
 
-So we have multiple ways to describe a central tendency of a set of observations. 
+- Interquartile Range (IQR): More robust (Q3 – Q1)
 
-But we do not know **how the data are distributed or spread around this**
+Why Use These?:
 
+- Mean/SD can be misleading in highly skewed distributions
 
+- Median & IQR often better represent central tendency & spread
 
-## Data Spread
-
-- Range
-
-- Variance
-
-- Standard deviation
-
-
-## Range
+## Median and Range
 
 Going back to our friends data: 
 
@@ -3110,8 +3383,7 @@ Going back to our friends data:
 ::::
 
 
-
-## Range
+## IQR
 
 * Box bounded by 25th and 75th percentile (first and third quartile). This is called the interquartile range (IQR)
 
@@ -3142,187 +3414,32 @@ knitr::include_graphics("images/cat.jpg")
 
 ::::
 
+## What is Correlation?
 
+A statistical measure that quantifies the degree to which two variables move together.
 
-## Variance
+Correlation Coefficient Range: −1 to +1
 
-Sample variance is a more robust measure of data spread because it is not so highly influence by outliers and takes into account all observations. In words, variance is the mean squared distance of observations from the sample mean. 
+- +1: Perfect positive relationship
 
-$$s{^2}_{sample} = \frac{\sum(x - \bar{x})^2}{N -1}$$
+- -1: Perfect negative relationship
 
+- 0: No linear relationship
 
-## Calculating variance
 
-::::{.columns}
+## Pearson's correlation
 
-:::{.column}
+Measures the **linear** relationship between two variables
 
-```{r, echo = FALSE, out.width="100%", fig.alt = "Symmetrical sides"}
-knitr::include_graphics("images/normal-distribution.jpg")
-```
+Assumes the data is approximately normally distributed
 
-:::
+Few (if any) outliers
 
-:::{.column}
+## Spearman's correlation
 
-```
+- Less sensitive to outliers
 
-   value residuals squared residuals
- 1 12.7      2.88         8.27 
- 2 14.2      4.32        18.7  
- 3 11.3      1.41         1.99 
- 4  7.43    -2.44         5.93 
- 5  8.27    -1.60         2.57 
- 6 12.7      2.81         7.90 
- 7  5.34    -4.53        20.5  
- 8 13.9      4.00        16.0  
-
-```
-
-```
-
-  sum of residuals sum of squares  mean
-1       -0.0577        359        9.87
-
-```
-
-:::
-
-::::
-
-
-
-
-## N-1?
-
-```{r, echo = FALSE, out.width="30%", fig.alt = "Sampling"}
-knitr::include_graphics("images/pop_sam.png")
-```
-
-For a *population* the variance $S_p^2$ is exactly the **mean** squared distance of the values from the population mean
-
-$$
-s{^2}_{pop} = \frac{\sum(x - \bar{x})^2}{N}
-$$
-
-
-
-But this is a *biased* estimate for the population variance 
-
-- A biased sample variance will *underestimate* population variance
-
-- n-1 (if you take a large enough sample size, will correct for this)
-
-[More here](https://www.jamelsaadaoui.com/unbiased-estimator-for-population-variance-clearly-explained/#:~:text=The%20expected%20value%20of%20the%20sample%20variance%20is%20equal%20to,definition%20of%20an%20unbiased%20estimator.)
-
-
-
-## Standard Deviation
-
-- Square root of sample variance
-
-- A measure of dispersion of the sample
-
-- Smaller SD = more values closer to mean, larger SD = greater data spread from mean
-
-* *variance*:
-
-$$
-\sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
-$$
-
-
-## Standard deviation - our example
-
-Lecturer     | Friends | Diff | Squared diff |
-  ------------ | ------- | --- | ------ |
-  Mark         | 5       | 2.4  | 5.76    |
-  Tony         | 3       | 0.4  | 0.16    |
-  Becky        | 3       | 0.4  | 0.16    |
-  Ellen        | 2       | -0.6  | 0.36    |
-  Phil         | 1       | -1.6  | 2.56    |   
-|  **Mean **  | **2.6**      |
-| **variance** | **2.2** |
-| **SD **  | **1.4**      |
-
-
-## Standard Deviation
-
-Small $s$ = taller, narrower
-Large $s$ = squatter, wider
-
-```{r, eval = FALSE}
-rnorm(n = 1000,mean = 0,sd = 1)
-rnorm(n = 1000,mean = 0,sd = 2)
-rnorm(n = 1000,mean = 0,sd = 3)
-```
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "60%"}
-
-library(patchwork)
-
-`SD = 1` <- rnorm(n = 1000, mean = 0, sd = 1)
-`SD = 2` <- rnorm(n = 1000, mean = 0, sd = 2)
-`SD = 3` <- rnorm(n = 1000, mean = 0, sd = 3)
-
-tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
-pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
-  ggplot(aes(x = values, fill = `Standard Deviation`))+
-  geom_histogram()+
-  facet_wrap(~ `Standard Deviation`)+
-  theme_classic()+
-  theme(legend.position = "none")+
-  labs(x = " ",
-       y = "Frequency")
-
-
-```
-
-## Visualising a Distribution
-
-::::{.columns}
-
-:::{.column}
-
-**Histograms** plot frequency/density of observations within bins
-
-```{r, echo = FALSE, message = FALSE, out.width="80%"}
-tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
-pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
-  filter(`Standard Deviation` == "SD = 2") %>% 
-  ggplot(aes(x = values), fill = "grey")+
-  geom_histogram()+
-  theme_minimal()+
-  theme(legend.position = "none")+
-  labs(x = bquote(bar(x)),
-       y = " ")
-```
-
-:::
-
-:::{.column}
-
-**Quantile-Quantile plots** plot quantiles of a dataset vs. quantiles of a *theoretical* (usually normal) distribution
-
-```{r, echo = FALSE, warning = F, message  = F, out.width="80%"}
-
-tibble(`SD = 1`,`SD = 2`, `SD = 3`) %>% 
-pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
-  filter(`Standard Deviation` == "SD = 2") %>% 
-  ggplot(aes(sample = values))+
-  geom_qq()+
-  geom_qq_line()+
-  theme(legend.position = "none")+
-  labs(x = " ",
-       y = " ")
-```
-
-:::
-
-::::
-
-
-
+- Works with rank ordered data, no requirement for normality
 
 # Understanding Bias  {background-color="#D9DBDB"}
 
