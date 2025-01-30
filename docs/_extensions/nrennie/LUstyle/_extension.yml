@@ -2,9 +2,9 @@ title: Lancaster University Quarto Template
 author: Philip Leftwich
 version: 0.0.2
 contributes:
-  formats: 
+  formats:
     revealjs:
-      logo: Uea_phys.png
+      logo: UEA.jpg
       theme: LUstyle.scss
       height: 900
       width: 1600
@@ -13,7 +13,7 @@ contributes:
     html:
       theme: [default, LUstyle.scss]
     pdf:
-      include-in-header: 
+      include-in-header:
        - "LUpdf.tex"
        - "columns.tex"
       toc: true
