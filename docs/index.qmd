@@ -55,7 +55,7 @@ Teach Genetics, Programming, and Statistics
 
 ::: {.column}
 
-![](images/UEA.jpg){fig-align="center" fig-alt="UEA logo" width=70%}
+![](images/UEA.jpg){fig-align="center" fig-alt="UEA logo" width=50%}
 
 :::
 :::
@@ -126,7 +126,7 @@ I hope you end up with more questions than answers!
 
 ## Introduction to Reproducible Research
 
-![](images/reproducible-matrix.jpg){fig-align="center" fig-alt="Turing Way Community cc-by licence" width=80%}
+![](images/reproducible-matrix.jpg){fig-align="center" fig-alt="Turing Way Community cc-by licence" width=50%}
 
 - For Research to be reproducible both data and methods should be available.
 
@@ -161,7 +161,7 @@ I hope you end up with more questions than answers!
 
 ### 246 biologists get different results from same data sets
 
-![](images/many-analysts.png){fig-align="center" fig-alt=": Forest plots of meta-analytic estimated standardized effect sizes (Zr, blue triangles) and their 95% confidence intervals for each effect size included in the meta-analysis model. (A) Blue tit analyses: Points where Zr are less than 0 indicate analyses that found a negative relationship between sibling number and nestling growth. (B) Eucalyptus analyses: Points where Zr are less than 0indicate a negative relationship between grass cover and Eucalyptus seedling success" width=80%}
+![](images/many-analysts.png){fig-align="center" fig-alt=": Forest plots of meta-analytic estimated standardized effect sizes (Zr, blue triangles) and their 95% confidence intervals for each effect size included in the meta-analysis model. (A) Blue tit analyses: Points where Zr are less than 0 indicate analyses that found a negative relationship between sibling number and nestling growth. (B) Eucalyptus analyses: Points where Zr are less than 0indicate a negative relationship between grass cover and Eucalyptus seedling success" width=50%}
 
 ## Reproducibility Crisis 
 
@@ -180,7 +180,7 @@ I hope you end up with more questions than answers!
 
 ## Open Science
 
-![](images/UNESCO-Open_science-pillars-en.png){fig-align="center" fig-alt="Open Science" width=70%}
+![](images/UNESCO-Open_science-pillars-en.png){fig-align="center" fig-alt="Open Science" width=50%}
 
 Open science is a global movement that aims to make scientific research and its outcomes freely accessible to everyone. By fostering practices like data sharing and preregistration, open science not only accelerates scientific progress but also strengthens trust in research findings.
 
@@ -241,7 +241,7 @@ Open science is a global movement that aims to make scientific research and its 
 
 ## R projects
 
-![](images/Project.png){fig-align="center" fig-alt="R projects" width=70%}
+![](images/Project.png){fig-align="center" fig-alt="R projects" width=50%}
 
 ## Slugs
 
@@ -269,7 +269,7 @@ Open science is a global movement that aims to make scientific research and its 
 
 ## R projects and clean slates
 
-![](images/jenny_bryan.png){fig-align="center" fig-alt="R projects" width=100%}
+![](images/jenny_bryan.png){fig-align="center" fig-alt="R projects" width=80%}
 
 - Use projects
 
@@ -302,19 +302,19 @@ Open science is a global movement that aims to make scientific research and its 
 
 ## Git
 
-![](images/git.png){fig-align="center" fig-alt="copy-paste" width=100%}
+![](images/git.png){fig-align="center" fig-alt="copy-paste" width=70%}
 
 ## Git repository
 
-![](images/git-remote.png){fig-align="center" fig-alt="copy-paste" width=100%}
+![](images/git-remote.png){fig-align="center" fig-alt="copy-paste" width=70%}
 
 ## Git collab
 
-![](images/no_fork.png){fig-align="center" fig-alt="copy-paste" width=100%}
+![](images/no_fork.png){fig-align="center" fig-alt="copy-paste" width=70%}
 
 ## Forking
 
-![](images/si_fork.png){fig-align="center" fig-alt="copy-paste" width=100%}
+![](images/si_fork.png){fig-align="center" fig-alt="copy-paste" width=70%}
 
 ## Renv
 
@@ -322,13 +322,13 @@ Open science is a global movement that aims to make scientific research and its 
 
 :::{.column width="80%"}
 
-![](images/renv.png){fig-align="center" fig-alt="copy-paste" width=100%}
+![](images/renv.png){fig-align="center" fig-alt="copy-paste" width=80%}
 
 :::
 
 :::{.column width="20%"}
 
-![](images/renv_logo.png){fig-align="center" fig-alt="copy-paste" width=100%}
+![](images/renv_logo.png){fig-align="center" fig-alt="copy-paste" width=80%}
 
 :::
 
@@ -337,7 +337,7 @@ Open science is a global movement that aims to make scientific research and its 
 
 ## Benefits
 
-![](images/sortee_infogr_01.png){fig-align="center" fig-alt="" width=100%}
+![](images/sortee_infogr_01.png){fig-align="center" fig-alt="" width=70%}
 
 
 # Resources
