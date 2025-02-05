@@ -31,6 +31,7 @@ library(MuMIn)
 library(performance)
 library(pscl)
 library(sjPlot)
+library(tidyverse)
 
 
 ```
@@ -338,6 +339,700 @@ Open science is a global movement that aims to make scientific research and its 
 ## Benefits
 
 ![](images/sortee_infogr_01.png){fig-align="center" fig-alt="" width=70%}
+
+
+# Week Two: Descriptive Statistics  {background-color="#D9DBDB"}
+
+## Building Statistical Models
+
+
+::::{.columns}
+
+:::{.column}
+
+- What is a Statistical Model?
+
+- A model is a simplified representation of real-world processes.
+
+- It helps us describe, explain, and predict outcomes.
+
+- A good fit makes accurate predictions; a poor fit can lead to misleading conclusions.
+
+- To make reliable inferences, the model must accurately represent the data.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE}
+
+knitr::include_graphics("images/bridge.png")
+```
+
+> “Later, we'll see how models help us test hypotheses using p-values to assess if the data fits our expectations.”
+
+:::
+
+::::
+
+## Populations and Samples
+
+Population:
+
+- The entire group you want to study (e.g., all humans, all mice in a lab).
+
+- Studying the entire population is often impractical due to time, cost, or logistics.
+
+Sample:
+
+- A subset of the population, selected to make inferences about the whole.
+
+- Must be representative to ensure accurate conclusions.
+
+
+
+## Descriptive Statistics
+
+- Summarize data to highlight key features:
+
+- Central Tendency: Where is the "center" of the data? (mean, median, mode)
+
+- Spread: How variable are the data? (variance, standard deviation)
+
+- Helps us understand the data before making inferences.
+
+## Central tendency
+
+The **central tendency** of a series of observations is a measure of the “middle value”
+
+
+The three most commonly reported measures of central tendency are the sample **mean, median, and mode**.
+
+
+| Mean        | Median      | Mode       |
+| ----------- | ----------- |----------- |
+| The average value     | The middle value      |The most frequent value      |
+| Sum of the total divided by *n*   | The middle value (if *n* is odd). The average of the two central values (if *n* is even)      |The most frequent value      |
+| Most common reported measure, affected by outliers | Less influenced by outliers, improves as *n* increases | Less common
+
+
+
+
+## Mean
+
+One of the simplest statistical models in biology is the **mean**
+
+::::{.columns}
+
+:::{.column}
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Mean **  | **2.6**      |
+| **Median **  | **3**      |
+| **Mode **  | **3**      |
+
+
+:::
+
+:::{.column}
+
+
+Calculating the mean:
+
+$$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
+$$\frac{5 + 3 + 3 + 2 + 1}{5} = 2.6$$
+
+Sum all the values and divide by n of values
+
+:::
+
+::::
+
+
+
+## The mean
+
+One of the simplest statistical models in biology is the **mean**
+
+::::{.columns}
+
+:::{.column}
+
+
+| Lecturer     | Friends |
+| ----------- | ----------- |
+| Mark      | 5       |
+| Tony   | 3     |
+| Becky | 3    |
+| Ellen   | 2      |
+| Phil   | 1     |
+| **Mean **  | **2.6**      |
+| **Median **  | **3**      |
+| **Mode **  | **3**      |
+
+
+:::
+
+:::{.column}
+
+We already *know* this is a hypothetical value as you can't have 2.6 friends (I think?)
+
+Now with any model we have to know how well it fits/ how accurate it is
+
+:::
+
+::::
+
+
+
+## Symmetrical
+
+If data is symmetrically distributed, the **mean and median** will be close, especially as *n* increases. 
+
+This is also know as a **normal distribution**
+
+
+```{r, echo = FALSE, out.width = "60%"}
+# Load required packages
+library(ggplot2)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Generate random sample from a normal distribution
+sample_size <- 1000
+mu <- 0  # mean
+sigma <- 1  # standard deviation
+sample <- rnorm(sample_size, mean = mu, sd = sigma)
+
+# Create a data frame with the sample data
+df <- data.frame(x = sample)
+
+# Create a histogram plot using ggplot2
+ggplot(df, aes(x = x)) +
+  geom_histogram(binwidth = 0.2, fill = "lightblue", color = "black") +
+  labs(x = "Value", y = "Frequency", title = "Distribution Histogram") +
+  theme_classic()
+
+
+```
+
+
+## Variance & Standard Deviation
+
+Variance: 
+
+The average of the squared differences from the mean.
+
+
+$$s{^2}_{sample} = \frac{\sum(x - \bar{x})^2}{N -1}$$
+Higher variance = more spread.
+
+Standard Deviation (SD):
+
+- The square root of variance.
+
+- Easier to interpret because it’s in the same units as the data.
+
+## Calculating variance
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Symmetrical sides"}
+knitr::include_graphics("images/normal-distribution.jpg")
+```
+
+:::
+
+:::{.column}
+
+
+
+| Lecturer     | Friends | Residuals | Sq Resid |
+| ----------- | ----------- |----------- |----------- |
+| Mark      | 5       | 2.4 | 5.76 |
+| Tony   | 3     | 0.4 | 0.16 |
+| Becky | 3    | 0.4 | 0.16 |
+| Ellen   | 2      | -0.6 | 0.36 |
+| Phil   | 1     | -1.6 | 2.56 |
+| **Mean **  | **2.6**      | | |
+
+
+
+
+- Sum of Squared Residuals = 9
+
+- N-1 = 4
+
+- Variance = 9/4 = 2.25
+
+:::
+
+::::
+
+
+## Standard Deviation
+
+- Square root of **sample variance**
+
+- A measure of dispersion of the sample
+
+- Smaller SD = more values closer to mean, larger SD = greater data spread from mean
+
+* *variance*:
+
+$$
+\sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
+$$
+
+## N-1? {.smaller}
+
+```{r, echo = FALSE, out.width="30%", fig.alt = "Sampling"}
+knitr::include_graphics("images/pop_sam.png")
+```
+
+For a *population* the variance $S_p^2$ is exactly the **mean** squared distance of the values from the population mean
+
+$$
+s{^2}_{pop} = \frac{\sum(x - \bar{x})^2}{N}
+$$
+
+
+
+But this is a *biased* estimate for the population variance 
+
+- A biased sample variance will *underestimate* population variance
+
+- n-1 (if you take a large enough sample size, will correct for this)
+
+[More here](https://www.jamelsaadaoui.com/unbiased-estimator-for-population-variance-clearly-explained/#:~:text=The%20expected%20value%20of%20the%20sample%20variance%20is%20equal%20to,definition%20of%20an%20unbiased%20estimator.)
+
+
+
+## Standard deviation - our example
+
+Lecturer     | Friends | Diff | Squared diff |
+  ------------ | ------- | --- | ------ |
+  Mark         | 5       | 2.4  | 5.76    |
+  Tony         | 3       | 0.4  | 0.16    |
+  Becky        | 3       | 0.4  | 0.16    |
+  Ellen        | 2       | -0.6  | 0.36    |
+  Phil         | 1       | -1.6  | 2.56    |   
+|  **Mean **  | **2.6**      |
+| **variance** | **2.25** |
+| **SD **  | **1.5**      |
+
+
+
+
+## Standard Deviation
+
+Small $s$ = data points are clustered near the mean
+
+Large $s$ = data points are widely dispersed around the mean
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "60%"}
+
+library(patchwork)
+
+`SD = 1` <- rnorm(n = 1000, mean = 0, sd = 1)
+`SD = 2` <- rnorm(n = 1000, mean = 0, sd = 2)
+`SD = 3` <- rnorm(n = 1000, mean = 0, sd = 3)
+
+tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
+pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
+  ggplot(aes(x = values, fill = `Standard Deviation`))+
+  geom_histogram()+
+  facet_wrap(~ `Standard Deviation`)+
+  theme_classic()+
+  theme(legend.position = "none")+
+  labs(x = " ",
+       y = "Frequency")
+
+
+```
+
+
+## Why the Normal Distribution matters
+
+Shape: Symmetrical, bell-shaped curve
+
+- Described by just two parameters: mean (μ) and standard deviation (σ).
+
+- Rule of Thumb: For normally distributed data:
+
+    ~68% within 1 SD
+
+    ~95% within 2 SDs
+
+    ~99.7% within 3 SDs
+
+> Relevance: Many statistical tests assume data follows a normal distribution. This helps us calculate probabilities—like p-values—to test hypotheses.
+
+## Why the Normal Distribution matters
+
+If we assume a normal distribution (or close enough), we can calculate the probability of observing any given value using just the mean and standard deviation. 
+
+$$
+f(x) = \frac{1}{\sqrt{2\pi} \, \sigma}
+       \exp\!\Biggl(-\frac{(x - \mu)^2}{2\,\sigma^2}\Biggr)
+$$
+
+This has applications in hypothesis testing and building confidence intervals
+
+## Visualising a Distribution
+
+::::{.columns}
+
+:::{.column}
+
+**Histograms** plot frequency/density of observations within bins
+
+```{r, echo = FALSE, message = FALSE, out.width="80%"}
+tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
+pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
+  filter(`Standard Deviation` == "SD = 2") %>% 
+  ggplot(aes(x = values), fill = "grey")+
+  geom_histogram()+
+  theme_minimal()+
+  theme(legend.position = "none")+
+  labs(x = bquote(bar(x)),
+       y = " ")
+```
+
+:::
+
+:::{.column}
+
+**Quantile-Quantile plots** plot quantiles of a dataset vs. quantiles of a *theoretical* (usually normal) distribution
+
+```{r, echo = FALSE, warning = F, message  = F, out.width="80%"}
+
+tibble(`SD = 1`,`SD = 2`, `SD = 3`) %>% 
+pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
+  filter(`Standard Deviation` == "SD = 2") %>% 
+  ggplot(aes(sample = values))+
+  geom_qq()+
+  geom_qq_line()+
+  theme(legend.position = "none")+
+  labs(x = " ",
+       y = " ")
+```
+
+:::
+
+::::
+
+
+## Z-Scores and the Standard Normal Distribution
+
+Problem: Different datasets have different means and standard deviations.
+
+Solution: Standardization allows comparisons by converting any normal distribution into a standard normal distribution (mean = 0, SD = 1).
+
+$$
+Z = \frac{X - \mu}{\sigma} 
+$$
+
+- Z: How many standard deviations a value is from the mean.
+
+- X: Observed value.
+
+- μ: Population mean.
+
+- σ: Population standard deviation.
+
+## Why do Z scores matter?
+
+- The standard normal distribution allows us to calculate probabilities of observing extreme values.
+
+- Example: If 𝑍 = 2, the observation is 2 standard deviations above the mean.
+
+Using a Z-table, we can find the probability of getting a result at least this extreme.
+
+This concept extends to p-values, which tell us how rare our data is under the null hypothesis.
+
+
+# P-values
+
+## What is a P-value?
+
+:::{.incremental}
+
+A p-value is the probability of obtaining results at least as extreme as the ones we observed, assuming the null hypothesis is true.
+
+
+
+- It helps quantify how surprising or unusual our data is under the null hypothesis.
+
+
+- A low p-value suggests that the observed data would be rare if the null hypothesis were true, which may lead us to question the null hypothesis
+
+:::
+
+#### Example
+
+Imagine flipping a coin 100 times, expecting about 50 heads if it's fair (the null hypothesis). If you observe 90 heads, the p-value tells you how likely it is to get such an extreme result just by chance.
+
+## Hypothesis formation
+
+:::{.incremental}
+
+- **Null hypothesis:** Assumes there is **no** difference between groups or no relationship between variables. It represents the "status quo" or baseline expectation.
+
+> Example: A new drug has no effect compared to a placebo.
+
+
+- **Alternative hypothesis:**  Assumes there **is** a difference or relationship.
+
+> Example: The new drug does improve patient outcomes compared to the placebo.
+
+:::
+
+## Null Hypothesis Probability Distribution
+
+```{r, echo = FALSE, out.width="50%"}
+
+knitr::include_graphics("images/null_hypothesis.png")
+
+```
+
+
+- The shaded areas in the tails represent extreme outcomes (typically the most unexpected 5% if using an $\alpha$ = 0.05).
+
+- If your observed data falls within these tails, it’s considered statistically significant, suggesting it’s unlikely to occur by random chance under the null hypothesis.
+
+
+## Impact of Sample Size on Distributions
+
+```{r, echo = FALSE, out.width="50%"}
+
+knitr::include_graphics("images/null_5000.png")
+
+```
+
+- Key Point: Larger sample sizes reduce variability, making it easier to detect small differences as statistically significant.
+
+- However, statistical significance doesn't always mean practical importance—especially with large samples.
+
+
+
+## Hypothesis testing
+
+:::{.incremental}
+
+- **Scenario:** Testing if diet A and diet B affect mice longevity.
+
+- **Null Hypothesis (H₀):** No difference in longevity between diets.
+
+- **Alternative Hypothesis (H₁):** There is a difference in longevity.
+
+
+:::
+
+```
+lm(longevity ~ diet, data = mice)
+```
+
+Explanation: This linear model performs a t-test to assess if the mean lifespans differ significantly between diets.
+
+```{r, echo = F}
+data_sim <- function(mean1, mean2, sd){
+set.seed(123)
+mice_a <- rnorm(n = 12, mean = mean1, sd = sd)
+mice_b <- rnorm(n = 12, mean = mean2, sd = sd)
+mice <- data.frame(cbind(mice_a,mice_b)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "diet",
+               values_to = "longevity")
+
+model <- lm(longevity ~ diet, data = mice)
+
+tidy_model <- model %>% 
+  broom::tidy(., conf.int =T)
+
+tidy_model
+}
+
+tidy_model <- data_sim(mean1 = 4, mean2 = 3, sd =1)
+
+```
+
+
+
+## Visualising the T Distribution
+
+::::{.columns}
+
+:::{.column}
+
+- The t-distribution shows where your observed mean difference falls relative to what’s expected under the null hypothesis.
+
+- Confidence Intervals (CI): The red area marks the 95% CI. If zero falls outside this range, it suggests statistical significance.
+
+```{r, fig.show="hold", out.width="50%", echo = F}
+
+tidy_model
+```
+
+:::
+
+:::{.column}
+
+```{r, fig.show="hold", out.width="50%", echo = F}
+x <- seq(-5, 5, by = 0.1)
+y1 <- dt(x, df = 22)
+
+estimate <- tidy_model[[2,2]]
+std.error <- tidy_model[[2,3]]
+
+conf.low <- tidy_model[[2,6]]
+conf.high <- tidy_model[[2,7]]
+
+x1 <- (x*std.error)+estimate
+
+
+plot(x1, y1, type = "l", col = "darkgrey", lty=1,
+     xlab = "Mean difference", 
+     ylab = "Density", 
+     main = "T Distribution",
+     ylim = c(0,0.4),
+     xlim = c(min(x1), max(x1)))
+polygon(c(x1[x1>=conf.high], max(x1), conf.high), c(y1[x1>=conf.high], 0, 0), col="red")
+
+
+legend("topright", legend = "95% CI", lty = 1, col = "red")
+
+#GGally::ggcoef_model(model)
+```
+
+:::
+
+::::
+
+## Writing About Statistical Results
+
+“Diets can change the longevity of mice (*p* = 0.0016).”
+
+:::{.incremental}
+
+- “Mice on diet B lived significantly shorter lives than mice on diet A (*t*<sub>22</sub> = -3.6, *p* = 0.006).”
+
+
+- "Mice on diet B had a reduced mean lifespan of 1.41 years[95% CI; -0.595:-2.22] from the mice on diet A (mean 4.19 years (95% CI, 3.62-4.77). While statistically significant (*t*<sub>22</sub> = -3.6, *p* = 0.006), this is a relatively small sample size, and further testing is recommended to confirm this effect."
+
+
+
+- Which has the greatest level of useful detail?
+
+:::
+
+
+## Common misundertandings\n about P values
+
+**A p-value is NOT:**
+
+- The probability that the null hypothesis is true.
+
+- The probability your results occurred "by chance."
+
+- Proof of a meaningful or large effect.
+
+**What it IS:**
+
+- A measure of how surprising your data is under the assumption the null hypothesis is true.
+
+
+[Common misconceptions about P-values](https://daniellakens.blogspot.com/2017/12/understanding-common-misconceptions.html?m=1)
+
+[Evidence of P-hacking](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4359000/#:~:text=Evidence%20for%20p%2Dhacking%20from,test%20function%20in%20R)
+
+
+
+
+
+## A non-significant p-value DOES NOT mean the null hypothesis is true
+
+::::{.columns}
+
+:::{.column}
+
+In reality, we can’t know for sure if a true mean difference exists.
+
+For illustration: Assume we could know the true mean difference.
+
+The figure shows:
+
+    Grey line: Expected data if the null hypothesis is true.
+
+    Black line: Expected data if the alternative hypothesis is true.
+
+A p-value shows how surprising the data are if the null is true.
+
+A low p-value is evidence against the null, not proof of the alternative.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/null-and-alternate.png")
+
+```
+
+:::
+
+::::
+
+
+## Why a significant p-value does not mean the null hypothesis is false
+
+
+What we can conclude, based on our data, is that we have observed an extreme outcome, that should be considered surprising. But such an outcome is not *impossible* when the null-hypothesis is true.
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/type-1.png")
+
+```
+
+
+
+## Why a significant p-value is not the same as an important effect
+
+::::{.columns}
+
+:::{.column}
+
+If we plot the null model for a very large sample size, we can see that even very small mean differences will be considered 'surprising'. 
+
+However, just because data is surprising, does not mean we need to care about it. It is mainly the verbal label ‘significant’ that causes confusion here – it is perhaps less confusing to think of a ‘significant’ effect as a ‘surprising’ effect.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="90%"}
+
+knitr::include_graphics("images/sample-size.png")
+
+```
+
+:::
+
+::::
+
+
 
 
 # Resources
