@@ -937,6 +937,488 @@ legend("topright", legend = "95% CI", lty = 1, col = "red")
 :::
 
 
+## Introduction to Standard Error
+
+Standard error measures the accuracy of a sample mean as an estimate of the population mean.
+
+$$
+SE = {s\over \sqrt n}
+$$
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Data sampling"}
+
+knitr::include_graphics("images/standard_error.png")
+
+```
+
+
+# Week Three: Inferential Statistics  {background-color="#D9DBDB"}
+
+
+
+
+
+## Standard Error
+
+### Standard deviation vs. standard error: 
+
+
+::::{.columns}
+
+:::{.column}
+
+- Standard deviation measures variability **within** a sample
+
+
+$s = \sqrt{\sum(x - \overline x)^2\over n - 1}$
+
+:::
+
+
+:::{.column}
+
+- Standard error  is how much the sample mean (from a given sample) is likely to vary from the true population mean.
+
+$SE(\overline{X}) = \frac{s}{\sqrt(N)}$
+
+:::
+
+::::
+
+
+## Standard Error
+
+- Standard Error of the Mean ($\overline{X}$) is the **Standard Deviation of the Sampling Distribution of the Mean.
+
+- If you took many samples of size 𝑛from the same population, each sample would yield a different sample mean.
+
+```{r, echo = FALSE, out.width="50%", fig.alt = ""}
+knitr::include_graphics("images/sampling.png")
+```
+
+```{r, eval = F}
+
+# install.packages("DiagrammeR")  # if not installed
+library(DiagrammeR)
+
+grViz("
+digraph {
+    node [shape=circle, style=filled, color=lightblue];
+
+  A [label=' Population mean \n 5'];
+  B [label='1'];
+  C [label='3'];
+  D [label='3'];
+  E [label='4'];
+  F [label='4'];
+  G [label='4'];
+  H [label='5'];
+  I [label='5'];
+  J [label='5'];
+  K [label='5'];
+  L [label='5'];
+  M [label='7'];
+  N [label='7'];
+  O [label='7'];
+ 
+
+  A -> B A -> C A -> D A -> E A -> F A -> G A -> H A-> I A-> J A -> K A -> L A-> M A -> N A->O;
+}
+")
+
+
+```
+
+
+## Standard Error
+
+- All these sample means form their own distribution: the sampling distribution of the mean.
+
+- The Standard Error measures the width (standard deviation) of this distribution of sample means.
+
+- Larger 𝑛→ smaller SE → sample means cluster more tightly around the true mean.
+
+```{r}
+# -------------------------------------------
+# Simulate sample means from an exponential population
+# and show that they approximate a normal distribution
+# as the number of samples (B) gets large.
+# -------------------------------------------
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Parameters
+n <- 30       # Sample size for each draw
+B <- 10000    # Number of repeated samples
+true_mean <- 5  # Mean of the exponential distribution (rate = 1/true_mean)
+
+# Pre-allocate a vector to store the sample means
+sample_means <- numeric(B)
+
+# Loop: draw a sample of size n, compute mean, repeat B times
+for(i in 1:B){
+  # Draw n data points from an exponential distribution with mean = 5
+  x <- rexp(n, rate = 1/true_mean)
+  sample_means[i] <- mean(x)
+}
+
+# Plot the histogram of sample means
+hist(sample_means, breaks = 40, freq = FALSE, 
+     main = paste("Distribution of Sample Means"),
+     xlab = "Sample Mean", col = "lightblue", border = "gray")
+
+# Overlay a normal curve with the theoretical mean and std. dev. from CLT
+# Theoretical mean of the sample mean = 5
+# Theoretical std. dev. of the sample mean = (std. dev. of population) / sqrt(n)
+# For Exp(mean=5), population std. dev. is also 5.
+
+curve(dnorm(x, mean = true_mean, sd = 5 / sqrt(n)), 
+      col = "red", lwd = 2, add = TRUE)
+
+# Add a legend
+legend("topright", legend = c("Sample Means", "Normal Approx"), 
+       col = c("lightblue", "red"), lty = c(1,1), lwd = 2, bty = "n")
+
+
+```
+
+
+## Central Limit Theoreom (CLT)
+
+- For large 𝑛the distribution of sample means becomes approximately normal, **no matter the original data’s shape** (assuming finite variance & independence).
+
+
+- Lets us use normal-based methods (like confidence intervals and hypothesis tests) even if the original data are not normal—provided 𝑛 is large.
+
+
+[Shiny App demonstrating CLT](https://pleft86.shinyapps.io/Sampling/)
+
+## Small Samples
+
+What is a sufficient 𝑛?
+
+- When the data is very close to a normal distribution it might be very small c.10
+
+- When the data is slightly skewed it might be 𝑛 = 30
+
+- When the data follows an alternative distribution it could be very large
+
+
+## Bootstrapping
+
+- Bootstrapping: Resample from your data many times to estimate the distribution (and SE) of the Mean ($\overline{X}$) without assuming normality.
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="70%", fig.alt = ""}
+knitr::include_graphics("images/bootstrapping.jpg")
+```
+
+:::
+
+:::{.column}
+
+```{r, eval = F, echo = T}
+
+# Perform bootstrapping
+for(i in 1:1000) {
+  # Resample with replacement
+  resample <- sample(my_data, size = length(my_data), replace = TRUE)
+  # Compute the statistic (mean here)
+  boot_means[i] <- mean(resample)
+}
+
+```
+
+:::
+
+::::
+
+## Parametric fits
+
+If you *know* the data follows a specific distribution (e.g. Poisson, Binomial, etc) we can base our inference on these - *see Generalised Linear Models*
+
+## Are two samples distributions from the same population?
+
+- Even if two samples are both drawn from the same underlying population, they won’t have identical means.
+
+- Question: When is that difference “big enough” to claim they come from different populations?
+
+```{r, fig.width = 12}
+
+plot_two_normals <- function(mean1 = 0, sd1 = 1, mean2 = 0.5, sd2 = 1) {
+  x <- seq(-5, 5, by = 0.1)
+  y1 <- dnorm(x, mean = mean1, sd = sd1)
+  y2 <- dnorm(x, mean = mean2, sd = sd2)
+  plot(x, y1, type = "l", col = "red", xlab = "X", ylab = "Density", main = "Two Normal Distributions")
+  lines(x, y2, col = "blue", lty = "dashed")
+  legend("topright", c("Population 1", "Population 2"), lty = c("solid", "dashed"), col = c("red", "blue"))
+}
+
+plot_two_normals()
+
+```
+
+## Standard Error vs. Standard Error of the Difference
+
+::::{.columns}
+
+:::{.column}
+
+
+### Standard Error
+
+Measures the spread (uncertainty) of one sample mean around its population mean.
+
+### Standard Error of the Difference (SED)
+
+$Mean~difference = \overline x_1 - \overline x_2$
+
+$SED = \sqrt{s_1^2\over n_1}+{s_2^2\over n_2}$
+
+Standard Error of the difference is calculated from two $s$ so will always be larger than a single population estimate
+
+
+:::
+
+:::{.column}
+
+```{r, fig.width = 7}
+plot_mean_diff <- function(mean1 = 0, sd1 = 1, mean2 = 0.5, sd2 = 1, sample_size = 20) {
+    library(graphics)
+    sd <- sqrt(sd1^2/sample_size + sd2^2/sample_size)
+    x <- seq(-5, 5, by = 0.1)
+    mean_diff <- rnorm(10000, mean = mean2 - mean1, sd = sd)
+    y <- dnorm(x, mean = mean2 - mean1, sd = sd)
+    plot(x, y, type = "l", col = "black", xlab = "Difference in Means", ylab = "Density", main = "Mean Difference Distribution")
+    abline(v = 0, col = "red", lty = 2)
+    xmin <- mean2 - mean1 - 1.96 * sd
+    xmax <- mean2 - mean1 + 1.96 * sd
+    ymin <- 0
+    ymax <- max(y)
+    rect(xmin, ymin, xmax, ymax, col = "grey", density = 20, angle = 45)
+    legend("topright", legend = "95% \n Confidence Interval", fill = "grey")
+}
+
+
+plot_mean_diff(mean1 = 0, sd1 = 1, mean2 = 0.5, sd2 = 1, sample_size = 20)
+
+```
+
+:::
+
+::::
+
+## Two-sample t-tests
+
+- Null Hypothesis : The two samples do not differ in their population means
+
+- Alternative Hypothesis : The two samples come from populations with different means
+
+**Even with identical populations, sample means differ. The t-test checks if that difference is too large to be due to chance.**
+
+```{r, echo = FALSE, out.width="50%", fig.alt = ""}
+knitr::include_graphics("images/sample_means.png")
+```
+
+
+## Different enough?
+
+How different is “different enough”?
+
+When can we determine that two sample means are different **enough**? To have come from *different* populations?
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="80%", fig.alt = ""}
+knitr::include_graphics("images/sample_means.png")
+```
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="80%", fig.alt = ""}
+knitr::include_graphics("images/sample_means_diff.png")
+```
+
+:::
+
+::::
+
+
+
+
+
+## Two-sample t-test
+
+* Compare the means of two samples
+
+* Null hypothesis: there is no difference between the population means
+
+* t-statistic: based on difference in sample **means, sd & n**
+
+* For a given sample size and t-value, how unlikely is to have two random samples *at least* this different IF both samples are drawn from identical/same populations. 
+
+
+## T-test in Action
+
+**Example:** A botanist is studying the mass of pollen transported by individual bees from two different hives (Hive A and Hive B). 
+
+- Hive A: 62 bees, (mean pollen mass = 31.4 mg, variance = 225.0 mg^2) 
+
+- Hive B: 67 bees, (mean pollen mass = 36.7 mg, variance = 186.0 mg^2) 
+
+
+**Is there a significant difference in pollen mass transported per bee for the two hives studied?**
+
+
+Variance $s^2$ = Sum of squared residuals/ n
+
+Standard deviation (s) = $\sqrt Variance$
+
+
+## Standard error of the difference
+
+ **Calculate the difference in means, and the standard error of the difference in means**
+
+::::{.columns}
+
+:::{.column}
+
+Mean Difference = 36.7 - 31.4
+
+Mean Difference = 5.3
+
+:::
+
+:::{.column}
+
+
+$$
+SED = \sqrt{s^2_1\over n_1} + {s^2_2\over n_2}
+$$
+
+
+
+$$
+SED = \sqrt{225\over 62} + {186\over 67}
+$$
+
+
+
+$$
+SED = \sqrt{3.63} + {2.78}
+$$
+
+
+
+$$
+SED = 2.53
+$$
+
+
+:::
+
+::::
+
+
+
+## Standard error of the difference
+
+::::{.columns}
+
+:::{.column}
+
+Mean difference = 5.3
+
+
+**Calculate 95% confidence intervals**
+
+Assuming a normal distribution this would be 1.96 * SED = 4.96
+
+
+Assuming a *t* distribution = ( $\alpha$ = 0.975, *df* = 129-2, *SED* = 2.53 ) = 5.008
+
+
+95% CI range = 5.3 [± 5.008] = 0.292 - 10.308 
+
+:::
+
+:::{.column}
+
+$$
+SED = 2.53
+$$
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "T distributions"}
+knitr::include_graphics("images/t_distribution_comparisons.png")
+```
+
+:::
+
+::::
+
+
+
+## Confidence intervals
+
+**Calculate 95% confidence intervals**
+
+95% CI range = 5.3 [± 5.008] = 0.292 - 10.308 
+
+* **Describe the estimated mean difference**
+
+**The mass of pollen transported per bee in Hive B is on average 5.3mg more than Hive A [0.29 - 10.3] (mean [± 95% CI])**
+
+##
+
+**The mass of pollen transported per bee in Hive B is on average 5.3mg more than Hive A [0.29 - 10.3] (mean [± 95% CI])**
+
+:::{.fragment}
+
+**The 95% CI calculated from the *t* distribution doesn’t include 0 → likely a real difference between the two hive populations.**
+:::
+
+:::{.fragment}
+
+**"At P ≤ 0.05 bees from Hive B transport at least 0.29mg of pollen more per bee than Hive A"**
+
+:::
+
+## t-test in R
+
+```{r, echo = T, eval = FALSE}
+
+hive_data %>% 
+  t_test(pollen_mass ~ hive,
+         var.equal = T)
+
+```
+
+```
+
+	Two Sample t-test
+
+data:  hive_a and hive_b
+
+t = 2.09, df = 127, p-value = 0.01152
+
+alternative hypothesis: true difference in means is not equal to 0
+
+95 percent confidence interval:
+0.294166 10.30808
+
+```
+
+> We can also produce t-tests (and many other tests besides with the lm() function in R)
+
 ## Common misundertandings\n about P values
 
 **A p-value is NOT:**
