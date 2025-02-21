@@ -32,7 +32,7 @@ library(performance)
 library(pscl)
 library(sjPlot)
 library(tidyverse)
-
+library(here)
 
 ```
 
@@ -1514,7 +1514,915 @@ knitr::include_graphics("images/sample-size.png")
 
 ::::
 
+# Linear models {background-color="#D9DBDB"}
 
+## Linear models cover multiple data types
+
+
+::::{.columns}
+
+:::{.column}
+
+Difference tests: t-test, ANOVA, ANCOVA
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Difference model"}
+knitr::include_graphics("images/linear_model_difference.png")
+
+```
+
+
+
+:::
+
+:::{.column}
+
+Association tests: Regressions
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Regression model"}
+knitr::include_graphics("images/linear_model_regression.png")
+```
+
+:::
+
+::::
+
+
+
+## Basic linear models
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares"}
+
+knitr::include_graphics("images/basic_linear.png")
+
+```
+
+Basic linear models aim to describe a linear relationship between a:
+
+:::{.incremental}
+
+- response (dependent) variable and predictor(s) (independent) variable. 
+
+- usually by the method of ordinary least squares.
+
+:::
+
+---
+
+## Linear Regression Equation
+
+$Y = \beta0 + \beta_1x1 + \epsilon$
+
+::::{.columns}
+
+:::{.column}
+
+### Where:
+
+$y$ is the predicted value of the response variable
+
+
+
+$\beta0$ is the intercept (value of y when x = 0)
+
+
+
+$\beta_1x1$ is the slope of the regression line
+
+
+
+$\epsilon$ is the error term
+
+:::
+
+:::{.column}
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "regression"}
+
+knitr::include_graphics("images/reg.png")
+
+```
+
+:::
+
+::::
+
+## Example
+
+```{r, include = FALSE}
+
+dros_clean <- readRDS(here("data","fruitfly.rds"))
+
+```
+
+
+::::{.columns}
+
+:::{.column}
+
+Difference tests: t-test, ANOVA, ANCOVA
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Difference model"}
+dros_diff <- lm(longevity ~ type, data = dros_clean)
+summary(dros_diff)
+```
+
+
+
+:::
+
+:::{.column}
+
+Association tests: Regressions
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "Regression model"}
+dros_diff <- lm(longevity ~ thorax, data = dros_clean)
+summary(dros_diff)
+```
+
+:::
+
+::::
+
+
+## Combining variables and omitted variable bias
+
+Now we have *two* (or more) reasonable predictors of longevity:
+
+::::{.columns}
+
+:::{.column}
+
+```{r}
+dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
+summary(dros_model)
+```
+:::
+
+:::{.column}
+
+$Y = \beta0 + \beta_1x1 +\beta_2x2 + \beta_3x3 + \epsilon$
+
+```{r, echo = FALSE}
+dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
+emmeans::emmeans(dros_model,
+                 specs = ~ thorax + type,
+                 at =list(thorax = seq(.64, .94, by = .02))) %>% 
+  as_tibble() %>% 
+  ggplot(aes(x = thorax,
+             y = emmean,
+             colour = type))+
+  geom_line(aes(group = type))+
+  geom_point(data = dros_clean,
+             aes(x = thorax, y = longevity),
+          alpha = .4)+
+  theme_bw()+
+  labs(x = "Thorax size (mm)",
+       y = "Longevity (days)")
+```
+
+:::
+
+::::
+
+
+## Line of best fit
+
+```{r, echo = FALSE, out.width="70%", fig.alt = "Line fitting"}
+
+knitr::include_graphics("images/fit-linear.png")
+
+```
+
+
+## Ordinary Least Squares
+
+The line of best fit minimises the sum of the **squared distance** that *each* sample point is from the value predicted by the model
+
+This is called the method of 
+
+
+### Ordinary Least Squares
+
+## Residuals
+
+
+The difference between the ACTUAL value of the observation $y_i$ and the value that the model predicts $\hat{y_i}$ at that $x$ value are the residuals (residual error).
+
+
+```{r, echo = FALSE, out.width="50%", fig.alt = "residuals"}
+
+knitr::include_graphics("images/ols.png")
+
+```
+
+The regression model fitted by **O**rdinary **L**east **S**quares (OLS) will produce the equation for the line that **MINIMIZES** the sum of squares of the residuals
+
+
+## Sum of Squares Errors
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="40%", fig.alt = "sum of squares error"}
+
+knitr::include_graphics("images/ols-2.png")
+
+```
+
+:::
+
+:::{.column}
+
+This produces the line with the *smallest* total area size for the squares. 
+
+$$
+SSE = \underset{i=1}{n \atop{\sum}}(y_i - \hat{y_i})^2
+$$
+
+
+SUM OF RESIDUAL ERROR = $(2)+(-1)+(4)+(-3)+(-2)=0$
+
+
+SUM OF SQUARES OF RESIDUAL ERROR = $(2^2)+(-1^2)+(4^2)+(-3^2)+(-2^2)=34$
+
+:::
+
+::::
+
+
+## Coefficient of determination
+
+
+$\LARGE{R^2}$ : The proportion of variation in the dependent variable that can be predicted from the independent variable
+
+
+$$
+\LARGE{R^2=1-{Sum~of~Squared~Distances~between~y_i~and~\hat{y_i}\over{Sum~of~Squared~Distances~between~y_i~and~\overline{y}}} }
+$$
+
+
+
+$$
+\LARGE{R^2=1-{SSE\over{SST}}}
+$$
+
+
+
+## Assumptions of the Linear Model
+
+:::{.incremental}
+
+-  *Errors* should be normally distributed
+
+- Homoscedasticity of the errors
+
+- Independent observations
+
+- A Linear relationship
+
+:::
+
+## Model fit checks
+
+```{r, echo = T, out.width="100%"}
+performance::check_model(dros_model, 
+                         detrend = F) 
+```
+
+
+## Linearity
+
+```{r, echo = T, out.width="100%"}
+performance::check_model(dros_model,
+                         check = "linearity") 
+```
+
+
+## Normality
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+performance::check_model(dros_model,
+                         check = "normality")
+
+performance::check_normality(dros_model)
+```
+
+## Heteroscedasticity
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+performance::check_model(dros_model,
+                         check = "homogeneity")
+
+performance::check_heteroscedasticity(dros_model)
+```
+
+## Outliers
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+#| fig-height: 7
+#| message: false
+
+performance::check_model(dros_model,
+                         check = "outliers")
+
+performance::check_outliers(dros_model)
+```
+
+# Questions? {background-color="#D9DBDB"}
+
+## Interpreting Models
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared"}
+knitr::include_graphics("images/dros_summary.png")
+```
+
+
+## Reporting  {.smaller}
+
+::::{.columns}
+
+:::{.column width="40%"}
+
+```{r}
+
+broom::tidy(dros_model, conf.int = T)
+
+```
+
+:::
+
+:::{.column width="60%"}
+
+:::{.incremental}
+
+- The effect of thorax is statistically significant and positive (beta = 144.43, 95% CI [118.46, 170.40], t(120) = 11.01, p < .001; Std. beta = 0.64, 95% CI
+[0.52, 0.75])
+
+  - The effect of type [Inseminated] is statistically non-significant and positive (beta = 3.63, 95% CI [-1.86, 9.11], t(120) = 1.31, p = 0.193; Std. beta = 0.21,
+95% CI [-0.11, 0.52])
+
+  - The effect of type [Virgin] is statistically significant and negative (beta = -13.25, 95% CI [-18.71, -7.78], t(120) = -4.80, p < .001; Std. beta = -0.75, 95%
+CI [-1.07, -0.44])
+
+ - The effect of sleep is statistically non-significant and negative (beta = -0.05, 95% CI [-0.18, 0.07], t(120) = -0.83, p = 0.410; Std. beta = -0.05, 95% CI
+[-0.16, 0.07])
+
+:::
+
+:::
+
+::::
+
+# ANOVA {background-color="#D9DBDB"}
+
+
+## Model summary
+
+In this example of a simple linear model, we run the equivalent to a Student's t-test.
+
+```{r, echo = FALSE, out.width="60%", fig.alt = "R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared"}
+summary(dros_model)
+```
+
+**Q. What happens when we have more than two groups in our predictor variable? Why shouldn't we just do lots of t-tests?**
+
+
+## ANalysis Of VAriance (ANOVA)
+
+ANOVAs use information about variances, but the main goal of analysis is comparison of MEANS (don’t let the name mix you up - more on this later).
+
+
+:::{.fragment}
+
+**ANOVA is an omnibus test** – it tests for significant differences between any means in the study
+
+:::
+
+:::{.fragment}
+
+
+**ANOVA is just a special case of the linear model**
+
+:::
+
+
+
+## ANOVA Hypotheses:
+
+**Null Hypothesis (H0):** All means are equal (in other words, all groups are from populations with the same mean)
+
+:::{.fragment}
+
+**Alternative Hypothesis (HA):** At least two group means are NOT equal (that means that just two could be different, or they could ALL be different)
+
+:::
+
+
+## ANOVA Example 
+
+
+::::{.columns}
+
+:::{.column}
+
+We have collected data for soil uranium concentrations at three locations on Los Alamos National Lab property: Site A, Site B, and Site C. The data structure is shown here: 
+
+A one-way ANOVA can be used to assess whether there is a statistically significant difference in uranium concentration in soil at three locations
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="120%", fig.alt = "A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)"}
+knitr::include_graphics("images/three_level.png")
+```
+
+:::
+
+::::
+
+
+
+## One-way ANOVA (single factor)
+
+What does this one-way/single-factor refer to? 
+
+There is a **single factor** (*variable*), with at least 3 **levels**, where we are trying to compare means across the different levels of that factor.
+
+ANOVA does this *indirectly* by looking at total *between* and *within* group variances as a ratio (F).
+
+```{r, echo = FALSE, out.width="70%", fig.alt = ""}
+knitr::include_graphics("images/understand-ANOVA.png")
+```
+
+## Sums of Squares
+
+::::{.columns}
+
+:::{.column}
+
+
+```{r, echo = FALSE, out.width="100%", fig.alt = "OLS fits a line to produce the smallest amount of SSE"}
+
+knitr::include_graphics("images/Sum of squares.png")
+
+```
+
+:::
+
+:::{.column}
+
+**SST** The squared differences between the observed dependent variable $y_i$ and its overall mean $\overline{y}$.
+
+**SSR** The sum of the differences between the predicted value $\hat{y_i}$ of the dependent variable and its overall mean $\overline{y}$.
+
+**SSE** The error is the difference between the observed dependent value $y_i$  and the predicted value $\hat{y_i}$.
+
+:::
+
+::::
+
+
+##
+
+::::{.columns}
+
+:::{.column width="30%"}
+
+$$
+SSE = \underset{i=1}{n \atop{\sum}}(y_i - \hat{y_i})^2
+$$
+
+
+
+$$
+SSR = \underset{i=1}{n \atop{\sum}}(\hat{y_i} - \overline{y})^2
+$$
+
+
+$$
+SST = \underset{i=1}{n \atop{\sum}}(y_i - \overline{y})^2
+$$
+
+where:
+
+$y_i$ = Observed value
+
+$\hat{y_i}$ = Value estimated by model
+
+$\overline{y}$ = The Grand Mean
+
+
+
+:::
+
+:::{.column width="70%"}
+
+```{r, echo = FALSE, out.width="90%", fig.alt = "A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)"}
+knitr::include_graphics("images/SSR-SST.png")
+```
+
+
+
+
+$SSE + SSR = SST$
+
+:::
+
+::::
+
+---
+
+## What does an ANOVA actually do?
+
+::::{.columns}
+
+:::{.column width="60%"}
+
+$$
+\large F = {SSR / (k-1)\over SSE / (N-k)} = {MSR\over MSE}
+$$
+
+
+
+$k$ = Total number of groups
+
+$N$ = **numerator** degrees of freedom = Total number of observations across all groups
+
+$N-k$ = **denominator** degrees of freedom
+
+$MSR$ = Mean Squares Regression
+
+$MSE$ = Mean Squares Error
+
+This is a **ratio** of the between group variance and the the within group variance. 
+
+:::
+
+:::{.column width="40%"}
+
+
+```{r, echo = FALSE, out.width="120%", fig.alt = ""}
+knitr::include_graphics("images/one-way-ANOVA.png")
+```
+
+:::
+
+::::
+
+
+
+## F distribution
+
+::::{.columns}
+
+:::{.column}
+
+The F-value or ratio of variances, over their respective degrees of freedom will have an F-distribution. 
+
+This F distribution is used when we want to compare within and between group variances.
+
+The curve of the distribution depends on the degrees of freedom, and it is always positively skewed
+
+:::
+
+:::{.column}
+
+```{r, echo = F, fig.height = 10}
+x <- seq(0.001, 5, by = 0.001)
+y1 <- df(x, df1 = 1, df2 = 1)
+y2 <- df(x, df1 = 2, df2 = 1)
+y3 <- df(x, df1 = 5, df2 = 2)
+y4 <- df(x, df1 = 10, df2 = 1)
+y5 <- df(x, df1 = 100, df2 = 100)
+
+plot(x, y1, type = "l", col = "red", lwd = 2,
+     xlab = "x", 
+     ylab = "Density", 
+     main = "F Distributions",
+     ylim = c(0,3),
+     xlim = c(0.001, 4))
+lines(x, y2, col = "blue", lwd = 2)
+lines(x, y3, col = "green", lwd = 2)
+lines(x, y4, col = "purple", lwd = 2)
+lines(x, y5, col = "black", lwd = 2)
+legend("topright", legend = c("df1 = 1, df2 = 1", "df1 = 2, df2 = 1", "df1 = 5, df2 = 2", "df1 = 10, df2 = 1", "df1 = 100, df2 = 100"), col = c("red", "blue", "green", "purple", "black"), lty = c(1, 1, 1, 1, 1))
+```
+
+:::
+
+::::
+
+## Significance testing
+
+:::{.incremental}
+
+- The **higher** the *F*-value the greater the *signal-to-noise* ratio. 
+
+
+- For a given value of **numerator** and **denominator** degrees of freedom we can look up the probability of observing this ratio under a null hypothesis of identical variances.
+
+
+- If F value is high enough then we might have enough evidence to conclude that samples are likely drawn from populations with *different* means.
+
+:::
+
+```{r, echo = FALSE, out.width="35%", fig.alt = ""}
+knitr::include_graphics("images/F-test-sig.jpg")
+```
+
+
+
+# Ask a question about: ANOVA
+
+
+
+## ANOVA Example
+
+::::{.columns}
+
+:::{.column}
+
+```{r, echo = T}
+
+dros_model2 <-lm(longevity ~ thorax + sleep, data = dros_clean)
+
+anova(dros_model2, dros_model)
+
+```
+:::
+
+
+:::{.column}
+
+
+```{r,  echo = T}
+drop1(dros_model, test = "F")
+
+```
+
+:::
+
+::::
+
+
+# Post-hoc vs. Planned contrasts
+
+
+
+## Correcting for multiple comparisons
+
+:::{.incremental}
+
+- The *F*-ratio tells us only whether the model fitted to the data (SSR) accounts for more variance than other factors (SSE). 
+
+- So if the *F*-ratio is large enough to be statistically significant, then we only know that *one or more* differences between means are statistically significant.
+
+- Further testing is needed! 
+
+:::
+
+## Planned contrasts
+
+:::{.incremental}
+
+- You focused on a *few* scientifically sensible comparisons, rather than every possible comparison
+
+- You chose these *as part of the experimental design* before collecting data
+
+- Could structure linear model to reflect this?
+
+:::
+
+
+
+## Post hoc
+
+:::{.incremental}
+
+- Typically unplanned comparisons, conducted only after a significant ANOVA result
+
+- All combinations checked
+
+- Needs correcting for inflated Type 1 error
+
+:::
+
+## Post hoc {.smaller}
+
+| Method     | Equation | Notes|
+| ----------- | ----------- |----------- |
+| Bonferroni/Dunn-Sidak    | $p = {\alpha \over k}$      | Correct critical p for the number of independent tests
+| Holm's    | $p_{1} < \alpha/(k–1+1) = \alpha/k$      | we start with the smallest p-value (i = 1) and determine whether there is a significant result (i.e. p1 < α/(k–1+1) = α/k. If so we move on to the second test. We continue in this manner until we get a non-significant result
+| Tukey HSD  | $t_{crit} = q * \sqrt{MSE \over N}$  | Essential a t-test, correcting for multiple comparison, q-values can be looked up for test df and number of treatments
+
+
+
+## Estimated means
+
+
+```{r, echo = F}
+library(emmeans)
+```
+
+```{r, echo = T}
+
+means <- emmeans::emmeans(dros_model,
+                          specs = ~ type)
+
+means
+
+```
+
+
+## Estimated mean differences
+
+
+```{r, echo = T}
+
+means <- emmeans::emmeans(dros_model, 
+                 specs = pairwise ~ type)
+
+means
+
+```
+
+
+## Estimated CI of the difference
+
+```{r, echo = T}
+
+
+means <- emmeans::emmeans(dros_model, 
+                 specs = pairwise ~ type)
+
+confint(means)
+
+```
+
+## Predictions
+
+```{r, eval = FALSE, echo = T}
+dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
+emmeans::emmeans(dros_model,
+                 specs = ~ thorax + type,
+                 at =list(thorax = seq(.64, .94, by = .02))) %>% 
+  as_tibble() 
+```
+
+
+```{r, echo = FALSE}
+dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
+emmeans::emmeans(dros_model,
+                 specs = ~ thorax + type,
+                 at =list(thorax = seq(.64, .94, by = .02))) %>% 
+  as_tibble() %>% 
+  ggplot(aes(x = thorax,
+             y = emmean,
+             colour = type))+
+  geom_line(aes(group = type))+
+  geom_point(data = dros_clean,
+             aes(x = thorax, y = longevity),
+          alpha = .4)+
+  theme_bw()+
+  labs(x = "Thorax size (mm)",
+       y = "Longevity (days)")
+
+```
+
+# Turning a hypothesis into a model {background-color="#D9DBDB"}
+
+## Turning a question into a model
+
+- Hypotheses in research predict relationships between variables.
+
+- Linear models help test these hypotheses by quantifying these relationships.
+
+- Converting hypotheses into linear models involves identifying dependent and independent variables.
+
+- Considering and including important covariates
+
+- Determining whether interaction terms need to be included
+
+
+## Simple linear model
+
+:::{.incremental}
+
+- **Question**: Does the amount of sunlight affect plant growth?
+
+- **Hypothesis**: More sunlight hours increase plant growth
+
+- **Linear Model**: `height ~ sunlight_hours`
+
+:::
+
+
+## Control variables
+
+:::{.incremental}
+
+- **Question**: Does the amount of sunlight affect plant growth?
+
+- **Hypothesis**: More sunlight hours increase plant growth
+
+- **Control variables**: Soil quality
+
+- **Linear Model**: `height ~ sunlight_hours + soil quality`
+
+:::
+
+## Multiple predictor model
+
+:::{.incremental}
+
+- **Question**: How do water and nutrient levels affect plant growth?
+
+- **Hypothesis**: Both increased water and nutrient levels lead to increased plant growth.
+
+- **Control Variables**: Temperature
+
+- **Linear Model**: `growth ~ water + nutrient + temp_c`
+
+:::
+
+
+## Multiple predictor model
+
+:::{.incremental}
+
+- **Question**: Do water and nutrient levels work together to affect plant growth?
+
+- **Hypothesis**: Increasing water and nutrient levels has a combined effect that leads to increased plant growth, greater than the effect of either on their own.
+
+- **Control Variables**: Temperature
+
+- **Linear Model**: `growth ~ water + nutrient + temp_c + water:nutrient`
+
+:::
+
+## Exercise 1
+
+:::{.incremental}
+
+- **Question**: Does temperature affect the metabolic rate of lizards?
+
+- **Hypothesis**: Temperature increases the metabolic rate of lizards
+
+- **Control Variables**: Age of lizards
+
+- **Linear Model**: `metabolic_rate ~ temp + age`
+
+:::
+
+## Exercise 2:
+
+:::{.incremental}
+
+- **Question**: How does diet and exercise affect cholesterol in mice?
+
+- **Hypothesis**: low fat diets and regular exercise decrease cholesterol levels in mice
+
+- **Control Variables**: Genetic strain of mice
+
+- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain`
+
+- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain + diet_fat:daily_exercise`
+
+:::
+
+## Exercise 3:
+
+:::{.incremental}
+
+- **Question**: Do immune system responses depend on stress and sleep in humans?
+
+- **Hypothesis**: Negative effects of stress on immune responses are lessened if sleep duration remains high
+
+- **Control Variables**: Age
+
+- **Linear Model**: `immune_response ~ sleep_hours + stress + age + sleep_hours:stress`
+
+:::
+
+# Questions?
 
 
 # Resources
