@@ -10013,7 +10013,7 @@ It may be true that you are initially unsure whether overdispersion is coming fr
 
 You can fit models with the same dependent and independent variables and different error structures and use AIC to help determine the best model for your data
 
-## Overdispersion in the cuckoo model
+## Overdispersion in the stickleback
 
 
 $\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{697.25}{217} = 3.21$

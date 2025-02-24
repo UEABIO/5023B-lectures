@@ -2307,122 +2307,981 @@ emmeans::emmeans(dros_model,
 
 ```
 
-# Turning a hypothesis into a model {background-color="#D9DBDB"}
-
-## Turning a question into a model
-
-- Hypotheses in research predict relationships between variables.
-
-- Linear models help test these hypotheses by quantifying these relationships.
-
-- Converting hypotheses into linear models involves identifying dependent and independent variables.
-
-- Considering and including important covariates
-
-- Determining whether interaction terms need to be included
 
 
-## Simple linear model
+# Generalised Linear Models {background-color="#D9DBDB"}
+
+## What are Generalised linear models?
 
 :::{.incremental}
 
-- **Question**: Does the amount of sunlight affect plant growth?
+- The Generalised Linear Model (GLM) is an extension of the ordinary linear regression model that accommodates a broader range of response variable types and error distributions.
 
-- **Hypothesis**: More sunlight hours increase plant growth
+- Key components: 
 
-- **Linear Model**: `height ~ sunlight_hours`
+- **Linear Predictor:** Combines predictor variables linearly.
+
+- **Link Function:** Links the mean of the response variable to the linear predictor.
+
+- **Error family:** Drawn from the **exponential family** it determines the shape of the response variable's distribution.
 
 :::
 
 
-## Control variables
+## Linear Predictor
 
-:::{.incremental}
+Linear models:
 
-- **Question**: Does the amount of sunlight affect plant growth?
+::: {.center-text}
 
-- **Hypothesis**: More sunlight hours increase plant growth
 
-- **Control variables**: Soil quality
-
-- **Linear Model**: `height ~ sunlight_hours + soil quality`
-
-:::
-
-## Multiple predictor model
-
-:::{.incremental}
-
-- **Question**: How do water and nutrient levels affect plant growth?
-
-- **Hypothesis**: Both increased water and nutrient levels lead to increased plant growth.
-
-- **Control Variables**: Temperature
-
-- **Linear Model**: `growth ~ water + nutrient + temp_c`
+$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
 
 :::
 
 
-## Multiple predictor model
 
-:::{.incremental}
+::: {.fragment}
 
-- **Question**: Do water and nutrient levels work together to affect plant growth?
+<br>
 
-- **Hypothesis**: Increasing water and nutrient levels has a combined effect that leads to increased plant growth, greater than the effect of either on their own.
+Then generalised linear models...
 
-- **Control Variables**: Temperature
+::: {.center-text}
 
-- **Linear Model**: `growth ~ water + nutrient + temp_c + water:nutrient`
+$\eta_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots + \beta_n x_{ni}$
 
-:::
-
-## Exercise 1
-
-:::{.incremental}
-
-- **Question**: Does temperature affect the metabolic rate of lizards?
-
-- **Hypothesis**: Temperature increases the metabolic rate of lizards
-
-- **Control Variables**: Age of lizards
-
-- **Linear Model**: `metabolic_rate ~ temp + age`
 
 :::
 
-## Exercise 2:
-
-:::{.incremental}
-
-- **Question**: How does diet and exercise affect cholesterol in mice?
-
-- **Hypothesis**: low fat diets and regular exercise decrease cholesterol levels in mice
-
-- **Control Variables**: Genetic strain of mice
-
-- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain`
-
-- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain + diet_fat:daily_exercise`
+- $\eta_i$ the linear prediction for observation $i$
 
 :::
 
-## Exercise 3:
 
-:::{.incremental}
+## The link function
 
-- **Question**: Do immune system responses depend on stress and sleep in humans?
 
-- **Hypothesis**: Negative effects of stress on immune responses are lessened if sleep duration remains high
+Let's start with linear models...
 
-- **Control Variables**: Age
+::: {.center-text}
 
-- **Linear Model**: `immune_response ~ sleep_hours + stress + age + sleep_hours:stress`
+
+$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
 
 :::
 
-# Questions?
+::: {.fragment}
+
+<br>
+
+Then generalised linear models...
+
+::: {.center-text}
+
+$g(\mu_i) = \eta_i$
+
+
+:::
+
+:::
+
+:::{.fragment}
+
+- $\eta_i$ linear prediction for observation $i$
+
+- $g$ the link function relating the linear predictor to the expected value (mean) of the response variable
+
+- $\mu_i$ is the expected value of the response variable for observation $i$
+
+Common link functions: identity, sqrt, log, logit
+
+:::
+
+
+## Error family
+
+Let's start with linear models...
+
+::: {.center-text}
+
+
+$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
+
+
+$\epsilon_i = \mathcal{N}(0, \sigma^2)$
+
+:::
+
+
+
+::: {.fragment}
+
+Then generalised linear models...
+
+::: {.center-text}
+
+$\mu_i = f(\eta_i)$
+
+$\epsilon_i \sim \mathcal{N}(0, \sigma^2)$
+
+:::
+
+:::
+
+:::{.fragment}
+
+ - $\epsilon_i$ is the error term for observation $i$
+
+**Examples:** Gaussian (normal), binomial, Poisson, gamma, etc.
+
+:::
+
+## Generalised Linear Model
+
+::::{.columns}
+
+:::{.column}
+
+**Linear Predictor** ($\eta$):
+
+$\eta_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots$
+
+**Link Function** ($g$):
+
+$g(\mu_i) = \eta_i$
+
+**Probability Distribution**:
+
+$\mu_i = f(\eta_i)$
+
+$\epsilon_i \sim \mathcal{N}(0, \sigma^2)$
+
+:::
+
+:::{.column}
+
+- $\eta_i$ linear prediction for observation $i$
+
+- $g$ the link function relating the linear predictor to the expected value (mean) of the response variable
+
+- $\mu_i$ is the expected value of the response variable for observation $i$
+
+- $f$ the inverse of the link function, transforming the linear predictor back to the response variable's expected value
+
+- $\epsilon_i$ is the error term for observation $i$
+
+:::
+
+::::
+
+## Changing model structures
+
+There are a range of model structures available. 
+
+The choice of error family and link influence how well the model fits
+
+| Exponential Error Family      | Link Function       |
+|-------------------|---------------------|
+| Gaussian          | Identity, sqrt, log, inverse            |
+| Binomial          | Logit, probit, cloglog               |
+| Poisson           | Log, identity, sqrt                 |
+| Gamma             | Inverse, identity, log, sqrt             |
+| Negative Binomial | Log, identity, sqrt|
+
+
+## Choosing an error family
+
+::::{.columns}
+
+:::{.column width="40%"}
+
+- What type of variable is the outcome?
+
+- Fit models: check residuals and AICs
+
+:::
+
+:::{.column width="60%"}
+
+![](images/flow.png){fig-align="center" fig-alt="physalia logo" width=150%}
+
+:::
+
+::::
+
+# Likelihood {background-color="#D9DBDB"}
+
+
+## Log-Likelihood
+
+::::{.columns}
+
+:::{.column}
+
+- Likelihood measures the probability of observing the given data under a specific statistical model, as a function of the model's parameters.
+
+- It represents how well the model explains the observed data.
+
+- The log likelihood function in maximum likelihood estimations is usually computationally simpler as it is additive.
+
+:::
+
+:::{.column}
+
+![](images/log-likelihood.png){fig-align="center" fig-alt="The log-likelihood (l) maximum is the same as the likelihood (L) maximum." width=100%}
+
+:::
+
+::::
+
+## Log-Likelihood
+
+Likelihood Function:
+
+$L(\theta | y) = f(y_1 | \theta) \times f(y_2 | \theta) \times \ldots \times f(y_n | \theta)$
+
+:::{.fragment}
+<br>
+Log-Likelihood Function:
+
+$\ell(\theta | y) = \log(f(y_1 | \theta)) + \log(f(y_2 | \theta)) + \ldots + \log(f(y_n | \theta))$
+
+:::
+
+:::{.fragment}
+<br>
+Although log-likelihood functions are mathematically easier than their multiplicative counterparts, they can be challenging to calculate by hand. They are usually calculated with software.
+
+:::
+
+## Maximum Likelihood Estimation
+
+For a specified error family distribution and link function, the glm finds parameter values that have the highest likelihood score.
+
+:::{.incremental}
+
+- Which estimates are most probable for producing the observed data
+
+- This is an iterative process, without a single defined equation
+
+- For gaussian and identity link it will produce the same outcome as OLS.
+
+:::
+
+Log-Likelihood Function:
+$$\ell(\theta | \mathbf{y}) = \sum_{i=1}^{n} \log(f(y_i | \theta))$$
+
+
+## Maximum Likelihood
+
+
+::::{.columns}
+
+:::{.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 8
+#| message: false
+#| warning: false
+
+# Simulated data
+set.seed(42)
+
+log_likelihood_visual <- function(mean = 6, sd = 1){
+
+data <- rnorm(100, mean = mean, sd = sd)
+
+# Define a grid of mu and sigma values
+mu_range <- seq(mean-(sd*2), mean+(sd*2), length.out = 100)
+sigma_range <- seq(sd-sd, sd+sd, length.out = 100)
+sigma_range[sigma_range < 1] <- 1
+grid <- expand.grid(mu = mu_range, sigma = sigma_range)
+
+# Function to calculate log-likelihood for normal distribution
+log_likelihood <- function(mu, sigma, data) {
+  n <- length(data)
+  -n/2 * log(2 * pi) - n * log(sigma) - 1/(2 * sigma^2) * sum((data - mu)^2)
+}
+
+# Calculate log-likelihood for each combination of mu and sigma
+grid$log_likelihood <- mapply(log_likelihood, mu = grid$mu, sigma = grid$sigma, MoreArgs = list(data = data))
+
+# Plot
+ggplot(grid, aes(x = mu, y = sigma, z = log_likelihood)) +
+  geom_contour_filled(aes(fill = after_stat(level)), bins = 20) + # Use geom_contour_filled for filled contour plots
+  labs(title = "Log-Likelihood Contour Plot",
+       x = expression(mu),
+       y = expression(sigma),
+       fill = "Log-Likelihood") +
+  theme_minimal()
+}
+
+log_likelihood_visual()
+```
+
+:::
+
+:::{.column}
+
+- A contour plot visualizing the log-likelihood surface for a normal distribution fitted to simulated data. 
+
+- The contour lines on the plot represent regions of equal log-likelihood values. Darker regions indicate lower log-likelihood values, while lighter regions indicate higher log-likelihood values
+
+:::
+
+::::
+
+
+## Deviance
+
+- The deviance is a key concept in Generalised linear models. 
+
+- It measures the deviance of the fitted Generalised linear model with respect to a perfect/**saturated** model for the sample.
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 6
+#| message: false
+
+
+
+# Simulate some data
+set.seed(123)
+n <- 100  # Sample size
+x <- rnorm(n)  # Predictor variable
+y <- 2 + 3*x + rnorm(n)  # Continuous response variable (linear relationship)
+
+# Fit the null model (intercept only)
+null_model <- lm(y ~ 1)
+
+# Fit the saturated model (fully saturated model)
+saturated_model <- lm(y ~ x)
+
+# Fit the fitted model (linear predictor with x)
+fitted_model <- lm(y ~ x)
+
+# Create a dataframe to store observed points
+observed_data <- data.frame(x = x, y = y)
+
+# Generate fitted lines
+fitted_lines <- data.frame(x = sort(x))
+fitted_lines$Null <- predict(null_model, newdata = fitted_lines)
+fitted_lines$Fitted <- predict(fitted_model, newdata = fitted_lines)
+
+# Plot observed points and fitted lines
+ggplot() +
+    geom_point(data = observed_data, aes(x = x, y = y), color = "black") +
+    geom_line(data = fitted_lines, aes(x = x, y = Null, color = "Null")) +
+    geom_line(data = observed_data, aes(x = x, y = y, color = "Saturated")) +
+    geom_line(data = fitted_lines, aes(x = x, y = Fitted, color = "Fitted")) +
+    scale_color_manual(values = c("Null" = "red", "Saturated" = "blue", "Fitted" = "green"),
+                       name = "Model") +
+    labs(
+        title = "Fitted Lines vs Observed Points",
+        x = "x",
+        y = "y"
+    ) +
+    theme_minimal(base_size = 14)
+
+
+```
+
+
+
+
+## Pseudo R-squared
+
+::::{.columns}
+
+:::{.column}
+
+![](images/deviance.png){fig-align="center" fig-alt="" width=100%}
+
+:::
+
+:::{.column}
+
+Formula: 
+
+$GLM~R^2 = 1 - \frac{D}{D_0}$
+
+$linear\_model~R^2= 1 - \frac{SSE}{SST}$
+
+
+- $D$ is the deviance of the fitted model.
+
+- $D_0$ is the deviance of the null model (linear model with only an intercept).
+
+The GLM $R^2$ **is not** the percentage of variance explained by the model, but rather a ratio indicating how close the fit is to being perfect.
+
+:::
+
+::::
+
+## Pseudo R-squared in R
+
+- We can fit the deviance-based pseudo $R^2$ with the `MuMIn` package
+
+- `r.squaredLR()` is a function used to compute the likelihood ratio (LR) based R-squared for a given model
+
+```{r}
+#| eval: false
+#| echo: true
+#| message: false
+
+
+
+library(MuMIn)
+
+r.squaredLR(model)
+
+
+```
+
+## AIC
+
+:::{.incremental}
+
+- The Akaike Information Criterion (AIC)  balances the trade-off between model fit and complexity by penalizing models with more parameters.
+
+- It aims to find the model that best explains the data while avoiding overfitting.
+
+- AIC is calculated as follows: $\text{AIC} = 2k - 2\ln(\hat{L})$, 
+
+- where: log-likelihood is the maximized value of the likelihood function for the fitted model. $k$ is the number of parameters in the model.
+
+- In general a difference in AIC of <2 suggests equivalent goodness-of-fit
+
+:::
+
+## AIC
+
+::::{.columns}
+
+:::{.column}
+
+**AIC can:**
+
+- Compare non-nested models fitted to the same dataset and response variable
+
+- Compare across different GLM families and link functions
+
+:::
+
+:::{.column}
+
+**AIC cannot:**
+
+- Compare models where the response variable is transformed
+
+- Compare models where there are differences in the dataset
+
+:::
+
+::::
+
+## Likelihood ratio test
+
+The likelihood ratio test (LRT) “unifies” frequentist statistical tests. Brand-name tests like t-test, F-test, chi-squared-test, are specific cases (or even approximations) of the LRT.
+
+- The likelihood ratio test (LRT) begins with a comparison of the likelihood scores of the two models:
+
+$\text{LR} = -2(\ln L_1 - \ln L_2)$
+
+:::{.fragment}
+
+Where:
+
+- $\ln L_1$ and $\ln L_2$ are the log-likelihoods of the two models being compared.
+
+:::
+
+## Likelihood ratio test
+
+- This LRT statistic approximately follows a chi-square distribution. 
+
+- To determine if the difference in likelihood scores among the two models is statistically significant, we next must consider the degrees of freedom. 
+
+- In the LRT, degrees of freedom is equal to the number of additional parameters in the more complex model.
+
+```{r}
+#| echo: false
+#| eval: true
+
+janka <- read_csv(here::here("data", "janka.csv"))
+
+fitted_model <- glm(hardness ~ dens, data = janka, family = Gamma(link = "sqrt"))
+null_model <- glm(hardness ~ 1, data = janka, family = Gamma(link = "sqrt"))
+fitted_likelihood <- logLik(glm(hardness ~ dens, data = janka, family = Gamma(link = "sqrt")))
+null_likelihood <- logLik(glm(hardness ~ 1, data = janka, family = Gamma(link = "sqrt")))
+```
+
+```{r}
+#| echo: true
+#| eval: true
+
+
+LR <- -2*(null_likelihood[1]-fitted_likelihood[1])
+
+LR
+
+```
+
+## Likelihood ratio test
+
+:::{.incremental}
+
+- The likelihood ratio test `lrtest()` is typically calculated as twice the difference in deviance between the two models. (Can also be carried out with the `anova()` function)
+
+- Scaling by -2 ensures the test statistic follows a chi-square distribution under certain conditions
+
+- We can calculate the likelihood ratio test statistic, compare it to the chi-square distribution with the appropriate degrees of freedom, and determine whether the improvement in fit between the two models is statistically significant.
+
+:::
+
+```{r}
+
+lrtest(null_model, fitted_model)
+
+```
+
+# GLMs for count data {background-color="#D9DBDB"}
+
+## Poisson
+
+:::: columns
+
+::: {.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 8
+#| message: false
+
+# Define a range of lambda values (average rate of success)
+lambda_values <- c(1, 4, 10, 20, 50)
+
+# Generate the Poisson distribution data
+poisson_data <- map_df(lambda_values, ~tibble(
+  lambda = .x,
+  events = 0:75, # Assuming a reasonable range for visualization
+  probability = dpois(0:75, .x)
+)) |> 
+  mutate(lambda = factor(lambda, levels = lambda_values)) # For ordered plotting
+
+# Plot
+ggplot(poisson_data, aes(x = events, y = probability, color = lambda)) +
+  geom_line(linewidth = 1.5) +
+  scale_color_brewer(palette = "Dark2") +
+  labs(title = "Change in Poisson Distribution with Different Lambda",
+       x = "Number of Events",
+       y = "Probability",
+       color = "Lambda") +
+  theme_minimal(base_size = 14)
+
+```
+
+::: 
+
+::: {.column}
+
+Count or rate data are ubiquitous in the life sciences (e.g number of parasites per microlitre of blood, number of species counted in a particular area). These type of data are **discrete** and **non-negative**.
+
+A useful distribution to model abundance data is the **Poisson** distribution: 
+
+a discrete distribution with a single parameter, λ (lambda), which defines both the mean and the variance of the distribution.
+
+:::
+
+
+::::
+
+## GLM
+
+::: {.incremental}
+
+Recall the simple linear regression case (i.e a GLM with a Gaussian error structure and identity link). For the sake of clarity let's consider a single explanatory variable where $\mu$ is the mean for *Y*:
+
+$\mu_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn$
+
+$y_i \sim \mathcal{N}(\mu_i, \sigma^2)$
+
+* The mean function is **unconstrained**, i.e the value of $\beta_0 + \beta_1X$ can range from $-\infty$ to $+\infty$. 
+
+:::
+
+## Poisson
+
+
+* If we want to model count data we therefore want to **constrain** this mean to be positive only. 
+
+:::{.incremental}
+
+* Mathematically we can do this by taking the **logarithm** of the mean (the log is the default link for the Poisson distribution). 
+
+* We then assume our count data variance to be Poisson distributed (a discrete, non-negative distribution), to obtain our Poisson regression model (to be consistent with the statistics literature we will rename $\mu$ to $\lambda$):
+
+:::
+
+## GLM Poisson
+
+![](images/poisson_regression.webp){fig-align="center" fig-alt="Poisson equation" width=80%}
+
+## Poisson limitations
+
+The **Poisson** distribution has the following characteristics:
+
+::: {.incremental}
+
+* **Discrete** variable (integer), defined on the range $0, 1, \dots, \infty$.
+
+* A single ***rate*** parameter $\lambda$, where $\lambda > 0$.
+
+* **Mean** = $\lambda$  
+
+* **Variance** = $\lambda$
+
+:::
+
+
+## Poisson: Case study
+
+:::: columns
+
+::: {.column}
+
+![](images/3 Spined Stickleback.jpg){fig-align="center" fig-alt="Stickleback" width=50%}
+:::
+
+:::{.column}
+
+In this study the authors investigated the effect of the parasitic tapeworm *Schistocephalus solidus* infection on the susceptibility of infection from a second parasite, the trematode *Diplostomum pseudospathaceum*
+
+> How does Treatment/Infection status affect trematode counts?
+
+:::
+
+::::
+
+##
+
+This model looks ok
+
+```{r}
+#| eval: false
+#| echo: true
+#| fig-height: 8
+#| message: false
+
+stick_lm <- lm(Diplo_intensity ~ Treatment, data = parasite)
+```
+
+
+```{r}
+#| include: FALSE
+
+parasite <- read_csv("../data_2/parasite_exp.csv")
+
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 7
+#| message: false
+
+stick_lm <- lm(Diplo_intensity ~ Treatment, data = parasite)
+
+emmeans::emmeans(stick_lm, specs = ~Treatment) %>% 
+  as_tibble() %>% 
+ggplot(aes(x=Treatment, y=emmean)) + 
+  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL)) +
+  geom_jitter(data = parasite, aes( x= Treatment, y = Diplo_intensity),
+              alpha = .2, width = .2)+
+  theme_minimal(base_size = 18)
+
+
+
+```
+
+
+## Diagnostics
+
+Let us display the model diagnostics plots for this linear model.
+
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| fig-height: 8
+
+plot(stick_lm, which=2)
+
+plot(stick_lm, which=3)
+```
+
+
+* Curvature
+
+* Funnelling effect
+
+
+
+## Poisson model
+
+We should therefore try a different model structure.
+
+The response variable in this case is a classic **count data**: **discrete** and bounded below by zero (i.e we cannot have negative counts). We will therefore try a **Poisson model** using the canonical **log** link function for the mean:
+
+
+* λ varies with x (mass) which means residual variance will also vary with 
+x, which means that we just relaxed the homogeneity of variance assumption!
+
+* Predicted values will now be integers instead of fractions
+
+* The model will never predict negative values (Poisson is strictly positive)
+
+$$
+    \log{\lambda} = \beta_0 + \beta_1 T_i + \beta_1 T_j + \beta_1 T_k 
+$$
+
+
+## Fit the Poisson model
+
+Fit the poisson model
+
+```{r}
+#| echo: true
+
+stick_poisson <- glm(Diplo_intensity ~ Treatment, family = "poisson", data = parasite)
+
+summary(stick_poisson)
+```
+
+
+## Poisson model fit 
+
+::::{.columns}
+
+:::{.column}
+
+Linear Model
+
+```{r}
+#| echo: false
+#| fig-height: 6
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+
+plot(stick_lm, which=2)
+
+plot(stick_lm, which=3)
+
+
+```
+
+:::
+
+:::{.column}
+
+Poisson Model
+
+```{r}
+#| echo: false
+#| fig-height: 6
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+
+plot(stick_poisson, which=2)
+
+plot(stick_poisson, which=3)
+
+
+```
+
+:::
+
+::::
+
+## Effect of treatment
+
+To perform a global test on the effect of treatment.
+
+The likelihood ratio test allows us to determine the overall deviance explained by treatment
+
+```{r}
+#| eval: true
+#| echo: true
+
+# For a fixed  mean-variance model we use a Chisquare distribution
+drop1(stick_poisson, test = "Chisq")
+
+```
+
+
+## Model summary
+
+::::{.columns}
+
+:::{.column}
+
+```{r}
+#| echo: true
+
+summary(stick_poisson)
+
+```
+
+:::
+
+:::{.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 5
+
+emmeans::emmeans(stick_poisson, specs = ~Treatment,
+                 type = "response") %>% 
+  as_tibble() %>% 
+ggplot(aes(x=Treatment, y=rate)) + 
+  geom_pointrange(aes(ymin = asymp.LCL, ymax = asymp.UCL)) +
+  geom_jitter(data = parasite, aes( x= Treatment, y = Diplo_intensity),
+              alpha = .2, width = .2)+
+  theme_minimal(base_size = 18)
+```
+
+:::
+
+::::
+
+
+## Poisson limitations
+
+So for the Poisson regression case we assume that the mean and variance are the same.
+Hence, as the mean *increases*, the variance *increases* also (**heteroscedascity**).
+This may or may not be a sensible assumption so watch out! Just because a Poisson distribution *usually* fits well for count data, doesn't mean that a Gaussian distribution *can't* always work.
+
+Recall the link function between the predictors and the mean and the rules of logarithms (if $\log{\lambda} = k$(value of predictors), then $\lambda = e^k$):
+
+
+## Overdispersion
+
+When the residual deviance is higher than the residual degrees of freedom, we say that the model is overdispersed. This situation is mathematically represented as:
+
+$$
+\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}
+$$
+
+Overdispersion occurs when the variance in the data is even higher than the mean, indicating that the Poisson distribution might not be the best choice. This can be due to many reasons, such as the presence of many zeros, many very high values, or missing covariates in the model.
+
+## Overdispersion and what to do about it
+
+| Causes of over-dispersion | What to do about it | 
+|---------|:-----|
+| Model mis-specification (missing covariates or interactions)    | Add more covariates or interaction terms   |
+| Too many zeros ("zero inflation")    | Use a zero-inflated model  |
+| Non-independence of observations       | Use a generalised mixed model with random effects to take non-independence into account    |
+| Variance is larger than the mean      | Use a quasipoisson GLM if overdispersion = 2-15. Use a negative binomial GLM if > 15-20  |
+
+: Overdispersion statistic values > 1
+
+
+## Choosing a model
+
+![](images/dispParam.png){fig-align="center" fig-alt="Poisson/NegBin" width=50%}
+
+
+## Overdispersion and what to do about it
+
+It may be true that you are initially unsure whether overdispersion is coming from zero-inflation, larger variance than the mean or both. 
+
+You can fit models with the same dependent and independent variables and different error structures and use AIC to help determine the best model for your data
+
+## Overdispersion in the stickleback
+
+
+$\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{697.25}{217} = 3.21$
+
+```{r}
+#| eval: true
+#| echo: true
+
+summary(stick_poisson)
+
+performance::check_overdispersion(stick_poisson)
+
+```
+
+## Quasi-Poisson GLM 
+
+The systematic part and the link function remain the same
+
+$$
+    \log{\lambda} = \beta_0 + \beta_1 x_i
+$$
+
+*phi*$\phi$ is a dispersion parameter, it will not affect estimates but will affect *significance*. Standard errors are multiplied by $\sqrt\phi$ 
+
+$$
+Y_i = Poisson(\phi \lambda_i)
+$$
+
+
+Where:
+
+- $Yi$ is the response variable.
+- $\phi$ is the dispersion parameter, which adjusts the variance of the distribution
+
+Confidence intervals and p-values WILL change.
+
+
+## Fit a quasipoisson model to the data
+
+```{r}
+#| eval: true
+#| echo: true
+
+stick_quasipoisson <- glm(Diplo_intensity ~ Treatment, family = quasipoisson, data = parasite)
+```
+
+* Look at the residual plots - how have they changed? 
+
+* Look at the SE and p-values - how have they changed
+
+* Calculate new 95% confidence intervals
+
+## Compare models
+
+```{r}
+#| eval: true
+#| echo: true
+#| layout-ncol: 2
+
+summary(stick_poisson)
+
+summary(stick_quasipoisson)
+
+```
+
+## F distributions
+
+The presence of overdispersion suggested the use of the F-test for nested models. We will test if the interaction term can be dropped from the model.
+
+Though here for a term with only one degree of freedom $t^2$ = the F distribution with denominator degree of freedom
+
+```{r}
+#| eval: true
+#| echo: true
+
+drop1(stick_quasipoisson, test = "F")
+
+```
+
 
 
 # Resources
