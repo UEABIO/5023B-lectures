@@ -1,0 +1,56 @@
+---
+title: "5023B"
+subtitle: "<small>Data Science for Biologists</small>"
+author: "Dr Philip Leftwich"
+format:
+  LUstyle-revealjs:
+    self-contained: true
+    auto-stretch: false
+    footer: "{{< fa envelope >}} [p.leftwich@uea.ac.uk](mailto: p.leftwich@uea.ac.uk) {{< fa globe >}} [philip.leftwich.github.io](https://philip.leftwich.github.io/) {{< fa brands linkedin >}} [philip-leftwich](https://www.linkedin.com/in/philip-leftwich-117052155/)"
+    
+    always_allow_html: yes
+---
+
+# Welcome! {background-color="#D9DBDB"}
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+
+library(arm)
+library(car)
+library(DHARMa)
+library(emmeans)
+library(equatiomatic)
+library(fitdistrplus)
+library(gtsummary)
+library(lmtest)
+library(MASS)
+library(MuMIn)
+library(performance)
+library(pscl)
+library(sjPlot)
+library("ggpubr")
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(palmerpenguins)
+library(wesanderson)
+library(rstatix)
+
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.retina = 3, fig.asp = 0.8, fig.width = 8, out.width = "60%")
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(palmerpenguins)
+library(wesanderson)
+library(rstatix)
+
+```
+
+
