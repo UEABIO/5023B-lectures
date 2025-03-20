@@ -1575,7 +1575,7 @@ Basic linear models aim to describe a linear relationship between a:
 
 :::
 
----
+
 
 ## Linear Regression Equation
 
@@ -2057,7 +2057,7 @@ $SSE + SSR = SST$
 
 ::::
 
----
+
 
 ## What does an ANOVA actually do?
 
@@ -4733,6 +4733,918 @@ knitr::include_graphics("images/hospitalacutebed predictions.png")
  [A ggplot tutorial for beautiful plotting in R](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) - Cédric Scherer
 
  [The Economist: Graphic Detail](https://www.economist.com/graphic-detail)
+ 
+ 
+ # Session Outline
+
+What are functions?
+
+Why do we want to write functions?
+
+What is functional programming?
+
+A run through of the {purrr} package
+
+# Functions
+
+
+
+## Features
+
+```{r, echo = FALSE, out.width="60%"}
+knitr::include_graphics("images/r-function-syntax.png")
+```
+
+##
+
+The body of the function (the statements that are executed when the function is run) is grouped with curly braces ({})
+
+When executing functions it is optional to specify argument names, but in functions with >1 arguments, the order matters
+
+```{r}
+myfunction <- function(x){
+  x + 4
+}
+
+```
+
+```{r}
+myfunction(3)
+```
+
+
+```{r}
+myfunction(x = 3)
+```
+
+## Braces
+
+Braces are not needed for functions with a single declaration
+
+
+```{r}
+myfunction <- function(x) x + 4
+myfunction(2)
+```
+
+
+
+
+## Braces
+
+Braces surround the body in functions with two or more statements
+
+```{r, eval = F}
+f <- function(x)  y <- (x * 2) x + y   # ERROR  
+
+```
+
+
+
+```{r}
+f <- function(x)  {
+  y <- (x * 2) 
+  x + y
+}
+```
+
+
+
+## Short function notation
+
+Replace "function(x) {}" with "\(x){}"
+
+```{r}
+add_one <- function(x) {
+  return(x + 1)
+}
+```
+
+
+```{r}
+
+add_one <- \(x) x + 1
+
+```
+
+
+
+
+## Function types
+
+:::{.columns}
+
+
+:::{.column}
+
+A function is a process which takes some input, called **arguments**, and produces some output called a **return
+value**. Functions may serve the following purposes:
+
+* **Mapping**: Produce some output based on given inputs. A function **maps** input values to output values.
+
+* **Procedures**: A function may be called to perform a sequence of steps. The sequence is known as a procedure, and
+programming in this style is known as **procedural programming**.
+
+* **I/O**: Some functions exist to communicate with other parts of the system, such as the screen, storage, system logs
+or network.
+
+source: ["What is a pure function?"](https://medium.com/javascript-scene/master-the-javascript-interview-what-is-a-pure-function-d1c076bec976)
+
+:::
+
+:::{.column}
+
+``` r
+# mapping
+fn <- function(x) {
+  x * x + 1
+}
+```
+
+``` r
+calculate_rectangle_area <- function(length, width) {
+  # Step 1: Calculate the area
+  area <- length * width
+  
+  # Step 2: Print the calculated area
+  cat("The area of the rectangle with length", length, "and width", width, "is", area, "\n")
+  
+  # Step 3: Return the area
+  return(area)
+}
+```
+
+``` r
+# i/o:
+read_csv(filename)
+```
+:::
+
+::::
+
+
+
+
+## Environments
+
+:::{.columns}
+
+
+:::{.column}
+
+In R, we have the global environment. This is where all variables are created when you assign (`<-`) something in the
+console.
+
+When a function is evaluated, it creates it's own environment. All of the arguments that are passed to the function,
+along with any variables created in the function are stored in this new environment.
+
+The function's environment's parent will be the global environment, so we can see all of the variables created in the
+global environment. Variables that are created in the function's environment aren't visible from the global environment
+though.
+
+If we reassign a variable in a function it will take a copy of that variable rather than mutating the value in the
+global environment. If we want to update `x` in the global environment we need to use the `<<-` operator.
+
+:::
+
+:::{.column}
+
+```{r, echo = TRUE}
+x <- 1
+fn <- function(y) {
+  x <- x * 2
+  z <- x + y
+  z
+}
+result <- fn(2)
+```
+
+```{r, echo = TRUE}
+exists("z")
+```
+
+```{r, echo = TRUE}
+x
+```
+
+:::
+
+::::
+
+
+
+## Environments
+
+:::{.columns}
+
+
+:::{.column}
+
+
+The function's environment's parent will be the global environment, so we can see all of the variables created in the
+global environment. Variables that are created in the function's environment aren't visible from the global environment
+though.
+
+If we reassign a variable in a function it will take a copy of that variable rather than mutating the value in the
+global environment. If we want to update `x` in the global environment we need to use the `<<-` operator.
+
+:::
+
+:::{.column}
+
+```{r, echo = TRUE}
+x <- 1
+fn <- function(y) {
+  x <- x * 2
+  z <- x + y
+  z
+}
+result <- fn(2)
+```
+
+```{r, echo = TRUE}
+exists("z")
+```
+
+```{r, echo = TRUE}
+x
+```
+
+:::
+
+::::
+
+
+
+
+## Why do we want to write functions?
+
+Consider the following code (from the book [R4DS][r4ds]). Can you spot the mistake?
+
+``` r
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df$a <- (df$a - min(df$a, na.rm = T)) / 
+  (max(df$a, na.rm = T) - min(df$a, na.rm = T))
+df$b <- (df$b - min(df$b, na.rm = T)) / 
+  (max(df$b, na.rm = T) - min(df$a, na.rm = T))
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = T) - min(df$c, na.rm = T))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = T) - min(df$d, na.rm = T))
+```
+
+
+## The mistake
+
+``` r
+df$b <- (df$b - min(df$b, na.rm = T)) / 
+  (max(df$b, na.rm = T) - min(df$a, na.rm = T))
+```
+
+Often, when we copy and paste code we introduce subtle bugs, in the previous example we forgot to update the one
+argument: me call `min(df$a)` rather than `min(df$b)`.
+
+Writing functions can reduce these types of errors by abstracting away the underlying logic.
+
+
+
+## When to write a function
+
+“You should consider writing a function whenever you’ve copied and pasted a block of code more than twice”
+
+ H. Wickham
+
+
+
+## Creating a function to solve the last problem
+
+:::{.columns}
+
+
+:::{.column}
+
+To the right is one way to turn the previous example into a function.
+
+We pass in a numerical vector (`x` to the function), calculate the minimum and maximum values, then rescale the vector.
+
+Finally we update each column, one by one, using this new function.
+
+We still have an issue here with the potential for copy-paste bugs in that we are doing the same thing 4 times, just
+changing the column in the data frame that we are using.
+
+:::
+
+:::{.column}
+
+``` r
+rescale_01 <- function(x) {
+  min_x <- min(x, na.rm = TRUE)
+  max_x <- max(x, na.rm = TRUE)
+  
+  (x - min_x) / (max_x - min_x)
+}
+```
+
+``` r
+# update the columns
+df$a <- rescale_01(df$a)
+df$b <- rescale_01(df$b)
+df$c <- rescale_01(df$c)
+df$d <- rescale_01(df$d)
+```
+
+:::
+
+::::
+
+
+
+
+## Creating a function to solve the last problem
+
+:::{.columns}
+
+
+:::{.column}
+
+
+We could use a loop, but we will see how functional programming can help us solve this problem more elegantly later.
+
+One important principle functions help us achieve is **DRY** (don't repeat yourself).
+
+:::
+
+:::{.column}
+
+``` r
+rescale_01 <- function(x) {
+  min_x <- min(x, na.rm = TRUE)
+  max_x <- max(x, na.rm = TRUE)
+  
+  (x - min_x) / (max_x - min_x)
+}
+```
+
+``` r
+# using a loop
+for (i in colnames(df)) {
+  df[[i]] <- rescale_01(df[[i]])
+}
+```
+
+:::
+
+::::
+
+
+
+
+## Sensible errors
+
+```{r, error = TRUE}
+rescale <- function(x) {
+  
+  if (!is.numeric(x)) stop("rescaling must be applied to a number")#<<
+  (x - min(x, na.rm = TRUE)) /  
+  diff(range(x, na.rm = TRUE))
+}
+
+
+vector <- c("a", "vector", "of", "characters")
+
+rescale(vector)
+```
+
+
+
+## Function writing best practices
+
+* Make sure it does what you want it to do
+
+* Use good names
+
+  * functions do stuff; use verbs
+  * arguments are things; use nouns
+  * don't overwrite existing functions
+  
+* Argument order matters
+
+  * tidyverse assumes data input comes first
+  * detail arguments come later (e.g. na.rm = TRUE)
+
+* Make output clear and obvious
+
+The Tidyverse style guide is here: http://style.tidyverse.org/
+
+
+
+
+## Pure functions
+
+:::{.columns}
+
+
+:::{.column}
+
+Pure functions are functions which:
+
+* always produce the same result given the same input
+
+* have no side effects (e.g. reading from a database, writing a file to disk)
+
+* do not use global state (e.g. using variables declared outside of the function)
+
+From before, mappings are pure functions, but the other two types are not.
+
+Pure functions are analogous to mathematical functions.
+
+:::
+
+:::{.column}
+
+
+``` r
+function(x, y) {
+  x + y
+}
+
+function(y) {
+  function(x) {
+    x + y
+  }
+}
+```
+:::
+::::
+
+## Pure vs unpure
+
+:::{.columns}
+
+
+:::{.column}
+
+**Pure** functions are functions which:
+
+* always produce the same result given the same input
+
+* have no side effects (e.g. reading from a database, writing a file to disk)
+
+* do not use global state (e.g. using variables declared outside of the function)
+
+From before, mappings are pure functions, but the other two types are not.
+
+Pure functions are analogous to mathematical functions.
+
+:::
+
+:::{.column}
+
+**Non-Pure** functions
+
+``` r
+rnorm(10)
+read_csv("file.csv")
+
+function(x) {
+  Sys.Date() + x
+}
+
+function(x) {
+  x + y
+}
+
+```
+:::
+
+::::
+
+
+
+
+
+
+# Why do we care about pure functions?
+
+
+
+## Referential Transparency
+
+:::{.columns}
+
+
+:::{.column}
+
+Pure functions are useful as they can make code significantly easier to debug and test. Pure functions have the property
+of [referential transparency][ref_transp], which put simply means we can replace an expression with it's corresponding
+value.
+
+For example, consider the function `fn` (shown to the right). Because the function `fn` is pure, we know that it will
+always return the same result given the same input, so replacing it's call with the return value is going to yield the
+same result.
+
+This can make debugging/testing `another_fn` simpler. The behaviour of `another_fn` is not dependent on `fn`.
+
+:::
+
+:::{.column}
+
+``` r
+fn <- function(x) {
+  x + 3
+}
+```
+
+``` r
+another_fn(fn(3), 2)
+```
+
+``` r
+# we can replace the call to fn() with
+# it's return value
+another_fn(6, 2)
+```
+:::
+
+::::
+
+
+## Testing
+
+:::{.columns}
+
+
+:::{.column}
+
+Knowing that a function will always return the same value given the same inputs makes writing unit tests easier:
+
+* We don't need to set up the global environment correctly before running the function - functions that rely on global state would need to test the function multiple times with the global environment set up with all the possible values.
+
+* We don't need to check the side effects of the function, we just need to check the return value is as expected.
+Functions that rely on a side effect can suffer transient errors, e.g. you try to read data from a database, but the
+server is temporarily down/busy.
+
+* All we need to do is check that the outputs are correct for given inputs.
+
+:::
+
+:::{.column}
+
+``` r
+library(testthat)
+
+triangle_number <- function(x) {
+  0.5 * x * (x + 1)
+}
+
+test_that("it works as expected", {
+  expected_that(triangle_number(1),  1)  
+  expected_that(triangle_number(2),  3)  
+  expected_that(triangle_number(3),  6)  
+  expected_that(triangle_number(4), 10)  
+  expected_that(triangle_number(5), 15)  
+})
+```
+:::
+
+::::
+
+
+
+
+## Iteration with loops
+
+:::{.columns}
+
+
+:::{.column}
+
+Previously we looked at an example where we used a for loop to run the same function on every column in a dataframe.
+
+We had to iterate in this way because the function that we had (`rescale_01`) worked on individual numeric vectors.
+
+We needed to set up the for loop by first extracting the list of columns, then iterating over each column running the
+function.
+
+This is a very common pattern: take a list we want to iterate over, then evaluate some function using that list.
+
+``` r
+for(i in colnames(df)) {
+  df[[i]] <- rescale_01(df[[i]])
+}
+```
+]
+
+:::
+
+:::{.column}
+
+However, it's very easy to make a mistake creating a loop this way: what if we occidentally update the wrong item in the
+dataframe?
+
+``` r
+for(i in colnames(df)) {
+  df[[1]] <- rescale_01(df[[i]])
+}
+```
+
+Or we don't correctly initialise the iteration?
+
+``` r
+for(i in 1:4) {
+  # does our data always have 4 columns?
+  df[[i]] <- rescale_01(df[[i]])
+}
+```
+:::
+
+::::
+
+
+
+## `purrr::map()`
+
+:::{.columns}
+
+
+:::{.column}
+
+The `map` function from `{purrr}` takes a vector/list, and a function. It the evaluates the function once for each
+input, returning the results as a list.
+
+We could replace our loop example quite simply with a map function:
+
+``` r
+df <- map_dfc(df, rescale_01)
+```
+
+The map function's arguments are
+
+``` r
+map(x, fn, ...)
+```
+
+* `x` is the vector you wish to iterate over
+* `fn` if the function
+* ... are any extra arguments the function requires (these are the same for all calls of the function)
+
+:::
+
+:::{.column}
+
+The image, courtesy of Advanced R shows graphically how the map function works.
+
+![](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
+
+:::
+
+::::
+
+
+
+## `map` in action
+
+:::{.columns}
+
+
+:::{.column}
+
+A toy example, let's take a vector of numbers and double them
+``` r
+values <- 1:5
+
+# we can use a "named function"
+double_num <- function(x) 2 * x
+map(values, double_num)
+
+# or, we can use an anonymous function
+map(values, function(x) 2 * x)
+# with R > 4.1, we can use \(x) 2 * x
+map(values, \(x) 2 * x)
+
+# we can also use a formula
+map(values, ~ .x * 2)
+```
+:::
+
+:::{.column}
+
+Any one of these would return the same thing: a list containing the results
+
+```{r echo=FALSE}
+values <- 1:5
+map(values, \(x) 2 * x)
+```
+
+:::
+
+::::
+
+
+## More maps
+
+Other types of map that return specific things
+
+* `map` - list
+* `map_lgl` logical
+* `map_int` integer
+* `map_dbl` double
+* `map_chr` character
+* `map_df` dataframe
+
+Maps are "type-safe" they will fail if they cannot return the correct data type
+
+
+
+## `map_*` variants
+
+:::{.columns}
+
+
+:::{.column}
+
+In the previous example we can see the output of `map` is a list. It would be more useful for that function to return a
+numeric vector instead. Fortunately, there is a simple way to achieve this in purrr:
+
+```{r echo=TRUE}
+map_dbl(values, \(x) 2 * x)
+```
+
+The variants provided are:
+
+* `map_chr` for a function which returns a character
+* `map_int`/`map_dbl` for a function which returns an integer/double
+* `map_lgl` for a function which returns a logical (`TRUE`/`FALSE`)
+* `map_df`/`map_dfr`/`map_dfc` for a function which returns a dataframe
+
+:::
+
+:::{.column}
+
+
+
+
+Now, the example given so far isn't particularly useful: many operations in R are vectorised, so we could just do
+`2 * values` and we would get exactly the same results as `map_dbl(values, \(x) 2 * x)`.
+
+`map` functions are useful for cases where we have functions which aren't vectorised and we need to run the function
+once for each item in the input vector.
+
+:::
+
+::::
+
+
+
+## `map_df` variants
+
+The data frame variants all do the same sort of thing: if a function returns a dataframe, rather than returning a list
+of dataframes, it will bind the results together into a single dataframe:
+
+* `map_df` and `map_dfr` use `bind_rows` to "union" the results together
+* `map_dfc` uses `bind_cols` instead
+
+One of the best use cases for `map_df` is to read in a folder full of csv's and combine the results together.
+
+First, let's get a list of all the files in a folder.
+
+```{r, eval = FALSE}
+csv_files_list_files <- list.files(path = "data/many_files",
+                                    pattern = "csv", full.names = TRUE)
+```
+
+```
+ [1] "data/many_files/1.csv"  "data/many_files/10.csv" "data/many_files/11.csv" "data/many_files/12.csv"
+ [5] "data/many_files/13.csv" "data/many_files/14.csv" "data/many_files/15.csv" "data/many_files/16.csv"
+ [9] "data/many_files/17.csv" "data/many_files/18.csv" "data/many_files/19.csv" "data/many_files/2.csv" 
+[13] "data/many_files/20.csv" "data/many_files/21.csv" "data/many_files/22.csv" "data/many_files/23.csv"
+[17] "data/many_files/24.csv" "data/many_files/25.csv" "data/many_files/3.csv"  "data/many_files/4.csv" 
+[21] "data/many_files/5.csv"  "data/many_files/6.csv"  "data/many_files/7.csv"  "data/many_files/8.csv" 
+[25] "data/many_files/9.csv"
+
+```
+
+
+
+## `map_df` continued
+
+
+Now that we have our list of files to load, we can use the `read_csv` function to load each csv file. 
+
+Here, we pass to
+the `read_csv` function the column types used in the files, and we also set the `.id` argument of `map_dfr`. 
+
+This will
+create a column in the final dataframe containing the "name" of each item in the list, e.g. the date from the filename.
+
+```{r, eval = FALSE}
+df <- map_dfr(csv_files_list_files,
+              ~ read_csv(.x))
+
+```
+
+
+## `map2`
+
+So far we have looked at cases where we have a single vector to iterate over, but what if we have two vectors, both of
+the same length? We can use the `map2` family of functions! 
+
+:::{.columns}
+
+
+:::{.column}
+
+
+```
+map2(.x, .y, .f)
+```
+
+```{r echo=TRUE}
+letters <- c("a", "b", "c")
+times <- 1:3
+
+map2_chr(letters, times, \(x, y) paste(rep(x, y), collapse = ""))
+```
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="100%"}
+knitr::include_graphics("images/map2.png")
+```
+
+:::
+
+::::
+
+
+
+## Functional programming with dplyr
+
+```{r, eval = F}
+penguins_clean_split |> 
+  group_by(species) |> 
+  summarise(
+    across(
+      .cols = where(is.numeric),
+      .fns = ~mean(.x, na.rm = T),
+      .names = "mean_{.col}")
+    )
+
+```
+
+```
+species	mean_sample_number	mean_culmen_length_mm	mean_culmen_depth_mm	mean_flipper_length_mm	mean_body_mass_g	mean_delta_15_n_o_oo	mean_delta_13_c_o_oo
+Adelie	76.5	38.79139	18.34636	189.9536	3700.662	8.859733	-25.80419
+Chinstrap	34.5	48.83382	18.42059	195.8235	3733.088	9.356155	-24.54654
+Gentoo	62.5	47.50488	14.98211	217.1870	5076.016	8.245338	-26.18530
+
+```
+
+
+
+## walk/walk2
+
+Along with map, map2 and pmap, we have the walk family of functions: these are useful for if you want to run a function for it's side-effect. 
+
+The walk functions work similarly to the map functions, but you use them when you’re interested in applying a function that performs an action instead of producing data. 
+
+The walk functions are useful for performing actions like writing files and printing plots.
+
+
+
+## Source scripts & functions
+
+You may find it useful to assemble your custom functions into a dedicated R script.
+
+This can then be sourced for use in any other R scripts when required
+
+```{r, eval = FALSE}
+source("path/to/some/file/functions.R")
+```
+
+Simply add this line to the top of your R script and you’ll be able to use any functions defined in file.R.
+
+
+
+## Packages
+
+Packages are the fundamental units of reproducible code. When functions become routinely useful to you, you might consider turning them into a package for your personal R `library()` to be called at a moments notice. 
+
+[Writing packages](https://r-pkgs.org/)
+
+If your functions might be useful to others, it can be made public (via Github or CRAN), so that others can use it too. 
+
+A reason to remember to always `cite` R packages 
+
+
 
 # Resources
 
