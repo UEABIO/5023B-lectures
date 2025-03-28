@@ -5747,19 +5747,78 @@ A reason to remember to always `cite` R packages
 
 :::
 
-## Exercise 3:
 
-:::{.incremental}
+## Simulate sample size
 
-- **Question**: Do immune system responses depend on stress and sleep in humans?
+`cholesterol ~ diet_fat + daily_exercise_hours + strain + diet_fat:daily_exercise`
 
-- **Hypothesis**: Negative effects of stress on immune responses are lessened if sleep duration remains high
 
-- **Control Variables**: Age
+```{r, echo = TRUE}
+simulate_ancova <- function(n, alpha = 0.05, sd = 1){
 
-- **Linear Model**: `immune_response ~ sleep_hours + stress + age + sleep_hours:stress`
+# Two strains of mice
+group <- factor(rep(1:2, each = n))
 
-:::
+# dietary fat 
+fat_amount <- runif(n, min = 20, max = 80)
+# daily exercise
+exercise_amount <- rnorm(n, mean = 30, sd = 4)
+
+# coefficients
+
+# Define coefficients
+beta_fat = 0.08      # Fat increases cholesterol
+beta_exercise = -.03  # Exercise decreases cholesterol
+beta_interaction = -0.01  # Interaction term
+
+strain_effect <- ifelse(group==1, 
+                         rnorm(n, mean = 10), 
+                         rnorm(n, mean = 5))
+
+cholesterol <- rnorm(
+  n = n,
+  mean = 150+
+  (fat_amount*beta_fat)+
+  (exercise_amount*beta_exercise)+
+  (beta_interaction*fat_amount*exercise_amount)+
+  strain_effect,
+  sd = sd)
+
+ # Create dataframe
+  data <- data.frame(group = group, 
+                     fat_amount = fat_amount, 
+                     exercise_amount = exercise_amount,
+                     cholesterol = cholesterol)
+
+  # Fit ANCOVA model (y ~ group + covariate)
+  model <- lm(cholesterol ~ group + 
+                fat_amount + 
+                exercise_amount + 
+                fat_amount:exercise_amount, data = data)
+  
+  p_value <- summary(model)$coefficients[5,4]
+  
+   # Return whether the p-value is significant
+  return(p_value < alpha)
+}
+
+```
+
+## Check power
+
+```{r, echo = TRUE}
+
+monte_carlo_power <- function(n_sims=1000, n=30, alpha = 0.05, sd =1) {
+  results <- replicate(n_sims, simulate_ancova(n, alpha))
+  power <- mean(results)
+  return(power)
+}
+
+# Run simulation
+power_estimate <- monte_carlo_power(n_sims = 1000, n = 30, sd =1)
+print(paste("Estimated power:", power_estimate))
+
+```
 
 # Questions?
 
