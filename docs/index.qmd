@@ -5645,8 +5645,456 @@ If your functions might be useful to others, it can be made public (via Github o
 A reason to remember to always `cite` R packages 
 
 
+# Open Science {background-color="#D9DBDB"}
 
-# Resources
+
+## Turning a question into a model
+
+- Hypotheses in research predict relationships between variables.
+
+- Linear models help test these hypotheses by quantifying these relationships.
+
+- Converting hypotheses into linear models involves identifying dependent and independent variables.
+
+- Considering and including important covariates
+
+- Determining whether interaction terms need to be included
+
+
+## Simple linear model
+
+:::{.incremental}
+
+- **Question**: Does the amount of sunlight affect plant growth?
+
+- **Hypothesis**: More sunlight hours increase plant growth
+
+- **Linear Model**: `height ~ sunlight_hours`
+
+:::
+
+
+## Control variables
+
+:::{.incremental}
+
+- **Question**: Does the amount of sunlight affect plant growth?
+
+- **Hypothesis**: More sunlight hours increase plant growth
+
+- **Control variables**: Soil quality
+
+- **Linear Model**: `height ~ sunlight_hours + soil quality`
+
+:::
+
+## Multiple predictor model
+
+:::{.incremental}
+
+- **Question**: How do water and nutrient levels affect plant growth?
+
+- **Hypothesis**: Both increased water and nutrient levels lead to increased plant growth.
+
+- **Control Variables**: Temperature
+
+- **Linear Model**: `growth ~ water + nutrient + temp_c`
+
+:::
+
+
+## Multiple predictor model
+
+:::{.incremental}
+
+- **Question**: Do water and nutrient levels work together to affect plant growth?
+
+- **Hypothesis**: Increasing water and nutrient levels has a combined effect that leads to increased plant growth, greater than the effect of either on their own.
+
+- **Control Variables**: Temperature
+
+- **Linear Model**: `growth ~ water + nutrient + temp_c + water:nutrient`
+
+:::
+
+## Exercise 1
+
+:::{.incremental}
+
+- **Question**: Does temperature affect the metabolic rate of lizards?
+
+- **Hypothesis**: Temperature increases the metabolic rate of lizards
+
+- **Control Variables**: Age of lizards
+
+- **Linear Model**: `metabolic_rate ~ temp + age`
+
+:::
+
+## Exercise 2:
+
+:::{.incremental}
+
+- **Question**: How does diet and exercise affect cholesterol in mice?
+
+- **Hypothesis**: low fat diets and regular exercise decrease cholesterol levels in mice
+
+- **Control Variables**: Genetic strain of mice
+
+- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain`
+
+- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain + diet_fat:daily_exercise`
+
+:::
+
+## Exercise 3:
+
+:::{.incremental}
+
+- **Question**: Do immune system responses depend on stress and sleep in humans?
+
+- **Hypothesis**: Negative effects of stress on immune responses are lessened if sleep duration remains high
+
+- **Control Variables**: Age
+
+- **Linear Model**: `immune_response ~ sleep_hours + stress + age + sleep_hours:stress`
+
+:::
+
+# Questions?
+
+# Fitting models  {background-color="#D9DBDB"}
+
+## How do I know my model is a good fit?
+
+
+### 1. Statistics are no substitute for judgment
+
+Have a clear hypothesis for why variables are being included (and whether they might interact)
+
+### 2. Check assumptions & diagnostics
+
+A model with poor diagnostics is a bad fit for the data – confidence intervals and p values will not be robust. 
+
+
+## Model checks
+
+- Start by fitting a model that includes your dependent variable(s), covariates and specifies any key interactions
+
+- Check the model is a good fit for the observed data
+
+:::{.incremental}
+
+* Diagnostic plots of residuals
+
+
+* Multicollinearity
+
+
+
+* Omitted Variable Bias
+
+
+
+* Irrelevant variables
+
+
+
+* Hypothesis testing for model simplification
+
+
+:::
+
+## Common misundertandings\n about P values
+
+**A p-value is NOT:**
+
+- The probability that the null hypothesis is true.
+
+- The probability your results occurred "by chance."
+
+- Proof of a meaningful or large effect.
+
+**What it IS:**
+
+- A measure of how surprising your data is under the assumption the null hypothesis is true.
+
+
+[Common misconceptions about P-values](https://daniellakens.blogspot.com/2017/12/understanding-common-misconceptions.html?m=1)
+
+[Evidence of P-hacking](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4359000/#:~:text=Evidence%20for%20p%2Dhacking%20from,test%20function%20in%20R)
+
+
+
+
+## A non-significant p-value DOES NOT mean the null hypothesis is true
+
+::::{.columns}
+
+:::{.column}
+
+In reality, we can’t know for sure if a true mean difference exists.
+
+For illustration: Assume we could know the true mean difference.
+
+The figure shows:
+
+    Grey line: Expected data if the null hypothesis is true.
+
+    Black line: Expected data if the alternative hypothesis is true.
+
+A p-value shows how surprising the data are if the null is true.
+
+A low p-value is evidence against the null, not proof of the alternative.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/null-and-alternate.png")
+
+```
+
+:::
+
+::::
+
+
+## Why a significant p-value does not mean the null hypothesis is false
+
+
+What we can conclude, based on our data, is that we have observed an extreme outcome, that should be considered surprising. But such an outcome is not *impossible* when the null-hypothesis is true.
+
+```{r, echo = FALSE, out.width="60%"}
+
+knitr::include_graphics("images/type-1.png")
+
+```
+
+
+
+## Why a significant p-value is not the same as an important effect
+
+::::{.columns}
+
+:::{.column}
+
+If we plot the null model for a very large sample size, we can see that even very small mean differences will be considered 'surprising'. 
+
+However, just because data is surprising, does not mean we need to care about it. It is mainly the verbal label ‘significant’ that causes confusion here – it is perhaps less confusing to think of a ‘significant’ effect as a ‘surprising’ effect.
+
+:::
+
+:::{.column}
+
+```{r, echo = FALSE, out.width="90%"}
+
+knitr::include_graphics("images/sample-size.png")
+
+```
+
+:::
+
+::::
+
+## Research Challenges
+
+## Are most published results wrong?
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/Ionnadis.png")
+
+```
+
+
+## Are most published results wrong? 
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/effects_wrong.png")
+
+```
+
+
+
+[Smaldino & McElreath 2016](https://royalsocietypublishing.org/doi/full/10.1098/rsos.160384?wm=3049_a111)
+[Ioannidis 2005](https://doi.org/10.1371%2Fjournal.pmed.0020124)
+
+
+## What is the reproducibility crisis?
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/pub_perish.png")
+
+```
+
+## Irreproducible science
+
+### Without realising it, good scientists have been engaging in questionable research practices (QRPs) partly driven by an incentive structure that doesn’t incentivise good scientific practice…
+
+## Questionable Practice
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/manifesto_bad_science.png")
+
+```
+
+## Why do studies fail to replicate?
+
+- There are too many studies with experimental power too low to detect the effect size of interest.
+
+- One of the consequences of a low powered study is that when real effects are detected their magnitude is likely to be over-estimated. 
+
+- Studies which find the effect are published and studies that don’t are not published - due to a bias to publish positive results. 
+
+- Future work may use the published effect size during a priori power analysis (and then fail to find the effect as the new study is effectively under-powered for what it’s looking for).
+
+
+## What can be done?
+
+::::{.columns}
+
+:::{.column width="70%"}
+
+- UK Reproducibility Network - funded by UK Research Council
+
+- 46 member institutions (UEA is one)
+
+- Establish open research practices across UK Research
+
+- [https://www.ukrn.org/](https://www.ukrn.org/)
+
+:::
+
+:::{.column width="30%"}
+
+![](images/UKRN-Logo.png){fig-align="center" fig-alt="UKRN" width=80%}
+
+:::
+
+::::
+
+## Conclusions
+
+- The academic incentive structure has to change.
+
+- There should be less focus/reward for people who are doing expensive science, and more focus/reward for people who are doing better science. 
+
+- Across disciplines and institutions, there can be a surprising lack of understanding about what open research is (and what it isn’t).
+
+## Conclusions
+
+- We need to be teaching open research practices to our students (the next generation of researchers).
+
+- There is a huge computational skills gap amongst PhD students, postdocs, and teaching/research academics - without these skills, people simply cannot adopt open and reproducible research practices.
+
+
+::: aside
+
+https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-021-05883-3
+
+:::
+
+# Discussion {background-color="#D9DBDB"}
+
+
+## Before Data Collection
+
+- Specify your hypotheses and analysis plan.
+
+- Pre-register your hypotheses and analysis plan at (osf.io) 
+
+- Consider data simulation so that you can write your analysis script before you have your real data.
+
+
+## Analysis
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/repro-spectrum.jpg")
+
+```
+
+## Analysis
+
+
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/error_3.png")
+
+```
+
+::: aside
+
+https://www.youtube.com/watch?v=cDA3_5982h8
+
+:::
+
+
+## Errors
+
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/error_1.png")
+
+```
+
+## Errors
+
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/error_2.png")
+
+```
+
+## You NEED Code
+
+- You need to use open source analysis software such as R or Python.
+
+- You need to think about your entire analysis pipeline from data importing, data wrangling, visualisation, statistical modelling, and report generation.  
+
+- Scripts are fine for small tasks but what about the multiple tasks needed in a research project?  How do you connect them together so the entire workflow can be reproduced?
+
+- What happens when you want to share your workflow with colleagues elsewhere or in another lab (with a different infrastructure)?
+
+- "It worked on my machine!" - but it’s not good when it doesn't work on your collaborators' machines (or on your new machine!)
+
+## You need to share it
+
+```{r, echo = FALSE, out.width="80%", fig.alt = "."}
+
+knitr::include_graphics("images/github_front.png")
+
+```
+
+## You need to capture dependencies
+
+- You need to capture the versions of your software packages. 
+
+- This may sound trivial but trying running some old analysis code and be amazed at how many things now don’t work as they once did!
+
+## Summary
+
+- Open data and open code are the future - remember to make your data and code available.
+
+- Pre-registration allows you to capture your predictions - time-stamped at a point in time so when you come to write up your work you can use the pre-reg as evidence that you really did make your predictions before data collection commenced.  
+
+- In many cases conducting research in a reproducible manner is easy - it requires a bit of planning and organisation up-front, but the pay-off is huge.
+
+- Not only will others be able to reproduce your results, but so will you at some future point in time.
+
+- Working in an open and reproducible manner also makes large-scale collaborations easier - with the extra computational skills that you acquire, you’ll be a more effective researcher.
+
+
+# Resources {background-color="#D9DBDB"}
 
 ## Additional resources
 
