@@ -71,9 +71,7 @@ Teach Genetics, Programming, and Statistics
 :::
 
 
-# Introductions
-
-##
+## Module Outline
 
 ::: {.columns}
 
@@ -90,37 +88,214 @@ Teach Genetics, Programming, and Statistics
 - Data reproducibility
 - R programming
 - Machine Learning
+- AI tool buiding
 
 :::
 
 :::
 
+## Module Learning Outcomes
+
+By the end of this module, you will be able to:
+
+::: {.incremental}
+
+1. Design and implement reproducible data analysis workflows
+
+2. Apply advanced statistical techniques appropriately and critically
+
+3. Evaluate the validity and limitations of analytical approaches
+
+4. Use version control and documentation effectively
+
+5. Communicate statistical analyses transparently
+
+6. Critically assess published research for reproducibility
+
+:::
 
 
-## Expectations
+## What Success Looks Like
 
-- One workshop per week
+### Your Capstone Project Will Demonstrate:
 
-- One lecture per week
+::: {.incremental}
+- Complete transparency in data processing
 
-- One assignment per week
+- Reproducible analysis pipeline
 
-- One 'capstone' project
+- Critical evaluation of methods
 
-## What to expect during this course
+- Clear documentation
 
-::: columns
-::: {.column}
+- Version-controlled workflow
+
+- Appropriate use of computational tools
+:::
+
+## Expectations and Structure
+
+::: {.columns}
+::: {.column width="50%"}
+
+- **One workshop** per week
+
+- **One lecture** per week
+
+- **One assignment** per week
+
+- **One 'capstone'** project (released for Easter break)
+
+:::
+
+::: {.column width="50%"}
+
+### Time Commitment
+
+- Contact hours: 3 hours/week
+
+- Independent study: 2-4 hours/week
+
+
+:::
+
+:::
+
+## Mutual Expectations
+
+::: {.columns}
+::: {.column width="50%"}
+
+### You Can Expect From Me:
+
+- Timely feedback (within 2 weeks)
+- Clear assessment criteria
+- Support during office hours
+- Email responses within 48 hours (weekdays)
+- Recognition that learning involves mistakes
+
+:::
+
+::: {.column width="50%"}
+
+### I Expect From You:
+
+- Active engagement in workshops
+- Completion of weekly assignments
+- Asking questions when unclear
+- Academic integrity
+- Respect for peers and collaborative learning
+- Reflection on feedback
+
+:::
+:::
+
+## Artificial Intelligence Use Policy
+
+### Phased Approach to AI Integration
+
+::: {.callout .callout-info}
+We will build your foundational skills first, then progressively integrate AI tools
+:::
+
+**Weeks 1-4: Minimal AI Assistance**
+
+- Focus on developing fundamental skills
+- Understand core concepts independently
+- Build problem-solving capabilities
+
+## AI Use Policy (continued)
+
+**Weeks 5-8: Guided AI Integration**
+
+- Use AI for code debugging and explanation
+- Critical evaluation of AI-generated solutions
+- Understanding AI limitations
+
+**Weeks 9-12: Advanced AI Collaboration**
+
+- AI as a research assistant tool
+- Ethical and transparent AI use
+- All AI use must be documented and acknowledged
+
+## AI Use: Ground Rules
+
+::: {.callout .callout-warning}
+**Critical Requirements**
+:::
+
+:::{.incremental}
+
+- AI **cannot substitute** for understanding
+
+- You **must explain** any code you submit
+
+- **Document all** AI interactions in your workflow
+
+- Critical thinking remains paramount
+
+- Plagiarism policies **apply to AI-generated content**
+:::
+
+## Support Structures
+
+::: {.columns}
+::: {.column width="50%"}
+
+### Formal Support
+
+**Office Hours** (via Microsoft Bookings):
+
+- Tuesday - Thurs
+- 9-11 or 15.00-17.00
+- 20-minute appointments
+- [Bookings by appointment](https://outlook.office.com/bookwithme/user/ecce6ab39c454d88b403f999ee672ddc@uea.ac.uk?anonymous&ismsaljsauthenabled&ep=plink)
+
+**Email**: p.leftwich@uea.ac.uk
+
+- Include "5023B" in subject
+- 48-hour response (weekdays)
+
+:::
+
+::: {.column width="50%"}
+
+### Informal Support
+
+**Study Groups**:
+
+- Form groups with peers
+- Share learning, not answers
+
+**Online Resources**:
+
+- Module Blackboard forum
+
+**UEA Support**:
+
+- Library Open Research team
+- University Student Support
+
+:::
+:::
+
+
+## What to Expect During This Module
+
+::: {.columns}
+::: {.column width="60%"}
 
 <br>
 
-I hope you end up with more questions than answers!
+<br>
+
+I hope you end up with **more questions than answers**!
+
+This is a sign of deep learning and critical thinking
 
 :::
 
-::: {.column .center-text}
-
-<br>
+::: {.column width="40%"}
 
 ![](images/great-question.gif){fig-align="center" fig-alt="Schitts Creek questions gif" width=60%}
 
@@ -130,11 +305,28 @@ I hope you end up with more questions than answers!
 :::
 
 
-# Reproducible Research {background-color="#D9DBDB"}
+# Why Reproducibility Matters {background-color="#D9DBDB"}
+
+## A Simple Question
+
+Before we dive into the technical details, let's address the fundamental question:
+
+::: {.callout}
+**Why should you care about reproducible research?**
+:::
+
+. . .
+
+The answer isn't just about better science—it's about:
+
+- **Your career prospects**
+- **Public trust in science**
+- **Real-world consequences**
+- **Ethical responsibility**
+
+
 
 ## What is Reproducibility?
-
-## Introduction to Reproducible Research
 
 ![](images/reproducible-matrix.jpg){fig-align="center" fig-alt="Turing Way Community cc-by licence" width=50%}
 
@@ -142,86 +334,338 @@ I hope you end up with more questions than answers!
 
 - Applying the described methods to the data leads to the same results
 
-## Methods
+
+## Why Reproducibility Matters: Real Consequences
+
+### The Social Spiders Scandal (2024)
+
+::: {.columns}
+::: {.column width="60%"}
+
+**Jonathan Pruitt: Behavioural Ecologist**
+
+- Studied social spider colony behaviour
+- **17 papers retracted**, dozens under investigation
+- Fabricated data on spider behaviour
+- Collaborators' careers damaged
+- Years of research and PhD theses invalidated
+- Field of social spider research set back decades
+
+:::
+
+::: {.column width="40%"}
+
+::: {.callout .callout-warning}
+**"I trusted the data was real"**
+
+— Former collaborator
+:::
+
+**Lesson**: Even collaborators suffer when research isn't transparent
+
+:::
+:::
+
+<small>Source: Woolston (2020) *Nature* 578: 199; Labbé (2024) *Science* 383: 6683</small>
+
+## The Reinhart-Rogoff Excel Error (2010)
+
+### When Spreadsheet Mistakes Shape Economic Policy
+
+::: {.columns}
+::: {.column width="60%"}
+
+**The Error:**
+
+- Influential paper on debt and economic growth
+- **Excel coding error** excluded critical data rows
+- Irreproducible results
+
+**The Impact:**
+
+- Used to justify **austerity policies** across Europe
+- Affected **millions of people's lives**
+- Only discovered when researchers requested raw data
+
+:::
+
+::: {.column width="40%"}
+
+::: {.callout .callout-warning}
+**The Lesson**
+
+Even **honest mistakes** have enormous consequences when research isn't transparent
+:::
+
+**Key Point**: This wasn't fraud—it was a simple Excel error that could have been caught if the analysis was reproducible.
+
+:::
+:::
+
+<small>Source: Herndon et al. (2014) *Cambridge Journal of Economics* 38(2): 257-279</small>
+
+## Many Analysts, Many Answers
+
+### 246 Biologists Analysed the Same Data
+
+::: {.columns}
+::: {.column width="50%"}
+
+![](images/many-analysts.png){fig-align="center" fig-alt="Forest plot showing widely varying effect sizes from different analysts" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+**The Study:**
+
+- Same datasets provided to 246 research teams
+- Same research questions
+- Each team chose their own analytical approach
+
+**The Results:**
+
+- Wildly different conclusions
+- Some found strong positive effects
+- Others found strong negative effects
+- Most found weak or no effects
+
+:::
+:::
+
+::: {.callout .callout-warning}
+**The Problem**: Analytical choices matter enormously—without transparency, we can't evaluate which approach is most appropriate
+:::
+
+<small>Source: Gould et al. (2023) *PLOS Biology*</small>
+
+## Why This Matters to You: Career Impact
+
+### The Professional Reality
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Without Reproducible Practices:**
+
+- Difficulty publishing in top journals
+- Lower citation rates
+- Risk of post-publication scrutiny
+- Potential retractions damaging reputation
+- Limited collaboration opportunities
+- Reduced funding success
+
+:::
+
+::: {.column width="50%"}
+
+**With Reproducible Practices:**
+
+- Open data papers cited **25% more**
+- Open code increases citations by **36%**
+- Improved job prospects
+- Stronger research networks
+- Protection against fraud accusations
+- Enhanced research efficiency
+
+:::
+:::
+
+::: {.callout .callout-success}
+**You will be entering a field that increasingly demands transparency—these skills are becoming non-negotiable**
+:::
+
+<small>Sources: Piwowar et al. (2007) *PLoS ONE* 2(9): e308; McKiernan et al. (2016) *eLife* 5: e16800</small>
+
+## Your Professional Obligation
+
+### Why You Should Care Beyond Grades
+
+::: {.columns}
+::: {.column width="60%"}
+
+**As Future Scientists, You Have Responsibility To:**
+
+1. **The Public**: Research often publicly funded—taxpayers deserve reliable findings
+
+2. **Your Discipline**: Poor practices damage field credibility
+
+3. **Future Researchers**: Your work may be foundation for others
+
+4. **Research Participants**: Human/animal subjects deserve ethical, rigorous research
+
+5. **Yourself**: Protecting your reputation and career
+
+:::
+
+::: {.column width="40%"}
+
+::: {.callout}
+**"With great data comes great responsibility"**
+:::
+
+Ethics isn't just about avoiding misconduct—it's about actively pursuing excellence and transparency
+
+:::
+:::
+
+# The Path Forward {background-color="#D9DBDB"}
+
+## The Optimistic View: Culture is Changing
+
+### Progress in the Last Decade
+
+**New Practices Now Standard:**
+
+- **Preregistration**: Now standard in many psychology journals
+- **Registered Reports**: Offered by 300+ journals
+- **Data Repositories**: Mandated by major funders (UKRI, NIH, Wellcome)
+- **Code Sharing**: Expected by computational journals
+- **Replication Studies**: Now valued, not stigmatised
+- **Open Science Badges**: Journals rewarding transparency
+
+## Organisations Driving Change
+
+**Key Players:**
+
+- Centre for Open Science
+- UK Reproducibility Network (UKRN)
+- UKRI Open Research policy
+- European Commission Open Science initiatives
+
+::: {.callout .callout-success}
+**You are entering research at a transformative moment—equipped with these skills, you can be leaders rather than followers**
+:::
+
+## What is Reproducibility?
+
+### The Turing Way Framework
+
+![](images/reproducible-matrix.jpg){fig-align="center" fig-alt="Turing Way Community cc-by licence" width="50%"}
+
+- For research to be reproducible, both **data and methods** must be available
+- Applying the described methods to the data leads to the **same results**
+
+<small>Source: The Turing Way Community (CC-BY licence)</small>
+
+## Methods vs Code
+
+### Why Code Matters
 
 - In theory, method availability ≠ code
+- But with complex data and analyses—are descriptions of methods enough?
 
-- But with complex data and analyses - are methods of data collection enough?
+::: {.fragment}
+::: {.callout .callout-warning}
+**"We analysed data using standard statistical methods in R"**
 
-## Self-correcting Science?
+This is **not** reproducible
+:::
+:::
 
-- Science advances incrementally by identifying and rectifying errors over time
+::: {.fragment}
+::: {.callout .callout-success}
+**"Complete analysis code available at: github.com/username/project"**
 
-- Peer review: Critical evaluation of papers by experts maintain quality
+This **is** reproducible
+:::
+:::
 
-- Independent studies either support or fail to replicate findings
+## What Reproducibility Looks Like in Practice
 
-## Self-correcting Science?
+### A Concrete Comparison
 
-- Publication bias: preference for positive results
+**Traditional Approach:**
+```
+Methods: "Data were analysed using standard statistical 
+methods in R. Significance was set at p < 0.05."
+```
 
-- Pressure to publish
+. . .
 
-- Poor study designs and statistical issues
+**Reproducible Approach:**
+```
+Methods: "All analyses conducted in R version 4.3.1. 
+Complete analysis code: github.com/username/project
+Data deposited: Dryad doi:10.5061/xxxxx
+Package versions: renv (renv.lock in repository)
+Computational environment: Docker container (Dockerfile provided)
+Analysis preregistered: OSF.io/xxxxx"
+```
 
-- Lack of transparency
+## The Difference Reproducibility Makes
 
+::: {.columns}
+::: {.column width="50%"}
 
-## Reproducibility trial: 
+**Traditional Research:**
 
-### 246 biologists get different results from same data sets
+- Methods descriptions vague
+- Data hidden or lost
+- Analysis steps unclear
+- Impossible to verify
+- Errors persist undetected
 
-![](images/many-analysts.png){fig-align="center" fig-alt=": Forest plots of meta-analytic estimated standardized effect sizes (Zr, blue triangles) and their 95% confidence intervals for each effect size included in the meta-analysis model. (A) Blue tit analyses: Points where Zr are less than 0 indicate analyses that found a negative relationship between sibling number and nestling growth. (B) Eucalyptus analyses: Points where Zr are less than 0indicate a negative relationship between grass cover and Eucalyptus seedling success" width=50%}
+:::
 
-## Reproducibility Crisis 
+::: {.column width="50%"}
 
-- The reproducibility crisis emerged when numerous studies, especially in fields like psychology, medicine, and biology, failed to be replicated by other researchers. 
+**Reproducible Research:**
 
-- High-profile replication attempts revealed that many published results could not be consistently reproduced, raising doubts about their validity.
+- Anyone can reproduce analyses
+- Future-you can reproduce own work
+- Errors identified and corrected
+- Building on work becomes possible
+- Transparency builds trust
 
-## Crisis as an Opportunity
-
-- Recognition that no study should be considered 'definitive'
-
-- Empower lasting systemic change through increased transparency in research methods, data sharing and reporting
-
-- Structural change in academic culture
-
+:::
+:::
 
 ## Open Science
 
-![](images/UNESCO-Open_science-pillars-en.png){fig-align="center" fig-alt="Open Science" width=50%}
+![](images/UNESCO-Open_science-pillars-en.png){fig-align="center" fig-alt="UNESCO Open Science pillars" width="50%"}
 
-Open science is a global movement that aims to make scientific research and its outcomes freely accessible to everyone. By fostering practices like data sharing and preregistration, open science not only accelerates scientific progress but also strengthens trust in research findings.
+Open science is a global movement making scientific research and its outcomes freely accessible to everyone. By fostering practices like data sharing and preregistration, open science accelerates scientific progress and strengthens trust in research.
 
-## UKRN
+## UKRN: UK Reproducibility Network
 
-::::{.columns}
+::: {.columns}
+::: {.column width="70%"}
 
-:::{.column width="70%"}
-
-- UK Reproducibility Network - funded by UK Research Council
-
-- 46 member institutions (UEA is one)
-
-- Establish open research practices across UK Research
-
+- Funded by UK Research Council
+- **46 member institutions** (UEA is one)
+- Establish open research practices across UK research
 - [https://www.ukrn.org/](https://www.ukrn.org/)
 
+**UEA UKRN Local Network:**
+
+- Training and resources
+- Community of practice
+- Support for open research
+
 :::
 
-:::{.column width="30%"}
-
-![](images/UKRN-Logo.png){fig-align="center" fig-alt="UKRN" width=80%}
-
+::: {.column width="30%"}
+![](images/UKRN-Logo.png){fig-align="center" fig-alt="UKRN" width="80%"}
+:::
 :::
 
-::::
+# Practical Tools {background-color="#D9DBDB"}
 
-# Project management {background-color="#D9DBDB"}
+## Project Management
 
-## Tidy projects
+### The Foundation of Reproducibility
 
+Before we talk about fancy tools, we need to establish **good habits**:
+
+- Organised file structures
+- Clear naming conventions
+- Documentation from day one
+- Version control mindset
+
+## Messy Projects
+
+### What Not to Do
 ```
 /home/phil/Documents/paper
 ├── abstract.R
@@ -236,6028 +680,326 @@ Open science is a global movement that aims to make scientific research and its 
 ├── partial data.csv
 ├── script.R
 └── script_final.R
-
 ```
 
-## Organised projects
-
-- README
-
-- Documented
-
-- Easy to code with
-
-- All files are inside the root folder
-
-## R projects
-
-![](images/Project.png){fig-align="center" fig-alt="R projects" width=50%}
-
-## Slugs
-
-- A string of characters defining a file
-
-{{< fa hand-point-right >}} What do you think are the contents of these files:
-
-- data/raw/madrid_minimum-temperature.csv
-
-- scripts/02_compute_mean-temperature.R
-
-- analysis/01_madrid_minimum-temperature_descriptive-statistics.qmd
-
-## Name files
-
-{{< fa hand-point-right >}} Come up with good names for these:
-
-- a dataset of cats with columns for weight, length, tail length, fur colour(s), fur type and name.
-
-- a script that downloads data from Spotify.
-
-- a scripts that cleans up data.
-
-- a scripts that fits a linear discriminant model and saves it to a file.
-
-## R projects and clean slates
-
-![](images/jenny_bryan.png){fig-align="center" fig-alt="R projects" width=80%}
-
-- Use projects
-
-- Check your code runs on blank slates
-
-## Quarto
-
-::::{.columns}
-
-
-:::{.column width="30%"}
-
-- Automates the creation of a paper or report
-
-- Saves time
-
-- Reduces errors
-
+::: {.callout .callout-warning}
+**Problem**: Which file is the actual final script? Which data file did you use? What does "figure 2 (copy).png" contain?
 :::
 
-:::{.column width="70%"}
+## Organised Projects
 
-![](images/copy-paste.png){fig-align="center" fig-alt="copy-paste" width=100%}
+### Principles of Good Organisation
 
-(https://www.nature.com/articles/d41586-022-00563-z)
+- **README** file explaining project structure
+- **Documented** code and decisions
+- **Easy to navigate** with logical structure
+- **All files inside the root folder**
+- **No absolute paths** in code
 
-:::
+## Good Project Structure
 
-::::
+### Example Layout
+```
+project-name/
+├── README.md
+├── data/
+│   ├── raw/
+│   └── processed/
+├── scripts/
+│   ├── 01_data-cleaning.R
+│   ├── 02_analysis.R
+│   └── 03_visualisation.R
+├── outputs/
+│   ├── figures/
+│   └── tables/
+├── docs/
+│   └── analysis-report.qmd
+└── project-name.Rproj
+```
 
-## Git
-
-![](images/git.png){fig-align="center" fig-alt="copy-paste" width=70%}
-
-## Git repository
-
-![](images/git-remote.png){fig-align="center" fig-alt="copy-paste" width=70%}
-
-## Git collab
-
-![](images/no_fork.png){fig-align="center" fig-alt="copy-paste" width=70%}
-
-## Forking
-
-![](images/si_fork.png){fig-align="center" fig-alt="copy-paste" width=70%}
-
-## Renv
-
-::::{.columns}
-
-:::{.column width="80%"}
-
-![](images/renv.png){fig-align="center" fig-alt="copy-paste" width=80%}
-
-:::
-
-:::{.column width="20%"}
-
-![](images/renv_logo.png){fig-align="center" fig-alt="copy-paste" width=80%}
-
-:::
-
-::::
-
-
-## Benefits
-
-![](images/sortee_infogr_01.png){fig-align="center" fig-alt="" width=70%}
-
-
-# Week Two: Descriptive Statistics  {background-color="#D9DBDB"}
-
-## Building Statistical Models
-
-
-::::{.columns}
+## R Projects
 
 :::{.column}
-
-- What is a Statistical Model?
-
-- A model is a simplified representation of real-world processes.
-
-- It helps us describe, explain, and predict outcomes.
-
-- A good fit makes accurate predictions; a poor fit can lead to misleading conclusions.
-
-- To make reliable inferences, the model must accurately represent the data.
-
+![](images/Project.png){fig-align="center" fig-alt="R projects" width="50%"}
 :::
 
 :::{.column}
+**Benefits:**
 
-```{r, echo = FALSE}
-
-knitr::include_graphics("images/bridge.png")
-```
-
-> “Later, we'll see how models help us test hypotheses using p-values to assess if the data fits our expectations.”
-
-:::
-
-::::
-
-## Populations and Samples
-
-Population:
-
-- The entire group you want to study (e.g., all humans, all mice in a lab).
-
-- Studying the entire population is often impractical due to time, cost, or logistics.
-
-Sample:
-
-- A subset of the population, selected to make inferences about the whole.
-
-- Must be representative to ensure accurate conclusions.
-
-
-
-## Descriptive Statistics
-
-- Summarize data to highlight key features:
-
-- Central Tendency: Where is the "center" of the data? (mean, median, mode)
-
-- Spread: How variable are the data? (variance, standard deviation)
-
-- Helps us understand the data before making inferences.
-
-## Central tendency
-
-The **central tendency** of a series of observations is a measure of the “middle value”
-
-
-The three most commonly reported measures of central tendency are the sample **mean, median, and mode**.
-
-
-| Mean        | Median      | Mode       |
-| ----------- | ----------- |----------- |
-| The average value     | The middle value      |The most frequent value      |
-| Sum of the total divided by *n*   | The middle value (if *n* is odd). The average of the two central values (if *n* is even)      |The most frequent value      |
-| Most common reported measure, affected by outliers | Less influenced by outliers, improves as *n* increases | Less common
-
-
-
-
-## Mean
-
-One of the simplest statistical models in biology is the **mean**
-
-::::{.columns}
-
-:::{.column}
-
-| Lecturer     | Friends |
-| ----------- | ----------- |
-| Mark      | 5       |
-| Tony   | 3     |
-| Becky | 3    |
-| Ellen   | 2      |
-| Phil   | 1     |
-| **Mean **  | **2.6**      |
-| **Median **  | **3**      |
-| **Mode **  | **3**      |
-
-
-:::
-
-:::{.column}
-
-
-Calculating the mean:
-
-$$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
-$$\frac{5 + 3 + 3 + 2 + 1}{5} = 2.6$$
-
-Sum all the values and divide by n of values
-
-:::
-
-::::
-
-
-
-## The mean
-
-One of the simplest statistical models in biology is the **mean**
-
-::::{.columns}
-
-:::{.column}
-
-
-| Lecturer     | Friends |
-| ----------- | ----------- |
-| Mark      | 5       |
-| Tony   | 3     |
-| Becky | 3    |
-| Ellen   | 2      |
-| Phil   | 1     |
-| **Mean **  | **2.6**      |
-| **Median **  | **3**      |
-| **Mode **  | **3**      |
-
-
-:::
-
-:::{.column}
-
-We already *know* this is a hypothetical value as you can't have 2.6 friends (I think?)
-
-Now with any model we have to know how well it fits/ how accurate it is
-
-:::
-
-::::
-
-
-
-## Symmetrical
-
-If data is symmetrically distributed, the **mean and median** will be close, especially as *n* increases. 
-
-This is also know as a **normal distribution**
-
-
-```{r, echo = FALSE, out.width = "60%"}
-# Load required packages
-library(ggplot2)
-
-# Set seed for reproducibility
-set.seed(123)
-
-# Generate random sample from a normal distribution
-sample_size <- 1000
-mu <- 0  # mean
-sigma <- 1  # standard deviation
-sample <- rnorm(sample_size, mean = mu, sd = sigma)
-
-# Create a data frame with the sample data
-df <- data.frame(x = sample)
-
-# Create a histogram plot using ggplot2
-ggplot(df, aes(x = x)) +
-  geom_histogram(binwidth = 0.2, fill = "lightblue", color = "black") +
-  labs(x = "Value", y = "Frequency", title = "Distribution Histogram") +
-  theme_classic()
-
-
-```
-
-
-## Variance & Standard Deviation
-
-Variance: 
-
-The average of the squared differences from the mean.
-
-
-$$s{^2}_{sample} = \frac{\sum(x - \bar{x})^2}{N -1}$$
-Higher variance = more spread.
-
-Standard Deviation (SD):
-
-- The square root of variance.
-
-- Easier to interpret because it’s in the same units as the data.
-
-## Calculating variance
-
-::::{.columns}
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "Symmetrical sides"}
-knitr::include_graphics("images/normal-distribution.jpg")
-```
-
-:::
-
-:::{.column}
-
-
-
-| Lecturer     | Friends | Residuals | Sq Resid |
-| ----------- | ----------- |----------- |----------- |
-| Mark      | 5       | 2.4 | 5.76 |
-| Tony   | 3     | 0.4 | 0.16 |
-| Becky | 3    | 0.4 | 0.16 |
-| Ellen   | 2      | -0.6 | 0.36 |
-| Phil   | 1     | -1.6 | 2.56 |
-| **Mean **  | **2.6**      | | |
-
-
-
-
-- Sum of Squared Residuals = 9
-
-- N-1 = 4
-
-- Variance = 9/4 = 2.25
-
-:::
-
-::::
-
-
-## Standard Deviation
-
-- Square root of **sample variance**
-
-- A measure of dispersion of the sample
-
-- Smaller SD = more values closer to mean, larger SD = greater data spread from mean
-
-* *variance*:
-
-$$
-\sigma = \sqrt{\sum(x - \overline x)^2\over n - 1}
-$$
-
-## N-1? {.smaller}
-
-```{r, echo = FALSE, out.width="30%", fig.alt = "Sampling"}
-knitr::include_graphics("images/pop_sam.png")
-```
-
-For a *population* the variance $S_p^2$ is exactly the **mean** squared distance of the values from the population mean
-
-$$
-s{^2}_{pop} = \frac{\sum(x - \bar{x})^2}{N}
-$$
-
-
-
-But this is a *biased* estimate for the population variance 
-
-- A biased sample variance will *underestimate* population variance
-
-- n-1 (if you take a large enough sample size, will correct for this)
-
-[More here](https://www.jamelsaadaoui.com/unbiased-estimator-for-population-variance-clearly-explained/#:~:text=The%20expected%20value%20of%20the%20sample%20variance%20is%20equal%20to,definition%20of%20an%20unbiased%20estimator.)
-
-
-
-## Standard deviation - our example
-
-Lecturer     | Friends | Diff | Squared diff |
-  ------------ | ------- | --- | ------ |
-  Mark         | 5       | 2.4  | 5.76    |
-  Tony         | 3       | 0.4  | 0.16    |
-  Becky        | 3       | 0.4  | 0.16    |
-  Ellen        | 2       | -0.6  | 0.36    |
-  Phil         | 1       | -1.6  | 2.56    |   
-|  **Mean **  | **2.6**      |
-| **variance** | **2.25** |
-| **SD **  | **1.5**      |
-
-
-
-
-## Standard Deviation
-
-Small $s$ = data points are clustered near the mean
-
-Large $s$ = data points are widely dispersed around the mean
-
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "60%"}
-
-library(patchwork)
-
-`SD = 1` <- rnorm(n = 1000, mean = 0, sd = 1)
-`SD = 2` <- rnorm(n = 1000, mean = 0, sd = 2)
-`SD = 3` <- rnorm(n = 1000, mean = 0, sd = 3)
-
-tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
-pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
-  ggplot(aes(x = values, fill = `Standard Deviation`))+
-  geom_histogram()+
-  facet_wrap(~ `Standard Deviation`)+
-  theme_classic()+
-  theme(legend.position = "none")+
-  labs(x = " ",
-       y = "Frequency")
-
-
-```
-
-
-## Why the Normal Distribution matters
-
-Shape: Symmetrical, bell-shaped curve
-
-- Described by just two parameters: mean (μ) and standard deviation (σ).
-
-- Rule of Thumb: For normally distributed data:
-
-    ~68% within 1 SD
-
-    ~95% within 2 SDs
-
-    ~99.7% within 3 SDs
-
-> Relevance: Many statistical tests assume data follows a normal distribution. This helps us calculate probabilities—like p-values—to test hypotheses.
-
-## Why the Normal Distribution matters
-
-If we assume a normal distribution (or close enough), we can calculate the probability of observing any given value using just the mean and standard deviation. 
-
-$$
-f(x) = \frac{1}{\sqrt{2\pi} \, \sigma}
-       \exp\!\Biggl(-\frac{(x - \mu)^2}{2\,\sigma^2}\Biggr)
-$$
-
-This has applications in hypothesis testing and building confidence intervals
-
-## Visualising a Distribution
-
-::::{.columns}
-
-:::{.column}
-
-**Histograms** plot frequency/density of observations within bins
-
-```{r, echo = FALSE, message = FALSE, out.width="80%"}
-tibble(`SD = 1`, `SD = 2`, `SD = 3`) %>% 
-pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
-  filter(`Standard Deviation` == "SD = 2") %>% 
-  ggplot(aes(x = values), fill = "grey")+
-  geom_histogram()+
-  theme_minimal()+
-  theme(legend.position = "none")+
-  labs(x = bquote(bar(x)),
-       y = " ")
-```
-
-:::
-
-:::{.column}
-
-**Quantile-Quantile plots** plot quantiles of a dataset vs. quantiles of a *theoretical* (usually normal) distribution
-
-```{r, echo = FALSE, warning = F, message  = F, out.width="80%"}
-
-tibble(`SD = 1`,`SD = 2`, `SD = 3`) %>% 
-pivot_longer(cols = everything(), names_to = "Standard Deviation", values_to = "values") %>% 
-  filter(`Standard Deviation` == "SD = 2") %>% 
-  ggplot(aes(sample = values))+
-  geom_qq()+
-  geom_qq_line()+
-  theme(legend.position = "none")+
-  labs(x = " ",
-       y = " ")
-```
-
-:::
-
-::::
-
-
-## Z-Scores and the Standard Normal Distribution
-
-Problem: Different datasets have different means and standard deviations.
-
-Solution: Standardization allows comparisons by converting any normal distribution into a standard normal distribution (mean = 0, SD = 1).
-
-$$
-Z = \frac{X - \mu}{\sigma} 
-$$
-
-- Z: How many standard deviations a value is from the mean.
-
-- X: Observed value.
-
-- μ: Population mean.
-
-- σ: Population standard deviation.
-
-## Why do Z scores matter?
-
-- The standard normal distribution allows us to calculate probabilities of observing extreme values.
-
-- Example: If 𝑍 = 2, the observation is 2 standard deviations above the mean.
-
-Using a Z-table, we can find the probability of getting a result at least this extreme.
-
-This concept extends to p-values, which tell us how rare our data is under the null hypothesis.
-
-
-# P-values
-
-## What is a P-value?
-
-:::{.incremental}
-
-A p-value is the probability of obtaining results at least as extreme as the ones we observed, assuming the null hypothesis is true.
-
-
-
-- It helps quantify how surprising or unusual our data is under the null hypothesis.
-
-
-- A low p-value suggests that the observed data would be rare if the null hypothesis were true, which may lead us to question the null hypothesis
-
-:::
-
-#### Example
-
-Imagine flipping a coin 100 times, expecting about 50 heads if it's fair (the null hypothesis). If you observe 90 heads, the p-value tells you how likely it is to get such an extreme result just by chance.
-
-## Hypothesis formation
-
-:::{.incremental}
-
-- **Null hypothesis:** Assumes there is **no** difference between groups or no relationship between variables. It represents the "status quo" or baseline expectation.
-
-> Example: A new drug has no effect compared to a placebo.
-
-
-- **Alternative hypothesis:**  Assumes there **is** a difference or relationship.
-
-> Example: The new drug does improve patient outcomes compared to the placebo.
-
-:::
-
-## Null Hypothesis Probability Distribution
-
-```{r, echo = FALSE, out.width="50%"}
-
-knitr::include_graphics("images/null_hypothesis.png")
-
-```
-
-
-- The shaded areas in the tails represent extreme outcomes (typically the most unexpected 5% if using an $\alpha$ = 0.05).
-
-- If your observed data falls within these tails, it’s considered statistically significant, suggesting it’s unlikely to occur by random chance under the null hypothesis.
-
-
-## Impact of Sample Size on Distributions
-
-```{r, echo = FALSE, out.width="50%"}
-
-knitr::include_graphics("images/null_5000.png")
-
-```
-
-- Key Point: Larger sample sizes reduce variability, making it easier to detect small differences as statistically significant.
-
-- However, statistical significance doesn't always mean practical importance—especially with large samples.
-
-
-
-## Hypothesis testing
-
-:::{.incremental}
-
-- **Scenario:** Testing if diet A and diet B affect mice longevity.
-
-- **Null Hypothesis (H₀):** No difference in longevity between diets.
-
-- **Alternative Hypothesis (H₁):** There is a difference in longevity.
-
-
-:::
-
-```
-lm(longevity ~ diet, data = mice)
-```
-
-Explanation: This linear model performs a t-test to assess if the mean lifespans differ significantly between diets.
-
-```{r, echo = F}
-data_sim <- function(mean1, mean2, sd){
-set.seed(123)
-mice_a <- rnorm(n = 12, mean = mean1, sd = sd)
-mice_b <- rnorm(n = 12, mean = mean2, sd = sd)
-mice <- data.frame(cbind(mice_a,mice_b)) %>% 
-  pivot_longer(cols = everything(),
-               names_to = "diet",
-               values_to = "longevity")
-
-model <- lm(longevity ~ diet, data = mice)
-
-tidy_model <- model %>% 
-  broom::tidy(., conf.int =T)
-
-tidy_model
-}
-
-tidy_model <- data_sim(mean1 = 4, mean2 = 3, sd =1)
-
-```
-
-
-
-## Visualising the T Distribution
-
-::::{.columns}
-
-:::{.column}
-
-- The t-distribution shows where your observed mean difference falls relative to what’s expected under the null hypothesis.
-
-- Confidence Intervals (CI): The red area marks the 95% CI. If zero falls outside this range, it suggests statistical significance.
-
-```{r, fig.show="hold", out.width="50%", echo = F}
-
-tidy_model
-```
-
-:::
-
-:::{.column}
-
-```{r, fig.show="hold", out.width="50%", echo = F}
-x <- seq(-5, 5, by = 0.1)
-y1 <- dt(x, df = 22)
-
-estimate <- tidy_model[[2,2]]
-std.error <- tidy_model[[2,3]]
-
-conf.low <- tidy_model[[2,6]]
-conf.high <- tidy_model[[2,7]]
-
-x1 <- (x*std.error)+estimate
-
-
-plot(x1, y1, type = "l", col = "darkgrey", lty=1,
-     xlab = "Mean difference", 
-     ylab = "Density", 
-     main = "T Distribution",
-     ylim = c(0,0.4),
-     xlim = c(min(x1), max(x1)))
-polygon(c(x1[x1>=conf.high], max(x1), conf.high), c(y1[x1>=conf.high], 0, 0), col="red")
-
-
-legend("topright", legend = "95% CI", lty = 1, col = "red")
-
-#GGally::ggcoef_model(model)
-```
-
-:::
-
-::::
-
-## Writing About Statistical Results
-
-“Diets can change the longevity of mice (*p* = 0.0016).”
-
-:::{.incremental}
-
-- “Mice on diet B lived significantly shorter lives than mice on diet A (*t*<sub>22</sub> = -3.6, *p* = 0.006).”
-
-
-- "Mice on diet B had a reduced mean lifespan of 1.41 years[95% CI; -0.595:-2.22] from the mice on diet A (mean 4.19 years (95% CI, 3.62-4.77). While statistically significant (*t*<sub>22</sub> = -3.6, *p* = 0.006), this is a relatively small sample size, and further testing is recommended to confirm this effect."
-
-
-
-- Which has the greatest level of useful detail?
-
-:::
-
-
-## Introduction to Standard Error
-
-Standard error measures the accuracy of a sample mean as an estimate of the population mean.
-
-$$
-SE = {s\over \sqrt n}
-$$
-
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "Data sampling"}
-
-knitr::include_graphics("images/standard_error.png")
-
-```
-
-
-# Week Three: Inferential Statistics  {background-color="#D9DBDB"}
-
-
-
-
-
-## Standard Error
-
-### Standard deviation vs. standard error: 
-
-
-::::{.columns}
-
-:::{.column}
-
-- Standard deviation measures variability **within** a sample
-
-
-$s = \sqrt{\sum(x - \overline x)^2\over n - 1}$
-
-:::
-
-
-:::{.column}
-
-- Standard error  is how much the sample mean (from a given sample) is likely to vary from the true population mean.
-
-$SE(\overline{X}) = \frac{s}{\sqrt(N)}$
-
-:::
-
-::::
-
-
-## Standard Error
-
-- Standard Error of the Mean ($\overline{X}$) is the **Standard Deviation of the Sampling Distribution of the Mean.
-
-- If you took many samples of size 𝑛from the same population, each sample would yield a different sample mean.
-
-```{r, echo = FALSE, out.width="50%", fig.alt = ""}
-knitr::include_graphics("images/sampling.png")
-```
-
-```{r, eval = F}
-
-# install.packages("DiagrammeR")  # if not installed
-library(DiagrammeR)
-
-grViz("
-digraph {
-    node [shape=circle, style=filled, color=lightblue];
-
-  A [label=' Population mean \n 5'];
-  B [label='1'];
-  C [label='3'];
-  D [label='3'];
-  E [label='4'];
-  F [label='4'];
-  G [label='4'];
-  H [label='5'];
-  I [label='5'];
-  J [label='5'];
-  K [label='5'];
-  L [label='5'];
-  M [label='7'];
-  N [label='7'];
-  O [label='7'];
- 
-
-  A -> B A -> C A -> D A -> E A -> F A -> G A -> H A-> I A-> J A -> K A -> L A-> M A -> N A->O;
-}
-")
-
-
-```
-
-
-## Standard Error
-
-- All these sample means form their own distribution: the sampling distribution of the mean.
-
-- The Standard Error measures the width (standard deviation) of this distribution of sample means.
-
-- Larger 𝑛→ smaller SE → sample means cluster more tightly around the true mean.
-
-```{r}
-# -------------------------------------------
-# Simulate sample means from an exponential population
-# and show that they approximate a normal distribution
-# as the number of samples (B) gets large.
-# -------------------------------------------
-
-# Set seed for reproducibility
-set.seed(123)
-
-# Parameters
-n <- 30       # Sample size for each draw
-B <- 10000    # Number of repeated samples
-true_mean <- 5  # Mean of the exponential distribution (rate = 1/true_mean)
-
-# Pre-allocate a vector to store the sample means
-sample_means <- numeric(B)
-
-# Loop: draw a sample of size n, compute mean, repeat B times
-for(i in 1:B){
-  # Draw n data points from an exponential distribution with mean = 5
-  x <- rexp(n, rate = 1/true_mean)
-  sample_means[i] <- mean(x)
-}
-
-# Plot the histogram of sample means
-hist(sample_means, breaks = 40, freq = FALSE, 
-     main = paste("Distribution of Sample Means"),
-     xlab = "Sample Mean", col = "lightblue", border = "gray")
-
-# Overlay a normal curve with the theoretical mean and std. dev. from CLT
-# Theoretical mean of the sample mean = 5
-# Theoretical std. dev. of the sample mean = (std. dev. of population) / sqrt(n)
-# For Exp(mean=5), population std. dev. is also 5.
-
-curve(dnorm(x, mean = true_mean, sd = 5 / sqrt(n)), 
-      col = "red", lwd = 2, add = TRUE)
-
-# Add a legend
-legend("topright", legend = c("Sample Means", "Normal Approx"), 
-       col = c("lightblue", "red"), lty = c(1,1), lwd = 2, bty = "n")
-
-
-```
-
-
-## Central Limit Theoreom (CLT)
-
-- For large 𝑛the distribution of sample means becomes approximately normal, **no matter the original data’s shape** (assuming finite variance & independence).
-
-
-- Lets us use normal-based methods (like confidence intervals and hypothesis tests) even if the original data are not normal—provided 𝑛 is large.
-
-
-[Shiny App demonstrating CLT](https://pleft86.shinyapps.io/Sampling/)
-
-## Small Samples
-
-What is a sufficient 𝑛?
-
-- When the data is very close to a normal distribution it might be very small c.10
-
-- When the data is slightly skewed it might be 𝑛 = 30
-
-- When the data follows an alternative distribution it could be very large
-
-
-## Bootstrapping
-
-- Bootstrapping: Resample from your data many times to estimate the distribution (and SE) of the Mean ($\overline{X}$) without assuming normality.
-
-::::{.columns}
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="70%", fig.alt = ""}
-knitr::include_graphics("images/bootstrapping.jpg")
-```
-
-:::
-
-:::{.column}
-
-```{r, eval = F, echo = T}
-
-# Perform bootstrapping
-for(i in 1:1000) {
-  # Resample with replacement
-  resample <- sample(my_data, size = length(my_data), replace = TRUE)
-  # Compute the statistic (mean here)
-  boot_means[i] <- mean(resample)
-}
-
-```
-
-:::
-
-::::
-
-## Parametric fits
-
-If you *know* the data follows a specific distribution (e.g. Poisson, Binomial, etc) we can base our inference on these - *see Generalised Linear Models*
-
-## Are two samples distributions from the same population?
-
-- Even if two samples are both drawn from the same underlying population, they won’t have identical means.
-
-- Question: When is that difference “big enough” to claim they come from different populations?
-
-```{r, fig.width = 12}
-
-plot_two_normals <- function(mean1 = 0, sd1 = 1, mean2 = 0.5, sd2 = 1) {
-  x <- seq(-5, 5, by = 0.1)
-  y1 <- dnorm(x, mean = mean1, sd = sd1)
-  y2 <- dnorm(x, mean = mean2, sd = sd2)
-  plot(x, y1, type = "l", col = "red", xlab = "X", ylab = "Density", main = "Two Normal Distributions")
-  lines(x, y2, col = "blue", lty = "dashed")
-  legend("topright", c("Population 1", "Population 2"), lty = c("solid", "dashed"), col = c("red", "blue"))
-}
-
-plot_two_normals()
-
-```
-
-## Standard Error vs. Standard Error of the Difference
-
-::::{.columns}
-
-:::{.column}
-
-
-### Standard Error
-
-Measures the spread (uncertainty) of one sample mean around its population mean.
-
-### Standard Error of the Difference (SED)
-
-$Mean~difference = \overline x_1 - \overline x_2$
-
-$SED = \sqrt{s_1^2\over n_1}+{s_2^2\over n_2}$
-
-Standard Error of the difference is calculated from two $s$ so will always be larger than a single population estimate
-
-
-:::
-
-:::{.column}
-
-```{r, fig.width = 7}
-plot_mean_diff <- function(mean1 = 0, sd1 = 1, mean2 = 0.5, sd2 = 1, sample_size = 20) {
-    library(graphics)
-    sd <- sqrt(sd1^2/sample_size + sd2^2/sample_size)
-    x <- seq(-5, 5, by = 0.1)
-    mean_diff <- rnorm(10000, mean = mean2 - mean1, sd = sd)
-    y <- dnorm(x, mean = mean2 - mean1, sd = sd)
-    plot(x, y, type = "l", col = "black", xlab = "Difference in Means", ylab = "Density", main = "Mean Difference Distribution")
-    abline(v = 0, col = "red", lty = 2)
-    xmin <- mean2 - mean1 - 1.96 * sd
-    xmax <- mean2 - mean1 + 1.96 * sd
-    ymin <- 0
-    ymax <- max(y)
-    rect(xmin, ymin, xmax, ymax, col = "grey", density = 20, angle = 45)
-    legend("topright", legend = "95% \n Confidence Interval", fill = "grey")
-}
-
-
-plot_mean_diff(mean1 = 0, sd1 = 1, mean2 = 0.5, sd2 = 1, sample_size = 20)
-
-```
-
-:::
-
-::::
-
-## Two-sample t-tests
-
-- Null Hypothesis : The two samples do not differ in their population means
-
-- Alternative Hypothesis : The two samples come from populations with different means
-
-**Even with identical populations, sample means differ. The t-test checks if that difference is too large to be due to chance.**
-
-```{r, echo = FALSE, out.width="50%", fig.alt = ""}
-knitr::include_graphics("images/sample_means.png")
-```
-
-
-## Different enough?
-
-How different is “different enough”?
-
-When can we determine that two sample means are different **enough**? To have come from *different* populations?
-
-::::{.columns}
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="80%", fig.alt = ""}
-knitr::include_graphics("images/sample_means.png")
-```
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="80%", fig.alt = ""}
-knitr::include_graphics("images/sample_means_diff.png")
-```
-
-:::
-
-::::
-
-
-
-
-
-## Two-sample t-test
-
-* Compare the means of two samples
-
-* Null hypothesis: there is no difference between the population means
-
-* t-statistic: based on difference in sample **means, sd & n**
-
-* For a given sample size and t-value, how unlikely is to have two random samples *at least* this different IF both samples are drawn from identical/same populations. 
-
-
-## T-test in Action
-
-**Example:** A botanist is studying the mass of pollen transported by individual bees from two different hives (Hive A and Hive B). 
-
-- Hive A: 62 bees, (mean pollen mass = 31.4 mg, variance = 225.0 mg^2) 
-
-- Hive B: 67 bees, (mean pollen mass = 36.7 mg, variance = 186.0 mg^2) 
-
-
-**Is there a significant difference in pollen mass transported per bee for the two hives studied?**
-
-
-Variance $s^2$ = Sum of squared residuals/ n
-
-Standard deviation (s) = $\sqrt Variance$
-
-
-## Standard error of the difference
-
- **Calculate the difference in means, and the standard error of the difference in means**
-
-::::{.columns}
-
-:::{.column}
-
-Mean Difference = 36.7 - 31.4
-
-Mean Difference = 5.3
-
-:::
-
-:::{.column}
-
-
-$$
-SED = \sqrt{s^2_1\over n_1} + {s^2_2\over n_2}
-$$
-
-
-
-$$
-SED = \sqrt{225\over 62} + {186\over 67}
-$$
-
-
-
-$$
-SED = \sqrt{3.63} + {2.78}
-$$
-
-
-
-$$
-SED = 2.53
-$$
-
-
-:::
-
-::::
-
-
-
-## Standard error of the difference
-
-::::{.columns}
-
-:::{.column}
-
-Mean difference = 5.3
-
-
-**Calculate 95% confidence intervals**
-
-Assuming a normal distribution this would be 1.96 * SED = 4.96
-
-
-Assuming a *t* distribution = ( $\alpha$ = 0.975, *df* = 129-2, *SED* = 2.53 ) = 5.008
-
-
-95% CI range = 5.3 [± 5.008] = 0.292 - 10.308 
-
-:::
-
-:::{.column}
-
-$$
-SED = 2.53
-$$
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "T distributions"}
-knitr::include_graphics("images/t_distribution_comparisons.png")
-```
-
-:::
-
-::::
-
-
-
-## Confidence intervals
-
-**Calculate 95% confidence intervals**
-
-95% CI range = 5.3 [± 5.008] = 0.292 - 10.308 
-
-* **Describe the estimated mean difference**
-
-**The mass of pollen transported per bee in Hive B is on average 5.3mg more than Hive A [0.29 - 10.3] (mean [± 95% CI])**
-
-##
-
-**The mass of pollen transported per bee in Hive B is on average 5.3mg more than Hive A [0.29 - 10.3] (mean [± 95% CI])**
-
-:::{.fragment}
-
-**The 95% CI calculated from the *t* distribution doesn’t include 0 → likely a real difference between the two hive populations.**
-:::
-
-:::{.fragment}
-
-**"At P ≤ 0.05 bees from Hive B transport at least 0.29mg of pollen more per bee than Hive A"**
-
-:::
-
-## t-test in R
-
-```{r, echo = T, eval = FALSE}
-
-hive_data %>% 
-  t_test(pollen_mass ~ hive,
-         var.equal = T)
-
-```
-
-```
-
-	Two Sample t-test
-
-data:  hive_a and hive_b
-
-t = 2.09, df = 127, p-value = 0.01152
-
-alternative hypothesis: true difference in means is not equal to 0
-
-95 percent confidence interval:
-0.294166 10.30808
-
-```
-
-> We can also produce t-tests (and many other tests besides with the lm() function in R)
-
-## Common misundertandings\n about P values
-
-**A p-value is NOT:**
-
-- The probability that the null hypothesis is true.
-
-- The probability your results occurred "by chance."
-
-- Proof of a meaningful or large effect.
-
-**What it IS:**
-
-- A measure of how surprising your data is under the assumption the null hypothesis is true.
-
-
-[Common misconceptions about P-values](https://daniellakens.blogspot.com/2017/12/understanding-common-misconceptions.html?m=1)
-
-[Evidence of P-hacking](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4359000/#:~:text=Evidence%20for%20p%2Dhacking%20from,test%20function%20in%20R)
-
-
-
-
-
-## A non-significant p-value DOES NOT mean the null hypothesis is true
-
-::::{.columns}
-
-:::{.column}
-
-In reality, we can’t know for sure if a true mean difference exists.
-
-For illustration: Assume we could know the true mean difference.
-
-The figure shows:
-
-    Grey line: Expected data if the null hypothesis is true.
-
-    Black line: Expected data if the alternative hypothesis is true.
-
-A p-value shows how surprising the data are if the null is true.
-
-A low p-value is evidence against the null, not proof of the alternative.
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="60%"}
-
-knitr::include_graphics("images/null-and-alternate.png")
-
-```
-
-:::
-
-::::
-
-
-## Why a significant p-value does not mean the null hypothesis is false
-
-
-What we can conclude, based on our data, is that we have observed an extreme outcome, that should be considered surprising. But such an outcome is not *impossible* when the null-hypothesis is true.
-
-```{r, echo = FALSE, out.width="60%"}
-
-knitr::include_graphics("images/type-1.png")
-
-```
-
-
-
-## Why a significant p-value is not the same as an important effect
-
-::::{.columns}
-
-:::{.column}
-
-If we plot the null model for a very large sample size, we can see that even very small mean differences will be considered 'surprising'. 
-
-However, just because data is surprising, does not mean we need to care about it. It is mainly the verbal label ‘significant’ that causes confusion here – it is perhaps less confusing to think of a ‘significant’ effect as a ‘surprising’ effect.
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="90%"}
-
-knitr::include_graphics("images/sample-size.png")
-
-```
-
-:::
-
-::::
-
-# Linear models {background-color="#D9DBDB"}
-
-## Linear models cover multiple data types
-
-
-::::{.columns}
-
-:::{.column}
-
-Difference tests: t-test, ANOVA, ANCOVA
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "Difference model"}
-knitr::include_graphics("images/linear_model_difference.png")
-
-```
-
-
-
-:::
-
-:::{.column}
-
-Association tests: Regressions
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "Regression model"}
-knitr::include_graphics("images/linear_model_regression.png")
-```
-
-:::
-
-::::
-
-
-
-## Basic linear models
-
-```{r, echo = FALSE, out.width="60%", fig.alt = "Basic linear models aim to describe a linear relationship between a response (outcome) variable and a predictor (input) variable, usually by the method of ordinary least squares"}
-
-knitr::include_graphics("images/basic_linear.png")
-
-```
-
-Basic linear models aim to describe a linear relationship between a:
-
-:::{.incremental}
-
-- response (dependent) variable and predictor(s) (independent) variable. 
-
-- usually by the method of ordinary least squares.
-
-:::
-
-
-
-## Linear Regression Equation
-
-$Y = \beta0 + \beta_1x1 + \epsilon$
-
-::::{.columns}
-
-:::{.column}
-
-### Where:
-
-$y$ is the predicted value of the response variable
-
-
-
-$\beta0$ is the intercept (value of y when x = 0)
-
-
-
-$\beta_1x1$ is the slope of the regression line
-
-
-
-$\epsilon$ is the error term
-
-:::
-
-:::{.column}
-
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "regression"}
-
-knitr::include_graphics("images/reg.png")
-
-```
-
-:::
-
-::::
-
-## Example
-
-```{r, include = FALSE}
-
-dros_clean <- readRDS(here("data","fruitfly.rds"))
-
-```
-
-
-::::{.columns}
-
-:::{.column}
-
-Difference tests: t-test, ANOVA, ANCOVA
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "Difference model"}
-dros_diff <- lm(longevity ~ type, data = dros_clean)
-summary(dros_diff)
-```
-
-
-
-:::
-
-:::{.column}
-
-Association tests: Regressions
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "Regression model"}
-dros_diff <- lm(longevity ~ thorax, data = dros_clean)
-summary(dros_diff)
-```
-
-:::
-
-::::
-
-
-## Combining variables and omitted variable bias
-
-Now we have *two* (or more) reasonable predictors of longevity:
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
-summary(dros_model)
-```
-:::
-
-:::{.column}
-
-$Y = \beta0 + \beta_1x1 +\beta_2x2 + \beta_3x3 + \epsilon$
-
-```{r, echo = FALSE}
-dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
-emmeans::emmeans(dros_model,
-                 specs = ~ thorax + type,
-                 at =list(thorax = seq(.64, .94, by = .02))) %>% 
-  as_tibble() %>% 
-  ggplot(aes(x = thorax,
-             y = emmean,
-             colour = type))+
-  geom_line(aes(group = type))+
-  geom_point(data = dros_clean,
-             aes(x = thorax, y = longevity),
-          alpha = .4)+
-  theme_bw()+
-  labs(x = "Thorax size (mm)",
-       y = "Longevity (days)")
-```
-
-:::
-
-::::
-
-
-## Line of best fit
-
-```{r, echo = FALSE, out.width="70%", fig.alt = "Line fitting"}
-
-knitr::include_graphics("images/fit-linear.png")
-
-```
-
-
-## Ordinary Least Squares
-
-The line of best fit minimises the sum of the **squared distance** that *each* sample point is from the value predicted by the model
-
-This is called the method of 
-
-
-### Ordinary Least Squares
-
-## Residuals
-
-
-The difference between the ACTUAL value of the observation $y_i$ and the value that the model predicts $\hat{y_i}$ at that $x$ value are the residuals (residual error).
-
-
-```{r, echo = FALSE, out.width="50%", fig.alt = "residuals"}
-
-knitr::include_graphics("images/ols.png")
-
-```
-
-The regression model fitted by **O**rdinary **L**east **S**quares (OLS) will produce the equation for the line that **MINIMIZES** the sum of squares of the residuals
-
-
-## Sum of Squares Errors
-
-::::{.columns}
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="40%", fig.alt = "sum of squares error"}
-
-knitr::include_graphics("images/ols-2.png")
-
-```
-
-:::
-
-:::{.column}
-
-This produces the line with the *smallest* total area size for the squares. 
-
-$$
-SSE = \underset{i=1}{n \atop{\sum}}(y_i - \hat{y_i})^2
-$$
-
-
-SUM OF RESIDUAL ERROR = $(2)+(-1)+(4)+(-3)+(-2)=0$
-
-
-SUM OF SQUARES OF RESIDUAL ERROR = $(2^2)+(-1^2)+(4^2)+(-3^2)+(-2^2)=34$
-
-:::
-
-::::
-
-
-## Coefficient of determination
-
-
-$\LARGE{R^2}$ : The proportion of variation in the dependent variable that can be predicted from the independent variable
-
-
-$$
-\LARGE{R^2=1-{Sum~of~Squared~Distances~between~y_i~and~\hat{y_i}\over{Sum~of~Squared~Distances~between~y_i~and~\overline{y}}} }
-$$
-
-
-
-$$
-\LARGE{R^2=1-{SSE\over{SST}}}
-$$
-
-
-
-## Assumptions of the Linear Model
-
-:::{.incremental}
-
--  *Errors* should be normally distributed
-
-- Homoscedasticity of the errors
-
-- Independent observations
-
-- A Linear relationship
-
-:::
-
-## Model fit checks
-
-```{r, echo = T, out.width="100%"}
-performance::check_model(dros_model, 
-                         detrend = F) 
-```
-
-
-## Linearity
-
-```{r, echo = T, out.width="100%"}
-performance::check_model(dros_model,
-                         check = "linearity") 
-```
-
-
-## Normality
-
-```{r}
-#| eval: true
-#| echo: true
-#| layout-ncol: 2
-#| fig-height: 7
-#| message: false
-
-performance::check_model(dros_model,
-                         check = "normality")
-
-performance::check_normality(dros_model)
-```
-
-## Heteroscedasticity
-
-```{r}
-#| eval: true
-#| echo: true
-#| layout-ncol: 2
-#| fig-height: 7
-#| message: false
-
-performance::check_model(dros_model,
-                         check = "homogeneity")
-
-performance::check_heteroscedasticity(dros_model)
-```
-
-## Outliers
-
-```{r}
-#| eval: true
-#| echo: true
-#| layout-ncol: 2
-#| fig-height: 7
-#| message: false
-
-performance::check_model(dros_model,
-                         check = "outliers")
-
-performance::check_outliers(dros_model)
-```
-
-# Questions? {background-color="#D9DBDB"}
-
-## Interpreting Models
-
-```{r, echo = FALSE, out.width="60%", fig.alt = "R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared"}
-knitr::include_graphics("images/dros_summary.png")
-```
-
-
-## Reporting  {.smaller}
-
-::::{.columns}
-
-:::{.column width="40%"}
-
-```{r}
-
-broom::tidy(dros_model, conf.int = T)
-
-```
-
-:::
-
-:::{.column width="60%"}
-
-:::{.incremental}
-
-- The effect of thorax is statistically significant and positive (beta = 144.43, 95% CI [118.46, 170.40], t(120) = 11.01, p < .001; Std. beta = 0.64, 95% CI
-[0.52, 0.75])
-
-  - The effect of type [Inseminated] is statistically non-significant and positive (beta = 3.63, 95% CI [-1.86, 9.11], t(120) = 1.31, p = 0.193; Std. beta = 0.21,
-95% CI [-0.11, 0.52])
-
-  - The effect of type [Virgin] is statistically significant and negative (beta = -13.25, 95% CI [-18.71, -7.78], t(120) = -4.80, p < .001; Std. beta = -0.75, 95%
-CI [-1.07, -0.44])
-
- - The effect of sleep is statistically non-significant and negative (beta = -0.05, 95% CI [-0.18, 0.07], t(120) = -0.83, p = 0.410; Std. beta = -0.05, 95% CI
-[-0.16, 0.07])
-
-:::
-
-:::
-
-::::
-
-# ANOVA {background-color="#D9DBDB"}
-
-
-## Model summary
-
-In this example of a simple linear model, we run the equivalent to a Student's t-test.
-
-```{r, echo = FALSE, out.width="60%", fig.alt = "R model summary provides, the formula of the regression, the estimate of the intercept and standard error, estimated differences and uncertainity for each slope, the degrees of freedom for the whole model, F value and R squared"}
-summary(dros_model)
-```
-
-**Q. What happens when we have more than two groups in our predictor variable? Why shouldn't we just do lots of t-tests?**
-
-
-## ANalysis Of VAriance (ANOVA)
-
-ANOVAs use information about variances, but the main goal of analysis is comparison of MEANS (don’t let the name mix you up - more on this later).
-
-
-:::{.fragment}
-
-**ANOVA is an omnibus test** – it tests for significant differences between any means in the study
-
-:::
-
-:::{.fragment}
-
-
-**ANOVA is just a special case of the linear model**
-
-:::
-
-
-
-## ANOVA Hypotheses:
-
-**Null Hypothesis (H0):** All means are equal (in other words, all groups are from populations with the same mean)
-
-:::{.fragment}
-
-**Alternative Hypothesis (HA):** At least two group means are NOT equal (that means that just two could be different, or they could ALL be different)
-
-:::
-
-
-## ANOVA Example 
-
-
-::::{.columns}
-
-:::{.column}
-
-We have collected data for soil uranium concentrations at three locations on Los Alamos National Lab property: Site A, Site B, and Site C. The data structure is shown here: 
-
-A one-way ANOVA can be used to assess whether there is a statistically significant difference in uranium concentration in soil at three locations
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="120%", fig.alt = "A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)"}
-knitr::include_graphics("images/three_level.png")
-```
-
-:::
-
-::::
-
-
-
-## One-way ANOVA (single factor)
-
-What does this one-way/single-factor refer to? 
-
-There is a **single factor** (*variable*), with at least 3 **levels**, where we are trying to compare means across the different levels of that factor.
-
-ANOVA does this *indirectly* by looking at total *between* and *within* group variances as a ratio (F).
-
-```{r, echo = FALSE, out.width="70%", fig.alt = ""}
-knitr::include_graphics("images/understand-ANOVA.png")
-```
-
-## Sums of Squares
-
-::::{.columns}
-
-:::{.column}
-
-
-```{r, echo = FALSE, out.width="100%", fig.alt = "OLS fits a line to produce the smallest amount of SSE"}
-
-knitr::include_graphics("images/Sum of squares.png")
-
-```
-
-:::
-
-:::{.column}
-
-**SST** The squared differences between the observed dependent variable $y_i$ and its overall mean $\overline{y}$.
-
-**SSR** The sum of the differences between the predicted value $\hat{y_i}$ of the dependent variable and its overall mean $\overline{y}$.
-
-**SSE** The error is the difference between the observed dependent value $y_i$  and the predicted value $\hat{y_i}$.
-
-:::
-
-::::
-
-
-##
-
-::::{.columns}
-
-:::{.column width="30%"}
-
-$$
-SSE = \underset{i=1}{n \atop{\sum}}(y_i - \hat{y_i})^2
-$$
-
-
-
-$$
-SSR = \underset{i=1}{n \atop{\sum}}(\hat{y_i} - \overline{y})^2
-$$
-
-
-$$
-SST = \underset{i=1}{n \atop{\sum}}(y_i - \overline{y})^2
-$$
-
-where:
-
-$y_i$ = Observed value
-
-$\hat{y_i}$ = Value estimated by model
-
-$\overline{y}$ = The Grand Mean
-
-
-
-:::
-
-:::{.column width="70%"}
-
-```{r, echo = FALSE, out.width="90%", fig.alt = "A tidy dataframe illustrating one continuous dependent variable and and one factor predictor variable (with three levels)"}
-knitr::include_graphics("images/SSR-SST.png")
-```
-
-
-
-
-$SSE + SSR = SST$
-
-:::
-
-::::
-
-
-
-## What does an ANOVA actually do?
-
-::::{.columns}
-
-:::{.column width="60%"}
-
-$$
-\large F = {SSR / (k-1)\over SSE / (N-k)} = {MSR\over MSE}
-$$
-
-
-
-$k$ = Total number of groups
-
-$N$ = **numerator** degrees of freedom = Total number of observations across all groups
-
-$N-k$ = **denominator** degrees of freedom
-
-$MSR$ = Mean Squares Regression
-
-$MSE$ = Mean Squares Error
-
-This is a **ratio** of the between group variance and the the within group variance. 
-
-:::
-
-:::{.column width="40%"}
-
-
-```{r, echo = FALSE, out.width="120%", fig.alt = ""}
-knitr::include_graphics("images/one-way-ANOVA.png")
-```
-
-:::
-
-::::
-
-
-
-## F distribution
-
-::::{.columns}
-
-:::{.column}
-
-The F-value or ratio of variances, over their respective degrees of freedom will have an F-distribution. 
-
-This F distribution is used when we want to compare within and between group variances.
-
-The curve of the distribution depends on the degrees of freedom, and it is always positively skewed
-
-:::
-
-:::{.column}
-
-```{r, echo = F, fig.height = 10}
-x <- seq(0.001, 5, by = 0.001)
-y1 <- df(x, df1 = 1, df2 = 1)
-y2 <- df(x, df1 = 2, df2 = 1)
-y3 <- df(x, df1 = 5, df2 = 2)
-y4 <- df(x, df1 = 10, df2 = 1)
-y5 <- df(x, df1 = 100, df2 = 100)
-
-plot(x, y1, type = "l", col = "red", lwd = 2,
-     xlab = "x", 
-     ylab = "Density", 
-     main = "F Distributions",
-     ylim = c(0,3),
-     xlim = c(0.001, 4))
-lines(x, y2, col = "blue", lwd = 2)
-lines(x, y3, col = "green", lwd = 2)
-lines(x, y4, col = "purple", lwd = 2)
-lines(x, y5, col = "black", lwd = 2)
-legend("topright", legend = c("df1 = 1, df2 = 1", "df1 = 2, df2 = 1", "df1 = 5, df2 = 2", "df1 = 10, df2 = 1", "df1 = 100, df2 = 100"), col = c("red", "blue", "green", "purple", "black"), lty = c(1, 1, 1, 1, 1))
-```
-
-:::
-
-::::
-
-## Significance testing
-
-:::{.incremental}
-
-- The **higher** the *F*-value the greater the *signal-to-noise* ratio. 
-
-
-- For a given value of **numerator** and **denominator** degrees of freedom we can look up the probability of observing this ratio under a null hypothesis of identical variances.
-
-
-- If F value is high enough then we might have enough evidence to conclude that samples are likely drawn from populations with *different* means.
-
-:::
-
-```{r, echo = FALSE, out.width="35%", fig.alt = ""}
-knitr::include_graphics("images/F-test-sig.jpg")
-```
-
-
-
-# Ask a question about: ANOVA
-
-
-
-## ANOVA Example
-
-::::{.columns}
-
-:::{.column}
-
-```{r, echo = T}
-
-dros_model2 <-lm(longevity ~ thorax + sleep, data = dros_clean)
-
-anova(dros_model2, dros_model)
-
-```
-:::
-
-
-:::{.column}
-
-
-```{r,  echo = T}
-drop1(dros_model, test = "F")
-
-```
-
-:::
-
-::::
-
-
-# Post-hoc vs. Planned contrasts
-
-
-
-## Correcting for multiple comparisons
-
-:::{.incremental}
-
-- The *F*-ratio tells us only whether the model fitted to the data (SSR) accounts for more variance than other factors (SSE). 
-
-- So if the *F*-ratio is large enough to be statistically significant, then we only know that *one or more* differences between means are statistically significant.
-
-- Further testing is needed! 
-
-:::
-
-## Planned contrasts
-
-:::{.incremental}
-
-- You focused on a *few* scientifically sensible comparisons, rather than every possible comparison
-
-- You chose these *as part of the experimental design* before collecting data
-
-- Could structure linear model to reflect this?
-
-:::
-
-
-
-## Post hoc
-
-:::{.incremental}
-
-- Typically unplanned comparisons, conducted only after a significant ANOVA result
-
-- All combinations checked
-
-- Needs correcting for inflated Type 1 error
-
-:::
-
-## Post hoc {.smaller}
-
-| Method     | Equation | Notes|
-| ----------- | ----------- |----------- |
-| Bonferroni/Dunn-Sidak    | $p = {\alpha \over k}$      | Correct critical p for the number of independent tests
-| Holm's    | $p_{1} < \alpha/(k–1+1) = \alpha/k$      | we start with the smallest p-value (i = 1) and determine whether there is a significant result (i.e. p1 < α/(k–1+1) = α/k. If so we move on to the second test. We continue in this manner until we get a non-significant result
-| Tukey HSD  | $t_{crit} = q * \sqrt{MSE \over N}$  | Essential a t-test, correcting for multiple comparison, q-values can be looked up for test df and number of treatments
-
-
-
-## Estimated means
-
-
-```{r, echo = F}
-library(emmeans)
-```
-
-```{r, echo = T}
-
-means <- emmeans::emmeans(dros_model,
-                          specs = ~ type)
-
-means
-
-```
-
-
-## Estimated mean differences
-
-
-```{r, echo = T}
-
-means <- emmeans::emmeans(dros_model, 
-                 specs = pairwise ~ type)
-
-means
-
-```
-
-
-## Estimated CI of the difference
-
-```{r, echo = T}
-
-
-means <- emmeans::emmeans(dros_model, 
-                 specs = pairwise ~ type)
-
-confint(means)
-
-```
-
-## Predictions
-
-```{r, eval = FALSE, echo = T}
-dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
-emmeans::emmeans(dros_model,
-                 specs = ~ thorax + type,
-                 at =list(thorax = seq(.64, .94, by = .02))) %>% 
-  as_tibble() 
-```
-
-
-```{r, echo = FALSE}
-dros_model <- lm(longevity ~ thorax + type + sleep, data = dros_clean)
-emmeans::emmeans(dros_model,
-                 specs = ~ thorax + type,
-                 at =list(thorax = seq(.64, .94, by = .02))) %>% 
-  as_tibble() %>% 
-  ggplot(aes(x = thorax,
-             y = emmean,
-             colour = type))+
-  geom_line(aes(group = type))+
-  geom_point(data = dros_clean,
-             aes(x = thorax, y = longevity),
-          alpha = .4)+
-  theme_bw()+
-  labs(x = "Thorax size (mm)",
-       y = "Longevity (days)")
-
-```
-
-
-
-# Generalised Linear Models {background-color="#D9DBDB"}
-
-## What are Generalised linear models?
-
-:::{.incremental}
-
-- The Generalised Linear Model (GLM) is an extension of the ordinary linear regression model that accommodates a broader range of response variable types and error distributions.
-
-- Key components: 
-
-- **Linear Predictor:** Combines predictor variables linearly.
-
-- **Link Function:** Links the mean of the response variable to the linear predictor.
-
-- **Error family:** Drawn from the **exponential family** it determines the shape of the response variable's distribution.
-
+- Automatic working directory management
+- Encapsulated workspace
+- Easy to share and collaborate
+- Integrates with version control
 :::
 
+## File Naming: The Slug Principle
 
-## Linear Predictor
+### What is a Slug?
 
-Linear models:
+A string of characters defining a file using:
 
-::: {.center-text}
+- Lowercase letters
+- Hyphens (not underscores or spaces)
+- Descriptive, concise names
+- Dates in ISO format (YYYY-MM-DD)
 
+## Slug Examples
 
-$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
+**Good file names tell you what's inside:**
 
-:::
+- `data/raw/madrid_minimum-temperature.csv`
+- `scripts/02_compute_mean-temperature.R`
+- `analysis/01_madrid_minimum-temperature_descriptive-statistics.qmd`
 
+. . .
 
+**What do you think these contain?**
 
 ::: {.fragment}
-
-<br>
-
-Then generalised linear models...
-
-::: {.center-text}
-
-$\eta_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots + \beta_n x_{ni}$
-
-
+- Clear temporal order (01, 02...)
+- Descriptive content (minimum-temperature)
+- Appropriate file type (.R, .csv, .qmd)
 :::
 
-- $\eta_i$ the linear prediction for observation $i$
+## Exercise: Name These Files
 
-:::
+Come up with good names for:
 
+1. A dataset of cats with columns for weight, length, tail length, fur colour(s), fur type and name
 
-## The link function
+2. A script that downloads data from Spotify
 
+3. A script that cleans up data
 
-Let's start with linear models...
-
-::: {.center-text}
-
-
-$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
-
-:::
+4. A script that fits a linear discriminant model and saves it
 
 ::: {.fragment}
+**Possible solutions:**
 
-<br>
+1. `data/raw/cats_morphology-and-characteristics.csv`
+2. `scripts/01_spotify_data-download.R`
+3. `scripts/02_data-cleaning.R`
+4. `scripts/03_lda-model_fit-and-save.R`
+:::
 
-Then generalised linear models...
+## R Projects and Clean Slates
+
+![](images/jenny_bryan.png){fig-align="center" fig-alt="Jenny Bryan on setwd()" width="70%"}
+
+::: {.callout .callout-warning}
+**Two Critical Rules:**
+
+1. **Use R Projects** for every analysis
+2. **Never save or restore .RData**—always start with a clean slate
+:::
+
+This ensures your code is fully reproducible from top to bottom.
+
+
+## Version Control with Git
+
+![](images/git.png){fig-align="center" fig-alt="git workflow" width="60%"}
+
+**What Git Does:**
+
+- Tracks every change to your files
+- Allows you to revert to previous versions
+- Enables collaboration without conflicts
+- Creates a complete history of your work
+
+## Git Repository
+
+![](images/git-remote.png){fig-align="center" fig-alt="git remote" width="60%"}
+
+**Remote Repositories (GitHub/GitLab):**
+
+- Backup your work in the cloud
+- Share code with collaborators
+- Make your research publicly accessible
+- Enable others to build on your work
+
+## Collaboration Without Conflicts
+
+![](images/no_fork.png){fig-align="center" fig-alt="git collaboration" width="60%"}
+
+**Direct Collaboration:**
+
+- Multiple people working on same project
+- Git manages conflicts automatically
+- Each person has full history
+- Changes can be reviewed before merging
+
+
+## Benefits of Reproducible Research
+
+![](images/sortee_infogr_01.png){fig-align="center" fig-alt="benefits infographic" width="60%"}
+
+<small>Source: Society for Open, Reliable, and Transparent Ecology and Evolutionary Biology (SORTEE)</small>
+
+# Addressing Concerns {background-color="#D9DBDB"}
+
+## Common Student Concerns
+
+### "This seems like extra work"
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Initial investment:**
+
+- ~20% more time upfront
+- Learning curve for tools
+- Setting up workflows
+
+:::
+
+::: {.column width="50%"}
+
+**Long-term savings:**
+
+- **50-70% time saved** overall
+- No re-running lost analyses
+- Easier collaboration
+- Faster paper writing
+- Reduced reviewer requests
+
+:::
+:::
+
+::: {.callout .callout-success}
+**Think of it as an investment that pays dividends throughout your career**
+:::
+
+
+## "What If I Make Mistakes?"
+
+**Good news—reproducibility actually helps:**
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Benefits of Transparency:**
+
+- Catches errors early
+- Demonstrates integrity
+- Creates learning opportunities
+- Distinguishes honest mistakes from misconduct
+
+:::
+
+::: {.column width="50%"}
+
+**Reality Check:**
+
+- Mistakes in open science > hidden errors
+- Transparency protects your reputation
+- Errors are correctable
+- Honesty builds trust
+
+:::
+:::
+
+::: {.callout .callout-warning}
+**The real mistake is claiming perfection or hiding errors**
+:::
+
+## Small Wins Count
+
+### Reproducibility is a Spectrum
+
+You don't need perfection on day one:
+
+:::{.column}
+
+**Level 1** (Everyone can start here):
+
+- Document your workflow in a README file
+- Use informative file names
+- Keep raw data separate from processed data
+
+**Level 2** (Build towards this):
+
+- Use R scripts instead of clicking through menus
+- Comment your code
+- Use version control for major changes
+:::
+
+:::{.column}
+**Level 3** (Module goal):
+
+- Full version control with Git
+- Automated analyses and containerisation
+- Shared code and data repositories
+
+::: {.callout .callout-success}
+**Progress > Perfection**
+:::
+
+:::
+
+# Your Starting Point {background-color="#D9DBDB"}
+
+## Before We Begin: Quick Reflection
+
+### Consider Your Current Practices
+
+(Not assessed—just for self-awareness)
+
+1. Could someone reproduce your last data analysis?
+2. If your laptop died, how much work would you lose?
+3. Can you remember what analysis you ran 6 months ago?
+4. Would you trust your own year-old code?
+5. Could you explain every step of your data processing?
+
+. . .
+
+::: {.callout}
+**If you answered "no" or "unsure" to any of these—this module is designed for you**
+
+We'll transform these concerns into strengths through systematic skill development
+:::
+
+## The Bottom Line
+
+### What This Module Offers You
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Skills That Will Serve You:**
+
+- Employability in data-driven sectors
+- Research integrity and credibility
+- Efficient, sustainable workflows
+- Collaboration capabilities
+- Critical thinking about methodology
+
+:::
+
+::: {.column width="50%"}
+
+**Contribution to Science:**
+
+- Join the open science movement
+- Raise standards in your field
+- Build trustworthy knowledge
+- Enable future discoveries
+
+:::
+:::
+
+::: {.callout .callout-info}
+**This isn't just a module about statistics and coding—it's about becoming a researcher who makes science better**
+:::
+
+## Questions?
 
 ::: {.center-text}
+**Remember**: There are no stupid questions—only opportunities to learn
 
-$g(\mu_i) = \eta_i$
-
-
-:::
-
-:::
-
-:::{.fragment}
-
-- $\eta_i$ linear prediction for observation $i$
-
-- $g$ the link function relating the linear predictor to the expected value (mean) of the response variable
-
-- $\mu_i$ is the expected value of the response variable for observation $i$
-
-Common link functions: identity, sqrt, log, logit
-
-:::
-
-
-## Error family
-
-Let's start with linear models...
-
-::: {.center-text}
-
-
-$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
-
-
-$\epsilon_i = \mathcal{N}(0, \sigma^2)$
-
-:::
-
-
-
-::: {.fragment}
-
-Then generalised linear models...
-
-::: {.center-text}
-
-$\mu_i = f(\eta_i)$
-
-$\epsilon_i \sim \mathcal{N}(0, \sigma^2)$
-
-:::
-
-:::
-
-:::{.fragment}
-
- - $\epsilon_i$ is the error term for observation $i$
-
-**Examples:** Gaussian (normal), binomial, Poisson, gamma, etc.
-
-:::
-
-## Generalised Linear Model
-
-::::{.columns}
-
-:::{.column}
-
-**Linear Predictor** ($\eta$):
-
-$\eta_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots$
-
-**Link Function** ($g$):
-
-$g(\mu_i) = \eta_i$
-
-**Probability Distribution**:
-
-$\mu_i = f(\eta_i)$
-
-$\epsilon_i \sim \mathcal{N}(0, \sigma^2)$
-
-:::
-
-:::{.column}
-
-- $\eta_i$ linear prediction for observation $i$
-
-- $g$ the link function relating the linear predictor to the expected value (mean) of the response variable
-
-- $\mu_i$ is the expected value of the response variable for observation $i$
-
-- $f$ the inverse of the link function, transforming the linear predictor back to the response variable's expected value
-
-- $\epsilon_i$ is the error term for observation $i$
-
-:::
-
-::::
-
-## Changing model structures
-
-There are a range of model structures available. 
-
-The choice of error family and link influence how well the model fits
-
-| Exponential Error Family      | Link Function       |
-|-------------------|---------------------|
-| Gaussian          | Identity, sqrt, log, inverse            |
-| Binomial          | Logit, probit, cloglog               |
-| Poisson           | Log, identity, sqrt                 |
-| Gamma             | Inverse, identity, log, sqrt             |
-| Negative Binomial | Log, identity, sqrt|
-
-
-## Choosing an error family
-
-::::{.columns}
-
-:::{.column width="40%"}
-
-- What type of variable is the outcome?
-
-- Fit models: check residuals and AICs
-
-:::
-
-:::{.column width="60%"}
-
-![](images/flow.png){fig-align="center" fig-alt="physalia logo" width=150%}
-
-:::
-
-::::
-
-# Likelihood {background-color="#D9DBDB"}
-
-
-## Log-Likelihood
-
-::::{.columns}
-
-:::{.column}
-
-- Likelihood measures the probability of observing the given data under a specific statistical model, as a function of the model's parameters.
-
-- It represents how well the model explains the observed data.
-
-- The log likelihood function in maximum likelihood estimations is usually computationally simpler as it is additive.
-
-:::
-
-:::{.column}
-
-![](images/log-likelihood.png){fig-align="center" fig-alt="The log-likelihood (l) maximum is the same as the likelihood (L) maximum." width=100%}
-
-:::
-
-::::
-
-## Log-Likelihood
-
-Likelihood Function:
-
-$L(\theta | y) = f(y_1 | \theta) \times f(y_2 | \theta) \times \ldots \times f(y_n | \theta)$
-
-:::{.fragment}
-<br>
-Log-Likelihood Function:
-
-$\ell(\theta | y) = \log(f(y_1 | \theta)) + \log(f(y_2 | \theta)) + \ldots + \log(f(y_n | \theta))$
-
-:::
-
-:::{.fragment}
-<br>
-Although log-likelihood functions are mathematically easier than their multiplicative counterparts, they can be challenging to calculate by hand. They are usually calculated with software.
-
-:::
-
-## Maximum Likelihood Estimation
-
-For a specified error family distribution and link function, the glm finds parameter values that have the highest likelihood score.
-
-:::{.incremental}
-
-- Which estimates are most probable for producing the observed data
-
-- This is an iterative process, without a single defined equation
-
-- For gaussian and identity link it will produce the same outcome as OLS.
-
-:::
-
-Log-Likelihood Function:
-$$\ell(\theta | \mathbf{y}) = \sum_{i=1}^{n} \log(f(y_i | \theta))$$
-
-
-## Maximum Likelihood
-
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-#| warning: false
-
-# Simulated data
-set.seed(42)
-
-log_likelihood_visual <- function(mean = 6, sd = 1){
-
-data <- rnorm(100, mean = mean, sd = sd)
-
-# Define a grid of mu and sigma values
-mu_range <- seq(mean-(sd*2), mean+(sd*2), length.out = 100)
-sigma_range <- seq(sd-sd, sd+sd, length.out = 100)
-sigma_range[sigma_range < 1] <- 1
-grid <- expand.grid(mu = mu_range, sigma = sigma_range)
-
-# Function to calculate log-likelihood for normal distribution
-log_likelihood <- function(mu, sigma, data) {
-  n <- length(data)
-  -n/2 * log(2 * pi) - n * log(sigma) - 1/(2 * sigma^2) * sum((data - mu)^2)
-}
-
-# Calculate log-likelihood for each combination of mu and sigma
-grid$log_likelihood <- mapply(log_likelihood, mu = grid$mu, sigma = grid$sigma, MoreArgs = list(data = data))
-
-# Plot
-ggplot(grid, aes(x = mu, y = sigma, z = log_likelihood)) +
-  geom_contour_filled(aes(fill = after_stat(level)), bins = 20) + # Use geom_contour_filled for filled contour plots
-  labs(title = "Log-Likelihood Contour Plot",
-       x = expression(mu),
-       y = expression(sigma),
-       fill = "Log-Likelihood") +
-  theme_minimal()
-}
-
-log_likelihood_visual()
-```
-
-:::
-
-:::{.column}
-
-- A contour plot visualizing the log-likelihood surface for a normal distribution fitted to simulated data. 
-
-- The contour lines on the plot represent regions of equal log-likelihood values. Darker regions indicate lower log-likelihood values, while lighter regions indicate higher log-likelihood values
-
-:::
-
-::::
-
-
-## Deviance
-
-- The deviance is a key concept in Generalised linear models. 
-
-- It measures the deviance of the fitted Generalised linear model with respect to a perfect/**saturated** model for the sample.
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 6
-#| message: false
-
-
-
-# Simulate some data
-set.seed(123)
-n <- 100  # Sample size
-x <- rnorm(n)  # Predictor variable
-y <- 2 + 3*x + rnorm(n)  # Continuous response variable (linear relationship)
-
-# Fit the null model (intercept only)
-null_model <- lm(y ~ 1)
-
-# Fit the saturated model (fully saturated model)
-saturated_model <- lm(y ~ x)
-
-# Fit the fitted model (linear predictor with x)
-fitted_model <- lm(y ~ x)
-
-# Create a dataframe to store observed points
-observed_data <- data.frame(x = x, y = y)
-
-# Generate fitted lines
-fitted_lines <- data.frame(x = sort(x))
-fitted_lines$Null <- predict(null_model, newdata = fitted_lines)
-fitted_lines$Fitted <- predict(fitted_model, newdata = fitted_lines)
-
-# Plot observed points and fitted lines
-ggplot() +
-    geom_point(data = observed_data, aes(x = x, y = y), color = "black") +
-    geom_line(data = fitted_lines, aes(x = x, y = Null, color = "Null")) +
-    geom_line(data = observed_data, aes(x = x, y = y, color = "Saturated")) +
-    geom_line(data = fitted_lines, aes(x = x, y = Fitted, color = "Fitted")) +
-    scale_color_manual(values = c("Null" = "red", "Saturated" = "blue", "Fitted" = "green"),
-                       name = "Model") +
-    labs(
-        title = "Fitted Lines vs Observed Points",
-        x = "x",
-        y = "y"
-    ) +
-    theme_minimal(base_size = 14)
-
-
-```
-
-
-
-
-## Pseudo R-squared
-
-::::{.columns}
-
-:::{.column}
-
-![](images/deviance.png){fig-align="center" fig-alt="" width=100%}
-
-:::
-
-:::{.column}
-
-Formula: 
-
-$GLM~R^2 = 1 - \frac{D}{D_0}$
-
-$linear\_model~R^2= 1 - \frac{SSE}{SST}$
-
-
-- $D$ is the deviance of the fitted model.
-
-- $D_0$ is the deviance of the null model (linear model with only an intercept).
-
-The GLM $R^2$ **is not** the percentage of variance explained by the model, but rather a ratio indicating how close the fit is to being perfect.
-
-:::
-
-::::
-
-## Pseudo R-squared in R
-
-- We can fit the deviance-based pseudo $R^2$ with the `MuMIn` package
-
-- `r.squaredLR()` is a function used to compute the likelihood ratio (LR) based R-squared for a given model
-
-```{r}
-#| eval: false
-#| echo: true
-#| message: false
-
-
-
-library(MuMIn)
-
-r.squaredLR(model)
-
-
-```
-
-## AIC
-
-:::{.incremental}
-
-- The Akaike Information Criterion (AIC)  balances the trade-off between model fit and complexity by penalizing models with more parameters.
-
-- It aims to find the model that best explains the data while avoiding overfitting.
-
-- AIC is calculated as follows: $\text{AIC} = 2k - 2\ln(\hat{L})$, 
-
-- where: log-likelihood is the maximized value of the likelihood function for the fitted model. $k$ is the number of parameters in the model.
-
-- In general a difference in AIC of <2 suggests equivalent goodness-of-fit
-
-:::
-
-## AIC
-
-::::{.columns}
-
-:::{.column}
-
-**AIC can:**
-
-- Compare non-nested models fitted to the same dataset and response variable
-
-- Compare across different GLM families and link functions
-
-:::
-
-:::{.column}
-
-**AIC cannot:**
-
-- Compare models where the response variable is transformed
-
-- Compare models where there are differences in the dataset
-
-:::
-
-::::
-
-## Likelihood ratio test
-
-The likelihood ratio test (LRT) “unifies” frequentist statistical tests. Brand-name tests like t-test, F-test, chi-squared-test, are specific cases (or even approximations) of the LRT.
-
-- The likelihood ratio test (LRT) begins with a comparison of the likelihood scores of the two models:
-
-$\text{LR} = -2(\ln L_1 - \ln L_2)$
-
-:::{.fragment}
-
-Where:
-
-- $\ln L_1$ and $\ln L_2$ are the log-likelihoods of the two models being compared.
-
-:::
-
-## Likelihood ratio test
-
-- This LRT statistic approximately follows a chi-square distribution. 
-
-- To determine if the difference in likelihood scores among the two models is statistically significant, we next must consider the degrees of freedom. 
-
-- In the LRT, degrees of freedom is equal to the number of additional parameters in the more complex model.
-
-```{r}
-#| echo: false
-#| eval: true
-
-janka <- read_csv(here::here("data", "janka.csv"))
-
-fitted_model <- glm(hardness ~ dens, data = janka, family = Gamma(link = "sqrt"))
-null_model <- glm(hardness ~ 1, data = janka, family = Gamma(link = "sqrt"))
-fitted_likelihood <- logLik(glm(hardness ~ dens, data = janka, family = Gamma(link = "sqrt")))
-null_likelihood <- logLik(glm(hardness ~ 1, data = janka, family = Gamma(link = "sqrt")))
-```
-
-```{r}
-#| echo: true
-#| eval: true
-
-
-LR <- -2*(null_likelihood[1]-fitted_likelihood[1])
-
-LR
-
-```
-
-## Likelihood ratio test
-
-:::{.incremental}
-
-- The likelihood ratio test `lrtest()` is typically calculated as twice the difference in deviance between the two models. (Can also be carried out with the `anova()` function)
-
-- Scaling by -2 ensures the test statistic follows a chi-square distribution under certain conditions
-
-- We can calculate the likelihood ratio test statistic, compare it to the chi-square distribution with the appropriate degrees of freedom, and determine whether the improvement in fit between the two models is statistically significant.
-
-:::
-
-```{r}
-
-lrtest(null_model, fitted_model)
-
-```
-
-# GLMs for count data {background-color="#D9DBDB"}
-
-## Poisson
-
-:::: columns
-
-::: {.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-
-# Define a range of lambda values (average rate of success)
-lambda_values <- c(1, 4, 10, 20, 50)
-
-# Generate the Poisson distribution data
-poisson_data <- map_df(lambda_values, ~tibble(
-  lambda = .x,
-  events = 0:75, # Assuming a reasonable range for visualization
-  probability = dpois(0:75, .x)
-)) |> 
-  mutate(lambda = factor(lambda, levels = lambda_values)) # For ordered plotting
-
-# Plot
-ggplot(poisson_data, aes(x = events, y = probability, color = lambda)) +
-  geom_line(linewidth = 1.5) +
-  scale_color_brewer(palette = "Dark2") +
-  labs(title = "Change in Poisson Distribution with Different Lambda",
-       x = "Number of Events",
-       y = "Probability",
-       color = "Lambda") +
-  theme_minimal(base_size = 14)
-
-```
-
-::: 
-
-::: {.column}
-
-Count or rate data are ubiquitous in the life sciences (e.g number of parasites per microlitre of blood, number of species counted in a particular area). These type of data are **discrete** and **non-negative**.
-
-A useful distribution to model abundance data is the **Poisson** distribution: 
-
-a discrete distribution with a single parameter, λ (lambda), which defines both the mean and the variance of the distribution.
-
-:::
-
-
-::::
-
-## GLM
-
-::: {.incremental}
-
-Recall the simple linear regression case (i.e a GLM with a Gaussian error structure and identity link). For the sake of clarity let's consider a single explanatory variable where $\mu$ is the mean for *Y*:
-
-$\mu_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn$
-
-$y_i \sim \mathcal{N}(\mu_i, \sigma^2)$
-
-* The mean function is **unconstrained**, i.e the value of $\beta_0 + \beta_1X$ can range from $-\infty$ to $+\infty$. 
-
-:::
-
-## Poisson
-
-
-* If we want to model count data we therefore want to **constrain** this mean to be positive only. 
-
-:::{.incremental}
-
-* Mathematically we can do this by taking the **logarithm** of the mean (the log is the default link for the Poisson distribution). 
-
-* We then assume our count data variance to be Poisson distributed (a discrete, non-negative distribution), to obtain our Poisson regression model (to be consistent with the statistics literature we will rename $\mu$ to $\lambda$):
-
-:::
-
-## GLM Poisson
-
-![](images/poisson_regression.webp){fig-align="center" fig-alt="Poisson equation" width=80%}
-
-## Poisson limitations
-
-The **Poisson** distribution has the following characteristics:
-
-::: {.incremental}
-
-* **Discrete** variable (integer), defined on the range $0, 1, \dots, \infty$.
-
-* A single ***rate*** parameter $\lambda$, where $\lambda > 0$.
-
-* **Mean** = $\lambda$  
-
-* **Variance** = $\lambda$
-
-:::
-
-
-## Poisson: Case study
-
-:::: columns
-
-::: {.column}
-
-![](images/3 Spined Stickleback.jpg){fig-align="center" fig-alt="Stickleback" width=50%}
-:::
-
-:::{.column}
-
-In this study the authors investigated the effect of the parasitic tapeworm *Schistocephalus solidus* infection on the susceptibility of infection from a second parasite, the trematode *Diplostomum pseudospathaceum*
-
-> How does Treatment/Infection status affect trematode counts?
-
-:::
-
-::::
-
-##
-
-This model looks ok
-
-```{r}
-#| eval: false
-#| echo: true
-#| fig-height: 8
-#| message: false
-
-stick_lm <- lm(Diplo_intensity ~ Treatment, data = parasite)
-```
-
-
-```{r}
-#| include: FALSE
-
-parasite <- read_csv("../data_2/parasite_exp.csv")
-
-```
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 7
-#| message: false
-
-stick_lm <- lm(Diplo_intensity ~ Treatment, data = parasite)
-
-emmeans::emmeans(stick_lm, specs = ~Treatment) %>% 
-  as_tibble() %>% 
-ggplot(aes(x=Treatment, y=emmean)) + 
-  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL)) +
-  geom_jitter(data = parasite, aes( x= Treatment, y = Diplo_intensity),
-              alpha = .2, width = .2)+
-  theme_minimal(base_size = 18)
-
-
-
-```
-
-
-## Diagnostics
-
-Let us display the model diagnostics plots for this linear model.
-
-```{r}
-#| echo: false
-#| layout-ncol: 2
-#| fig-height: 8
-
-plot(stick_lm, which=2)
-
-plot(stick_lm, which=3)
-```
-
-
-* Curvature
-
-* Funnelling effect
-
-
-
-## Poisson model
-
-We should therefore try a different model structure.
-
-The response variable in this case is a classic **count data**: **discrete** and bounded below by zero (i.e we cannot have negative counts). We will therefore try a **Poisson model** using the canonical **log** link function for the mean:
-
-
-* λ varies with x (mass) which means residual variance will also vary with 
-x, which means that we just relaxed the homogeneity of variance assumption!
-
-* Predicted values will now be integers instead of fractions
-
-* The model will never predict negative values (Poisson is strictly positive)
-
-$$
-    \log{\lambda} = \beta_0 + \beta_1 T_i + \beta_1 T_j + \beta_1 T_k 
-$$
-
-
-## Fit the Poisson model
-
-Fit the poisson model
-
-```{r}
-#| echo: true
-
-stick_poisson <- glm(Diplo_intensity ~ Treatment, family = "poisson", data = parasite)
-
-summary(stick_poisson)
-```
-
-
-## Poisson model fit 
-
-::::{.columns}
-
-:::{.column}
-
-Linear Model
-
-```{r}
-#| echo: false
-#| fig-height: 6
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-
-plot(stick_lm, which=2)
-
-plot(stick_lm, which=3)
-
-
-```
-
-:::
-
-:::{.column}
-
-Poisson Model
-
-```{r}
-#| echo: false
-#| fig-height: 6
-
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-
-plot(stick_poisson, which=2)
-
-plot(stick_poisson, which=3)
-
-
-```
-
-:::
-
-::::
-
-## Effect of treatment
-
-To perform a global test on the effect of treatment.
-
-The likelihood ratio test allows us to determine the overall deviance explained by treatment
-
-```{r}
-#| eval: true
-#| echo: true
-
-# For a fixed  mean-variance model we use a Chisquare distribution
-drop1(stick_poisson, test = "Chisq")
-
-```
-
-
-## Model summary
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| echo: true
-
-summary(stick_poisson)
-
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 5
-
-emmeans::emmeans(stick_poisson, specs = ~Treatment,
-                 type = "response") %>% 
-  as_tibble() %>% 
-ggplot(aes(x=Treatment, y=rate)) + 
-  geom_pointrange(aes(ymin = asymp.LCL, ymax = asymp.UCL)) +
-  geom_jitter(data = parasite, aes( x= Treatment, y = Diplo_intensity),
-              alpha = .2, width = .2)+
-  theme_minimal(base_size = 18)
-```
-
-:::
-
-::::
-
-
-## Poisson limitations
-
-So for the Poisson regression case we assume that the mean and variance are the same.
-Hence, as the mean *increases*, the variance *increases* also (**heteroscedascity**).
-This may or may not be a sensible assumption so watch out! Just because a Poisson distribution *usually* fits well for count data, doesn't mean that a Gaussian distribution *can't* always work.
-
-Recall the link function between the predictors and the mean and the rules of logarithms (if $\log{\lambda} = k$(value of predictors), then $\lambda = e^k$):
-
-
-## Overdispersion
-
-When the residual deviance is higher than the residual degrees of freedom, we say that the model is overdispersed. This situation is mathematically represented as:
-
-$$
-\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}
-$$
-
-Overdispersion occurs when the variance in the data is even higher than the mean, indicating that the Poisson distribution might not be the best choice. This can be due to many reasons, such as the presence of many zeros, many very high values, or missing covariates in the model.
-
-## Overdispersion and what to do about it
-
-| Causes of over-dispersion | What to do about it | 
-|---------|:-----|
-| Model mis-specification (missing covariates or interactions)    | Add more covariates or interaction terms   |
-| Too many zeros ("zero inflation")    | Use a zero-inflated model  |
-| Non-independence of observations       | Use a generalised mixed model with random effects to take non-independence into account    |
-| Variance is larger than the mean      | Use a quasipoisson GLM if overdispersion = 2-15. Use a negative binomial GLM if > 15-20  |
-
-: Overdispersion statistic values > 1
-
-
-## Choosing a model
-
-![](images/dispParam.png){fig-align="center" fig-alt="Poisson/NegBin" width=50%}
-
-
-## Overdispersion and what to do about it
-
-It may be true that you are initially unsure whether overdispersion is coming from zero-inflation, larger variance than the mean or both. 
-
-You can fit models with the same dependent and independent variables and different error structures and use AIC to help determine the best model for your data
-
-## Overdispersion in the stickleback
-
-
-$\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{697.25}{217} = 3.21$
-
-```{r}
-#| eval: true
-#| echo: true
-
-summary(stick_poisson)
-
-performance::check_overdispersion(stick_poisson)
-
-```
-
-## Quasi-Poisson GLM 
-
-The systematic part and the link function remain the same
-
-$$
-    \log{\lambda} = \beta_0 + \beta_1 x_i
-$$
-
-*phi*$\phi$ is a dispersion parameter, it will not affect estimates but will affect *significance*. Standard errors are multiplied by $\sqrt\phi$ 
-
-$$
-Y_i = Poisson(\phi \lambda_i)
-$$
-
-
-Where:
-
-- $Yi$ is the response variable.
-- $\phi$ is the dispersion parameter, which adjusts the variance of the distribution
-
-Confidence intervals and p-values WILL change.
-
-
-## Fit a quasipoisson model to the data
-
-```{r}
-#| eval: true
-#| echo: true
-
-stick_quasipoisson <- glm(Diplo_intensity ~ Treatment, family = quasipoisson, data = parasite)
-```
-
-* Look at the residual plots - how have they changed? 
-
-* Look at the SE and p-values - how have they changed
-
-* Calculate new 95% confidence intervals
-
-## Compare models
-
-```{r}
-#| eval: true
-#| echo: true
-#| layout-ncol: 2
-
-summary(stick_poisson)
-
-summary(stick_quasipoisson)
-
-```
-
-## F distributions
-
-The presence of overdispersion suggested the use of the F-test for nested models. We will test if the interaction term can be dropped from the model.
-
-Though here for a term with only one degree of freedom $t^2$ = the F distribution with denominator degree of freedom
-
-```{r}
-#| eval: true
-#| echo: true
-
-drop1(stick_quasipoisson, test = "F")
-
-```
-
-# Binomial Models {background-color="#D9DBDB"}
-
-# GLMs for binary data 
-
-Common response variable in ecological datasets is the binary variable: we observe a phenomenon X or its “absence”
-
-:::{.incremental}
-
-* Presence/Absence of a species
-
-* Presence/Absence of a disease
-
-* Success/Failure to observe behaviour
-
-* Survival/Death of organisms
-
-:::
-
-Wish to determine if $P/A∼ Variable$
-
-Called a logistic regression or logit model
-
-## Binary variables
-
-:::::{.columns}
-
-::::{.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-#| warning: false
-
-load(file = "../data_2/Mayflies.rda")
-
-```
-
-
-
-:::{.incremental}
-
-- Investigating mayfly abundance in relation to pollution gradient measured in Cumulative Criterion Units (CCU)
-
-- Mayflies serve as indicators of stream health due to sensitivity to metal pollution
-
-- Higher CCU values indicate increased metal pollution, potentially impacting mayfly presence or absence in the stream
-
-:::
-
-::::
-
-::::{.column}
-
-![](images/Ephemera.png){fig-align="center" fig-alt="Ephemera vulgata" width=60%}
-
-::::
-
-:::::
-
-## Example: Mayflies
-
-Fitting a linear regression vs a logit-link regression:
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 7
-#| layout-ncol: 2
-#| message: false
-#| warning: false
-
-ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
-  geom_smooth(method = "lm")+
-    labs(title = "Linear Regression",
-       x = "CCU", y = "Occupancy") +
-  theme_classic(base_size = 14)
-
-ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
-  geom_smooth(method = "glm", method.args = list(binomial(link = "logit"))) +
-  labs(title = "Logit-link Binomial Regression",
-       x = "CCU", y = "Occupancy") +
-  theme_classic(base_size = 14)
-
-```
-
-
-
-## Bernoulli Distribution
-
-::::{.columns}
-
-:::{.column}
-
-The Bernoulli distribution models the probability of success or failure in a single trial of a binary experiment:
-
-* where success occurs with probability $p$ 
-
-* and failure with probability ${1-p}$
-
-:::
-
-:::{.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-#| warning: false
-
-# Define probabilities
-p_success <- 0.7
-p_failure <- 1 - p_success
-
-# Create data frame
-df <- data.frame(
-  Outcome = c("Success", "Failure"),
-  Probability = c(p_success, p_failure)
-)
-
-# Plot
-ggplot(df, aes(x = Outcome, y = Probability, group = Outcome)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Probability Distribution of a Bernoulli Random Variable",
-       x = "Outcome",
-       y = "Probability") +
-  theme_minimal(base_size = 14)
-
-```
-
-:::
-
-::::
-
-## Probability distribution
-
-:::: columns
-
-::: {.column}
-$logit(p) = \log \frac{p}{1 - p}$
-
-$y_i = Bernoulli(p) = \frac{p}{1 - p}$
-:::
-
-::: {.column}
-**Mean of distribution** Probability (p) of observing an outcome
-
-**Variance of observed responses** As observed responses approach 0 or 1, the variance of the distribution decreases
-:::
-
-::::
-
-## The link function
-
-If $μ = xβ$ is only true for normally distributed data, 
-then, if this is not the case, we must use a transformation on the expected values:
-
-$$g(μ) = xβ$$
-
-where $g(μ)$ is the link function.
-
-This allows us to relax the normality assumption.
-
-## The logit link
-
-For binary data, the link function is called the logit:
-
-$$ logit(p) = \log \frac{p}{1 - p} $$
-
-
-
-The log of the odds $(p / (1 - p))$
-
-
-## The logit link
-
-$$ logit(p) = \log \frac{p}{1 - p} $$
-
-:::{.incremental}
-
-- The odds put our expected values on a 0 to +Inf scale.
-
-- The log transformation puts our expected values on a -Inf to +Inf scale.
-
-- Now, the expected values can be linearly related to the linear predictor.
-
-:::
-
-## Probability, odds, logit-odds
-
-::::{.columns}
-
-:::{.column width="60%"}
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-
-# Generate a sequence of independent variable values
-independent_variable <- seq(-10, 10, by = 0.5)
-
-# Define a function to calculate probabilities
-calculate_probability <- function(x) {
-  probability <- 1 / (1 + exp(-x))
-  return(probability)
-}
-
-# Define a function to calculate odds
-calculate_odds <- function(probability) {
-  odds <- probability / (1 - probability)
-  return(odds)
-}
-
-# Define a function to calculate log odds
-calculate_log_odds <- function(odds) {
-  log_odds <- log(odds)
-  return(log_odds)
-}
-
-# Calculate probabilities, odds, and log odds
-probabilities <- sapply(independent_variable, calculate_probability)
-odds <- sapply(probabilities, calculate_odds)
-log_odds <- sapply(odds, calculate_log_odds)
-
-# Plot the relationships
-par(mfrow = c(1, 3), mar = c(5, 5, 2, 2))
-plot(independent_variable, probabilities, type = "l", col = "blue", xlab = "Independent Variable", ylab = "Probability", main = "Change in Probability", ylim = c(0, 1))
-plot(independent_variable, odds, type = "l", col = "red", xlab = "Independent Variable", ylab = "Odds", main = "Change in Odds")
-plot(independent_variable, log_odds, type = "l", col = "green", xlab = "Independent Variable", ylab = "Log Odds", main = "Change in Log Odds")
-
-
-```
-
-:::
-
-:::{.column width="40%"}
-
-- The odds put our expected values on a 0 to +Inf scale.
-
-- The log transformation puts our expected values on a -Inf to +Inf scale.
-
-- Now, the expected values can be linearly related to the linear predictor.
-
-:::
-
-::::
-
-
-## Example
-
-
-
-```{r}
-#| eval: true
-#| echo: true
-#| message: false
-#| warning: false
-
-mayfly_glm <- glm(Occupancy ~ CCU, family = binomial(link = "logit"), data = Mayflies)
-
-summary(mayfly_glm)
-
-```
-
-
-
-## Interpret the model
-
-:::{.incremental}
-
-Each coefficient corresponds to a predictor variable, indicating the change in the **log odds** of the response variable associated with a one-unit change in that predictor, holding other predictors constant.
-
-<br>
-
-- Interpretation of coefficients involves exponentiating them to obtain odds ratios.
-
-- An odds ratio greater than 1 implies higher odds of the event occurring with an increase in the predictor.
-
-- An odds ratio less than 1 implies lower odds of the event occurring with an increase in the predictor.
-
-:::
-
-## Intepret the model
-
-| Probability | Odds                              | Log Odds | Verbiage               |
-|-------------|-----------------------------------|-----------------|------------------------|
-| $p=.95$     | $\frac{95}{5} = \frac{19}{1} = 19$ |      2.94           | 19 to 1 odds for      |
-| $p=.75$     | $\frac{75}{25} = \frac{3}{1} = 3$  |       1.09          | 3 to 1 odds for       |
-| $p=.50$     | $\frac{50}{50} = \frac{1}{1} = 1$  |        0         | 1 to 1 odds           |
-| $p=.25$     | $\frac{25}{75} = \frac{1}{3} = 0.33$ |    -1.11            | 3 to 1 odds against   |
-| $p=.05$     | $\frac{95}{5}  = \frac{1}{19} = 0.0526$ |   -2.94          | 19 to 1 odds against  |
-
-## Logit odds
-
-When we use a binomial model, we produce the 'log-odds', this produces a fully unconstrained linear regression as anything less than 1, can now occupy an infinite negative value -∞ to ∞.
-
-
-$$\log\left(\frac{p}{1-p}\right)	=	\beta_{0}+\beta_{1}x_{1}+\beta_{2}x_{2}$$
-
-:::{.fragment}
-
-$$\frac{p}{1-p}	=	e^{\beta_{0}}e^{\beta_{1}x_{1}}e^{\beta_{2}x_{2}}$$
-
-:::
-
-:::{.fragment}
-
-- We can interpret $\beta_{1}$ and $\beta_{2}$ as the increase in the log odds for every unit increase in $x_{1}$ and $x_{2}$. 
-
-- We could alternatively interpret $\beta_{1}$ and $\beta_{2}$ using the notion that a one unit change in $x_{1}$ as a percent change of $e^{\beta_{1}}$ in the odds. 
-
-:::
-
-##
-
-:::::{.columns}
-
-::::{.column}
-
-For the intercept: 
-
-:::{.incremental}
-
-- The estimate as log odds is 5.102.
-
-- Therefore the odds are 164
-
-- Over 99% probability of observing mayfly when CCU = 0
-
-:::
-
-::::
-
-::::{.column}
-
-```{r}
-summary(mayfly_glm)
-```
-
-::::
-
-:::::
-
-
-##
-
-:::::{.columns}
-
-::::{.column}
-
-
-For the predictor variable `CCU`:
-
-:::{.incremental}
-
-- The estimate is -3.051.
-
-- This means that for every one unit increase in `CCU`, the log odds of the response variable **decreases by 3.051**, holding all other predictors constant.
-
-:::
-
-::::
-
-::::{.column}
-
-```{r}
-summary(mayfly_glm)
-```
-
-::::
-
-:::::
-
-##
-
-:::::{.columns}
-
-::::{.column}
-
-Now, let's interpret the coefficient for `CCU` using the odds ratio interpretation:
-
-:::{.incremental}
-
-- The odds ratio associated with `CCU` is calculated as $e^{\beta_{\text{CCU}}} = e^{-3.051}$.
-
-- Therefore, $e^{\beta_{\text{CCU}}} \approx 0.048$.
-
-- This means that for every one unit increase in `CCU`, the odds of the response variable decrease by a multiple of 0.048
-
-:::
-
-::::
-
-::::{.column}
-
-```{r}
-#| eval: true
-#| echo: true
-
-broom::tidy(mayfly_glm, exponentiate = T)
-```
-
-::::
-
-:::::
-
-
-
-
-## Model fit
-
-For a simple Bernoulli/Binary GLM there are only a few checks that apply:
-
-```{r}
-#| eval: true
-#| echo: true
-#| fig-height: 6
-#| layout-ncol: 3
-#| message: false
-
-# Calculate and plot "deviance" residuals
-dresid <- resid(mayfly_glm, type = "deviance")
-hist(dresid)
-
-# Plot leverage
-plot(mayfly_glm, which = 5)
-
-# Plot Cook's distance
-plot(mayfly_glm, which = 4)
-
-```
-
-## Model fit
-
-Residuals in binary glms will never be normally distributed - so a "residuals vs fitted plot" provides little insight. We can try "binned residuals": 
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 6
-#| message: false
-#| layout-ncol: 2
-
-plot(mayfly_glm, which = 1)
-
-pred <- predict(mayfly_glm)
-
-arm::binnedplot(pred, dresid)
-
-```
-
-
-## DHARMa fit
-
-- [DHARMa](https://theoreticalecology.wordpress.com/2016/08/28/dharma-an-r-package-for-residual-diagnostics-of-glmms/) works by **simulating residuals** from the fitted model, comparing them with observed residuals, and providing diagnostic plots to assess model adequacy and identify potential issues like heteroscedasticity or influential data points.
-
-:::{.fragment}
-
-```{r}
-#| echo: true
-#| eval: true
-library(DHARMa)
-plot(simulateResiduals(mayfly_glm))
-
-```
-
-:::
-
-## Prediction
-
-
-- `predict()` function for GLMs computes predicted values based on the fitted model.
-
-- For existing data, it predicts values for each observation in the original dataset.
-
-- For new data, it predicts values for a specified new dataset, allowing for predictions on unseen data.
-
-
-```{r}
-#| eval: false
-#| echo: true
-#| message: false
-
-# Predictions for existing data
-predict(mayfly_glm, type = "response")
-
-```
-
-
-```{r}
-#| eval: false
-#| echo: true
-#| message: false
-
-# Predictions for new data
-new_CCU<- data.frame(CCU = c(0,1,2,3,4,5))
-predict(mayfly_glm, newdata = new_CCU, type = "response")
-
-```
-
-## Emmeans
-
-The `emmeans` package in R computes estimated marginal means (EMMs) it can also provides post-hoc comparisons and contrasts for fitted models.
-
-
-- This specific function call below computes EMMs for the predictor variable CCU at specific values (0 to 5) and provides them on the response scale.
-
-```{r}
-
-emmeans::emmeans(mayfly_glm, 
-                 specs = ~ CCU, 
-                 at=list(CCU=c(0:5)), 
-                 type='response') |> 
-  as_tibble()|> 
-  gt::gt() |> 
-  gt::fmt_number(columns = everything(), n_sigfig = 2)
-
-
-```
-
-## Prediction plots with emmeans
-
-We can use `emmeans` package to compute estimated marginal means (EMMs) from a fitted GLM, convert them into a tibble format for visualization with ggplot2, overlay the means with uncertainty ribbons and add them on a scatter plot of the original data.
-
-::::{.columns}
-
-:::{.column width="60%"}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 7
-#| message: false
-means <- emmeans::emmeans(mayfly_glm, 
-                 specs = ~ CCU, 
-                 at=list(CCU=c(0:5)), 
-                 type='response') |> 
-  as_tibble()
-
-ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
-    geom_ribbon(data = means,
-              aes(x = CCU,
-                  y = prob,
-                  ymin = asymp.LCL,
-                  ymax = asymp.UCL),
-              alpha = .2)+
-  geom_line(data = means,
-            aes(x = CCU,
-                y = prob)) +  # regression line
-  labs(title = "Logit-link Binomial Regression",
-       x = "CCU", y = "Occupancy")+
-  theme_classic(base_size = 14)
-
-```
-
-:::
-
-:::{.column width="40%"}
-
-
-```{r}
-#| eval: false
-#| echo: true
-#| fig-height: 7
-#| message: false
-means <- emmeans::emmeans(mayfly_glm, 
-                 specs = ~ CCU, 
-                 at=list(CCU=c(0:5)), 
-                 type='response') |> 
-  as_tibble()
-
-ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
-    geom_ribbon(data = means,
-              aes(x = CCU,
-                  y = prob,
-                  ymin = asymp.LCL,
-                  ymax = asymp.UCL),
-              alpha = .2)+
-  geom_line(data = means,
-            aes(x = CCU,
-                y = prob)) +  # regression line
-  labs(title = "Logit-link Binomial Regression",
-       x = "CCU", y = "Occupancy")+
-  theme_classic(base_size = 14)
-
-```
-
-:::
-
-::::
-
-
-# GLMs for Binomial data {background-color="#D9DBDB"}
-
-## Proportion data and GLM
-
-Sometimes, count data aligns more closely with logistic regression methodologies than it initially appears.
-
-We're not looking at typical count data when measuring the number of occurrences with a known total sample size.
-
-Imagine, for example, we're studying the prevalence of a native underbrush species across various forest plots. We assess 15 different plots, each meticulously surveyed for the presence of this underbrush, counting the number of square meters where the underbrush is present versus absent within a standard area:
-
-$$\frac{M^2~\text{with native underbrush (successes)}}{\text{Total surveyed area in}~M^2~(\text{trials})}$$
-
-Bound between zero and one
-
-
-## Binomial distribution
-
-:::: columns
-
-::: {.column}
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 8
-#| message: false
-
-# Define a range of trials
-trial_sizes <- c(5, 10, 20, 50, 100)
-
-# Define the probability of success
-p_success <- 0.7
-
-# Generate the binomial distribution data
-binom_data <- map_df(trial_sizes, ~tibble(
-  trials = .x,
-  success = 0:.x,
-  probability = dbinom(0:.x, .x, p_success)
-)) %>%
-  mutate(trials = factor(trials, levels = trial_sizes)) # This ensures the plots are ordered correctly
-
-# Plot
-ggplot(binom_data, aes(x = success, y = probability, color = trials)) +
-  geom_line() + # Use geom_point() if you prefer dots
-  scale_color_brewer(palette = "Dark2") +
-  labs(title = "Change in Binomial Distribution with Number of Trials",
-       x = "Number of Successes",
-       y = "Probability",
-       color = "Number of Trials") +
-  theme_minimal()
-
-```
-
-::: 
-
-
-:::{.column}
-
-
-$logit(p) = \log \frac{p}{1 - p}$
-
-$y_i = Binomial(n,p)$
-
-* It is the collection of Bernoulli trials for the same event
-
-* It is represented by the number of Bernoulli trials $n$
-
-* It is also the probability of an event in each trial $p$
-
-:::
-
-::::
-
-## Binomial: Example
-
-:::: columns
-
-::: {.column}
-
-![](images/Tribolium castaneum.jpg){fig-align="center" fig-alt="Tribolium" width=50%}
-:::
-
-:::{.column}
-
-This small dataset is from an experiment looking at mortality in batches of flour exposed to different doses of pesticides.
-
-The question of interest is: 
-
-> How does pesticide dose affect mortality in the flour beetle *Tribolium castaneum*
-
-:::
-
-::::
-
-## The data
-
-```{r}
-#|echo: true
-#|message: false
-
-beetles <- read_csv("../data_2/beetles.csv")
-beetles
-```
-
-## Preparing the data
-
-As well as the numbers killed, we need the numbers that remain alive
-
-```{r}
-#| echo: true
-#| eval: true
-
-beetles <- beetles |> 
-  rename("dead" = Number_killed,
-         "trials" = Number_tested) |> 
-  mutate("alive" = trials-dead)
-
-beetles
-
-```
-
-
-## Binomial VS Bernoulli Keypoints!
-
-Bernoulli deals with the outcome of the single trial of the event, whereas Binomial deals with the outcome of the multiple trials of the single event.
-
-<br>
-
-Bernoulli is used when the outcome of an event is required for only one time, 
-
-<br>
-
-whereas the Binomial is used when the outcome of an event is required multiple times.
-
-## Binomial glm
-
-The GLM of the binomial counts will analyse the number of *each* batch of beetles killed, while taking into account the size of each group
-
-```{r}
-#| echo: true
-#| eval: true
-
-#cbind() creates a matrix of successes and failures for each batch
-
-beetle_glm <- glm(cbind(dead, alive) ~ Dose, family = binomial(link = "logit"), data = beetles)
-
-summary(beetle_glm)
-
-```
-
-
-## Checking Binomial model fit
-
-
-## Performance residual checks
-
-::::{.columns}
-
-:::{.column}
-
-```{r}
-#| echo: true
-#| eval: true
-
-performance::check_model(beetle_glm)
-
-```
-
-:::
-
-:::{.column}
-
-```{r}
-#| echo: true
-#| eval: true
-
-performance::binned_residuals(beetle_glm)
-
-```
-
-:::
-
-::::
-
-## Checking with DHARMa
-
-
-- [DHARMa](https://theoreticalecology.wordpress.com/2016/08/28/dharma-an-r-package-for-residual-diagnostics-of-glmms/) works by **simulating residuals** from the fitted model, comparing them with observed residuals, and providing diagnostic plots to assess model adequacy and identify potential issues like heteroscedasticity or influential data points.
-
-:::{.fragment}
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-#| warning: false
-
-library(DHARMa)
-plot(simulateResiduals(beetle_glm))
-```
-
-:::
-
-## Estimates of significance
-
-Confidence intervals
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-library(broom)
-tidy(beetle_glm, conf.int = T)
-
-```
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-drop1(beetle_glm, test = "Chi")
-
-```
-
-## Table
-
-This function has automatically applied the exponentiate to produce the odds and odds ratio:
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-
-library(sjPlot)
-
-tab_model(beetle_glm)
-
-```
-
-## Predictions
-
-
-```{r}
-#| echo: true
-#| eval: true
-#| message: false
-emmeans::emmeans(beetle_glm, 
-                 specs = ~ Dose, 
-                 at=list(Dose=c(40, 50, 60, 70, 80)), 
-                 type='response') 
-```
-
-## Predictions plot
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 7
-#| message: false
-
-means <- emmeans::emmeans(beetle_glm, 
-                 specs = ~ Dose, 
-                 at=list(Dose=c(40:80)), 
-                 type='response')  |> 
-  as_tibble()
-
-ggplot(beetles, aes(x=Dose, y=Mortality_rate)) + geom_point()+
-    geom_ribbon(data = means,
-              aes(x = Dose,
-                  y = prob,
-                  ymin = asymp.LCL,
-                  ymax = asymp.UCL),
-              alpha = .2)+
-  geom_line(data = means,
-            aes(x = Dose,
-                y = prob)) +  # regression line
-  labs(title = "Logit-link Binomial Regression",
-       x = "Dose", y = "Mortality")+
-  theme_classic(base_size = 14)
-
-```
-
-
-
-## Overdispersion
-
-If the **residual deviance of the model is > the residual degrees of freedom** - we consider our binomial models to have **overdispersion**. 
-
-This means the variance is greater than predicted by the binomial distribution
-
-Overdispersion > 1.5 can be accounted for with the *quasi-binomial* glm
-
-```{r}
-summary(beetle_glm)
-```
-
-## Overdispersion
-
-:::: columns
-
-::: {.column}
-
-**Binomial**
-$P(X = s) = C(n, s) \cdot p^s \cdot (1 - p)^{n - s}$
-
-:::
-
-:::{.column}
-
-**Quasibinomial**
-$P(X = s) = C(n, s) \cdot p(p+k\theta)^{s-1} \cdot (1 - pk\theta)^{n - s}$
-
-:::
-
-::::
-
-Where:
-
-- $n$ is the total number of trials of an event.
-- $s$ corresponds to the number of times an event should occur.
-- $p$ is the probability that the event will occur.
-- $(1 - p)$ is the probability that the event will not occur.
-- $C$ term represents combinations, calculated as $C(n, s) = \frac{n!}{s!(n - s)!}$, representing the number of ways to choose $s$ successes out of $n$ trials.
-
-- $\theta$ term describes additional variance outside of the Binomial distribution
-
-## Fitting the quasibinomial model
-
-```{r}
-#|echo: true
-#|message: false
-
-summary(beetle_glm)
-
-```
-
-```{r}
-#|echo: true
-#|message: false
-
-beetle_quasiglm <- glm(cbind(dead, alive) ~ Dose, family = quasibinomial(link = "logit"), data = beetles)
-
-summary(beetle_quasiglm)
-
-```
-
-
-## Fitting the quasibinomial model
-
-::::{.columns}
-
-:::{.column}
-
-Standard Error, Confidence intervals and p-values WILL change.
-
-Estimates remain the same
-
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-height: 6
-#| message: false
-
-means <- emmeans::emmeans(beetle_quasiglm, 
-                 specs = ~ Dose, 
-                 at=list(Dose=c(40:80)), 
-                 type='response')  |> 
-  as_tibble()
-
-ggplot(beetles, aes(x=Dose, y=Mortality_rate)) + geom_point()+
-    geom_ribbon(data = means,
-              aes(x = Dose,
-                  y = prob,
-                  ymin = asymp.LCL,
-                  ymax = asymp.UCL),
-              alpha = .2)+
-  geom_line(data = means,
-            aes(x = Dose,
-                y = prob)) +  # regression line
-  labs(title = "Logit-link Binomial Regression",
-       x = "Dose", y = "Mortality")+
-  theme_classic(base_size = 14)
-
-```
-
-:::
-
-:::{.column}
-
-Likelihood ratio tests should now be applied with an F-statistics
-
-
-```{r}
-#| eval: true
-#| echo: true
-#| message: false
-
-drop1(beetle_quasiglm, test = "F")
-
-```
-
-:::
-
-::::
-
-
-
-# Data Visualisation {background-color="#D9DBDB"}
-
-
-
-## Good data visualisations
-
-
-::::{.columns}
-
-:::{.column width="40%"}
-
-```{r eval=FALSE, echo = T}
-penguins  |> 
-    remove_missing() |>
-    ggplot(aes(x = bill_length_mm, 
-               y = flipper_length_mm,
-              color = species, 
-              shape = species)) +
-    geom_point(alpha = 0.7) +
-    labs(x = "Bill length (mm)", 
-         y = "Flipper length (mm)",
-        title = "Scatterplot", 
-        subtitle = "Penguins bill v. flipper length by species",
-        caption = "Source: https://github.com/allisonhorst/palmerpenguins")
-```
-
-:::
-
-:::{.column width="60%"}
-
-```{r echo=FALSE, warning=FALSE, message=FALSE, out.width="100%"}
-penguins |>
-    ggplot(aes(x = bill_length_mm, y = flipper_length_mm,
-              color = species, shape = species)) +
-    geom_point(alpha = 0.7) +
-    scale_colour_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
-    labs(x = "Bill length (mm)", 
-         y = "Flipper length (mm)",
-        title = "Scatterplot", 
-        subtitle = "Penguins bill v. flipper length by species",
-        caption = "Source: https://github.com/allisonhorst/palmerpenguins")+
-  theme_minimal(base_size=18)
-  
-```
-
-:::
-::::
-
-
-## Requirements of a good graph
-
-* Visualisations must accurately reflect the data
-
-* Tell a story
-
-* Look professional
-
-
-
-## Important elements in graphics
-
-```{r, echo=FALSE, out.width="60%"}
-knitr::include_graphics("images/recall.png")
-```
-
-
-
-## The Good, the Bad & the Ugly
-
-```{r, echo=FALSE, out.width="60%"}
-knitr::include_graphics("images/ugly bad wrong.png")
-```
-
-
-
-
-## Choosing a data visual
-
-* Choosing the right data visual *requires* understanding your data
-
-* You **must** clearly explain any non-obvious features
-
-
-## Bar charts
-
-```{r}
-
-
-penguins |> 
-  group_by(species) |> 
-  drop_na() |> 
-  summarise(mean = mean(body_mass_g),
-            n = n(),
-            se = sd(body_mass_g)/sqrt(n)) |> 
-  ggplot(aes(x = species,
-             y = mean)) +
-  geom_errorbar(aes(ymin = mean-se, ymax = mean+se),
-                width = .5)+
-  geom_col(fill = "skyblue",
-             colour = "grey")+
-  
-    theme_pubclean() +
-  labs(y = "Mean Body Mass (g) (+/- SE)",
-       x = "")
-
-```
-
-## Boxplots
-
-```{r,  out.width = "40%", fig.cap ="Distribution of Body Mass (g) across three species of Archipelago penguins. Boxplots display the median (central line), interquartile range (IQR, box),the whiskers extend to the smallest and largest values within 1.5 times the IQR. The violin (shaded area):represents the kernel density estimation of the data distribution. Individual dots represent individual observations. "}
-
-library(ggbeeswarm)
-
-penguins |> 
-  ggplot(aes(x = species,
-             y = body_mass_g))+
-  geom_violin(alpha = .4) +
-  geom_boxplot(width = .3,
-               outlier.shape = NA) +
-  geom_beeswarm(alpha = .4)+
-  labs(y = "Body Mass (g)",
-       x = "")+
-  theme_minimal()
-
-```
-
-
-
-## Bar charts
-
-```{r}
-
-
-penguins |> 
-  ggplot(aes(x = species)) +
-    geom_bar(fill = "skyblue",
-             colour = "grey") +
-    theme_pubclean() +
-  labs(y = "Number of Penguins",
-       x = "")
-
-```
-
-
-## Lollipop chart
-
-
-```{r}
-
-
-
-penguins |> 
-  group_by(species) |>  
-  summarise(count = n()) |> 
-  ggplot(aes(x = species,
-             y = count)) +
-  geom_segment(aes(x = species, xend = species, y = 0, yend = count), size = 1.5) +
-    geom_point(fill = "skyblue",
-             colour = "grey",
-             shape = 21,
-             size = 5) +
-  
-    theme_pubclean() +
-  labs(y = "Number of Penguins",
-       x = "")+
-  scale_y_continuous(limits = c(0,155))
-
-```
-
-
-
-## Scatterplot
-
-```{r}
-
-
-colours <- c("darkorange",
-             "darkgreen",
-             "purple")
-
-names(colours) <- unique(penguins$species)
-
-ggplot(penguins, aes(x= bill_length_mm, 
-                     y= bill_depth_mm,
-                     colour=species)) +
-  geom_point()+
-  geom_smooth(method="lm",
-              se=FALSE)+
-  scale_colour_manual(values=colours)+
-  theme_classic()+
-    labs(x="Bill length",
-         y="Bill depth")
-```
-
-##
-
-```{r, fig.width = 6,  out.width = "40%", fig.cap ="Relationship Between Bill length(mm) and Bill depth (mm). Each point represents an individual data observation. (if applicable): A fitted [linear/nonlinear] regression line is included to indicate the overall trend in the data. Shaded regions (if present) represent the confidence interval of the fit. Points are colored and shaped according to species."}
-
-
-ggplot(penguins, aes(x= bill_length_mm, 
-                     y= bill_depth_mm,
-                     colour=species)) +
-  geom_point(aes(shape = species))+
-  scale_colour_manual(values=colours)+
-  theme_minimal()+
-    labs(x="Bill length (mm)",
-         y="Bill depth (mm)")+
-  theme(legend.position = "bottom")
-
-```
-
-## Figures vs Data visualisations
-
-```{r}
-
-
-library(geomtextpath)
-library(ggtext)
-
-ggplot(penguins, aes(x= bill_length_mm, 
-                     y= bill_depth_mm,
-                     colour=species)) +
-  geom_point(alpha = .4,
-             aes(shape = species))+
-  geom_labelsmooth(aes(label = species),
-                   method = "lm")+
-  scale_colour_manual(values=colours)+
-  theme_classic()+
-    labs(x="Bill length (mm)",
-         y="Bill depth (mm)",
-    title = "There is a positive relationship between Bill length and Bill depth",
-    subtitle = "for all <span style = 'color:#FF8C00'>Adelie</span>, <span style ='color:#159090'>Gentoo</span>, and <span style = 'color:#A034F0'>Chinstrap</span> penguin species")+
-  theme(legend.position = "bottom",
-        plot.subtitle = element_textbox_simple())+
-  guides(colour = "none",
-         shape = "none")
-
-```
-
-# Five common ways graphs can mislead you 
-
-
-##
-
-```{r, echo=FALSE, out.width="55%"}
-knitr::include_graphics("images/no_baseline.png")
-```
-
-##
-
-```{r, echo=FALSE, out.width="55%"}
-knitr::include_graphics("images/manipulating_y.png")
-```
-
-##
-
-```{r, echo=FALSE, out.width="55%"}
-knitr::include_graphics("images/cherry_picking.png")
-```
-
-##
-
-```{r, echo=FALSE, out.width="55%"}
-knitr::include_graphics("images/wrong_graph.png")
-```
-
-##
-
-```{r, echo=FALSE, out.width="55%"}
-knitr::include_graphics("images/convention.png")
-```
-
-
-
-
-
-## BONUS: Spurious correlation
-
-```{r, echo=FALSE}
-knitr::include_graphics("images/correlation_xkcd.png")
-```
-
-## BONUS: Spurious correlation
-
-```{r, echo=FALSE, out.width="85%"}
-knitr::include_graphics("images/bad_correlation.png")
-```
-::: aside
-(http://tylervigen.com/spurious-correlations)[http://tylervigen.com/spurious-correlations]
-:::
-
-
-
-
-## BONUS: Should have been a log scale?
-
-```{r, echo=FALSE, out.width="70%"}
-knitr::include_graphics("images/linear_covid.png")
-```
-
-
-
-
-## BONUS: Should have been a log scale?
-
-```{r, echo=FALSE, out.width="70%"}
-knitr::include_graphics("images/log_covid.png")
-```
-
-
-
-
-
-# Graph Crimes
-
-```{r, echo=FALSE, out.width = "40%"}
-knitr::include_graphics("images/graph_crime.png")
-```
-
-
-
-## Graph Crimes 
-
-```{r, echo=FALSE, out.width="45%"}
-knitr::include_graphics("images/bad_icon.png")
-```
-
-
-
-## Graph Crimes 
-
-```{r, echo=FALSE, out.width="65%"}
-knitr::include_graphics("images/bad_bar2.png")
-```
-
-
-
-## Graph Crimes 
-
-```{r, echo=FALSE, out.width="60%"}
-knitr::include_graphics("images/bad_bar.png")
-```
-
-
-
-## Graph Crimes 
-
-```{r, echo=FALSE, out.width="60%"}
-knitr::include_graphics("images/bad_scatter.png")
-```
-
-
-
-
-## Graph Crimes
-
-```{r, echo=FALSE,  out.width="60%"}
-knitr::include_graphics("images/bad_pie.png")
-```
-
-
-
-
-## Graph Crimes 
-
-
-
-```{r, echo=FALSE,  out.width="45%"}
-knitr::include_graphics("images/bad_line.png")
-```
-
-
-
-## Graph Crimes
-
-```{r, echo=FALSE,  out.width="40%", align="center"}
-knitr::include_graphics("images/bad_line2.png")
-```
-
-
-## Graph Crimes 
-
-```{r, echo=FALSE,  out.width="70%"}
-knitr::include_graphics("images/COVID-Testing.png")
-```
-
-## Graph Crimes
-
-```{r, echo=FALSE,  out.width="70%"}
-knitr::include_graphics("images/transportation_risk.png")
-```
-
-## Lib Dem party *dislikes* accurate graphs
-
-
-```{r, echo=FALSE,  out.width="70%"}
-knitr::include_graphics("images/cant_win_here.png")
-```
-
-##
-
-```{r, echo=FALSE,  out.width="70%"}
-knitr::include_graphics("images/beat-mogg.png")
-```
-
-
-# Government Daily Briefings 2020
-
-
-
-
-## Daily Briefings via the BBC
-
-```{r, echo=FALSE}
-knitr::include_graphics("images/Untitled.png")
-```
-
-
-## Daily Briefings via the BBC
-
-```{r, echo=FALSE}
-knitr::include_graphics("images/hospitalacutebed predictions.png")
-```
-
-
-
-
-## Essential Reading:
-
- [Fundamentals of Data Visualisation](https://clauswilke.com/dataviz/) - Claus O. Wilke
-
- [R Graphics Cookbook](https://r-graphics.org/index.html) - Winston Chang
-
- [A ggplot tutorial for beautiful plotting in R](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) - Cédric Scherer
-
- [The Economist: Graphic Detail](https://www.economist.com/graphic-detail)
- 
- 
- # Session Outline
-
-What are functions?
-
-Why do we want to write functions?
-
-What is functional programming?
-
-A run through of the {purrr} package
-
-# Functions
-
-
-
-## Features
-
-```{r, echo = FALSE, out.width="60%"}
-knitr::include_graphics("images/r-function-syntax.png")
-```
-
-##
-
-The body of the function (the statements that are executed when the function is run) is grouped with curly braces ({})
-
-When executing functions it is optional to specify argument names, but in functions with >1 arguments, the order matters
-
-```{r}
-myfunction <- function(x){
-  x + 4
-}
-
-```
-
-```{r}
-myfunction(3)
-```
-
-
-```{r}
-myfunction(x = 3)
-```
-
-## Braces
-
-Braces are not needed for functions with a single declaration
-
-
-```{r}
-myfunction <- function(x) x + 4
-myfunction(2)
-```
-
-
-
-
-## Braces
-
-Braces surround the body in functions with two or more statements
-
-```{r, eval = F}
-f <- function(x)  y <- (x * 2) x + y   # ERROR  
-
-```
-
-
-
-```{r}
-f <- function(x)  {
-  y <- (x * 2) 
-  x + y
-}
-```
-
-
-
-## Short function notation
-
-Replace "function(x) {}" with "\(x){}"
-
-```{r}
-add_one <- function(x) {
-  return(x + 1)
-}
-```
-
-
-```{r}
-
-add_one <- \(x) x + 1
-
-```
-
-
-
-
-## Function types
-
-:::{.columns}
-
-
-:::{.column}
-
-A function is a process which takes some input, called **arguments**, and produces some output called a **return
-value**. Functions may serve the following purposes:
-
-* **Mapping**: Produce some output based on given inputs. A function **maps** input values to output values.
-
-* **Procedures**: A function may be called to perform a sequence of steps. The sequence is known as a procedure, and
-programming in this style is known as **procedural programming**.
-
-* **I/O**: Some functions exist to communicate with other parts of the system, such as the screen, storage, system logs
-or network.
-
-source: ["What is a pure function?"](https://medium.com/javascript-scene/master-the-javascript-interview-what-is-a-pure-function-d1c076bec976)
-
-:::
-
-:::{.column}
-
-``` r
-# mapping
-fn <- function(x) {
-  x * x + 1
-}
-```
-
-``` r
-calculate_rectangle_area <- function(length, width) {
-  # Step 1: Calculate the area
-  area <- length * width
-  
-  # Step 2: Print the calculated area
-  cat("The area of the rectangle with length", length, "and width", width, "is", area, "\n")
-  
-  # Step 3: Return the area
-  return(area)
-}
-```
-
-``` r
-# i/o:
-read_csv(filename)
-```
-:::
-
-::::
-
-
-
-
-## Environments
-
-:::{.columns}
-
-
-:::{.column}
-
-In R, we have the global environment. This is where all variables are created when you assign (`<-`) something in the
-console.
-
-When a function is evaluated, it creates it's own environment. All of the arguments that are passed to the function,
-along with any variables created in the function are stored in this new environment.
-
-The function's environment's parent will be the global environment, so we can see all of the variables created in the
-global environment. Variables that are created in the function's environment aren't visible from the global environment
-though.
-
-If we reassign a variable in a function it will take a copy of that variable rather than mutating the value in the
-global environment. If we want to update `x` in the global environment we need to use the `<<-` operator.
-
-:::
-
-:::{.column}
-
-```{r, echo = TRUE}
-x <- 1
-fn <- function(y) {
-  x <- x * 2
-  z <- x + y
-  z
-}
-result <- fn(2)
-```
-
-```{r, echo = TRUE}
-exists("z")
-```
-
-```{r, echo = TRUE}
-x
-```
-
-:::
-
-::::
-
-
-
-## Environments
-
-:::{.columns}
-
-
-:::{.column}
-
-
-The function's environment's parent will be the global environment, so we can see all of the variables created in the
-global environment. Variables that are created in the function's environment aren't visible from the global environment
-though.
-
-If we reassign a variable in a function it will take a copy of that variable rather than mutating the value in the
-global environment. If we want to update `x` in the global environment we need to use the `<<-` operator.
-
-:::
-
-:::{.column}
-
-```{r, echo = TRUE}
-x <- 1
-fn <- function(y) {
-  x <- x * 2
-  z <- x + y
-  z
-}
-result <- fn(2)
-```
-
-```{r, echo = TRUE}
-exists("z")
-```
-
-```{r, echo = TRUE}
-x
-```
-
-:::
-
-::::
-
-
-
-
-## Why do we want to write functions?
-
-Consider the following code (from the book [R4DS][r4ds]). Can you spot the mistake?
-
-``` r
-df <- tibble::tibble(
-  a = rnorm(10),
-  b = rnorm(10),
-  c = rnorm(10),
-  d = rnorm(10)
-)
-
-df$a <- (df$a - min(df$a, na.rm = T)) / 
-  (max(df$a, na.rm = T) - min(df$a, na.rm = T))
-df$b <- (df$b - min(df$b, na.rm = T)) / 
-  (max(df$b, na.rm = T) - min(df$a, na.rm = T))
-df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
-  (max(df$c, na.rm = T) - min(df$c, na.rm = T))
-df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
-  (max(df$d, na.rm = T) - min(df$d, na.rm = T))
-```
-
-
-## The mistake
-
-``` r
-df$b <- (df$b - min(df$b, na.rm = T)) / 
-  (max(df$b, na.rm = T) - min(df$a, na.rm = T))
-```
-
-Often, when we copy and paste code we introduce subtle bugs, in the previous example we forgot to update the one
-argument: me call `min(df$a)` rather than `min(df$b)`.
-
-Writing functions can reduce these types of errors by abstracting away the underlying logic.
-
-
-
-## When to write a function
-
-“You should consider writing a function whenever you’ve copied and pasted a block of code more than twice”
-
- H. Wickham
-
-
-
-## Creating a function to solve the last problem
-
-:::{.columns}
-
-
-:::{.column}
-
-To the right is one way to turn the previous example into a function.
-
-We pass in a numerical vector (`x` to the function), calculate the minimum and maximum values, then rescale the vector.
-
-Finally we update each column, one by one, using this new function.
-
-We still have an issue here with the potential for copy-paste bugs in that we are doing the same thing 4 times, just
-changing the column in the data frame that we are using.
-
-:::
-
-:::{.column}
-
-``` r
-rescale_01 <- function(x) {
-  min_x <- min(x, na.rm = TRUE)
-  max_x <- max(x, na.rm = TRUE)
-  
-  (x - min_x) / (max_x - min_x)
-}
-```
-
-``` r
-# update the columns
-df$a <- rescale_01(df$a)
-df$b <- rescale_01(df$b)
-df$c <- rescale_01(df$c)
-df$d <- rescale_01(df$d)
-```
-
-:::
-
-::::
-
-
-
-
-## Creating a function to solve the last problem
-
-:::{.columns}
-
-
-:::{.column}
-
-
-We could use a loop, but we will see how functional programming can help us solve this problem more elegantly later.
-
-One important principle functions help us achieve is **DRY** (don't repeat yourself).
-
-:::
-
-:::{.column}
-
-``` r
-rescale_01 <- function(x) {
-  min_x <- min(x, na.rm = TRUE)
-  max_x <- max(x, na.rm = TRUE)
-  
-  (x - min_x) / (max_x - min_x)
-}
-```
-
-``` r
-# using a loop
-for (i in colnames(df)) {
-  df[[i]] <- rescale_01(df[[i]])
-}
-```
-
-:::
-
-::::
-
-
-
-
-## Sensible errors
-
-```{r, error = TRUE}
-rescale <- function(x) {
-  
-  if (!is.numeric(x)) stop("rescaling must be applied to a number")#<<
-  (x - min(x, na.rm = TRUE)) /  
-  diff(range(x, na.rm = TRUE))
-}
-
-
-vector <- c("a", "vector", "of", "characters")
-
-rescale(vector)
-```
-
-
-
-## Function writing best practices
-
-* Make sure it does what you want it to do
-
-* Use good names
-
-  * functions do stuff; use verbs
-  * arguments are things; use nouns
-  * don't overwrite existing functions
-  
-* Argument order matters
-
-  * tidyverse assumes data input comes first
-  * detail arguments come later (e.g. na.rm = TRUE)
-
-* Make output clear and obvious
-
-The Tidyverse style guide is here: http://style.tidyverse.org/
-
-
-
-
-## Pure functions
-
-:::{.columns}
-
-
-:::{.column}
-
-Pure functions are functions which:
-
-* always produce the same result given the same input
-
-* have no side effects (e.g. reading from a database, writing a file to disk)
-
-* do not use global state (e.g. using variables declared outside of the function)
-
-From before, mappings are pure functions, but the other two types are not.
-
-Pure functions are analogous to mathematical functions.
-
-:::
-
-:::{.column}
-
-
-``` r
-function(x, y) {
-  x + y
-}
-
-function(y) {
-  function(x) {
-    x + y
-  }
-}
-```
-:::
-::::
-
-## Pure vs unpure
-
-:::{.columns}
-
-
-:::{.column}
-
-**Pure** functions are functions which:
-
-* always produce the same result given the same input
-
-* have no side effects (e.g. reading from a database, writing a file to disk)
-
-* do not use global state (e.g. using variables declared outside of the function)
-
-From before, mappings are pure functions, but the other two types are not.
-
-Pure functions are analogous to mathematical functions.
-
-:::
-
-:::{.column}
-
-**Non-Pure** functions
-
-``` r
-rnorm(10)
-read_csv("file.csv")
-
-function(x) {
-  Sys.Date() + x
-}
-
-function(x) {
-  x + y
-}
-
-```
-:::
-
-::::
-
-
-
-
-
-
-# Why do we care about pure functions?
-
-
-
-## Referential Transparency
-
-:::{.columns}
-
-
-:::{.column}
-
-Pure functions are useful as they can make code significantly easier to debug and test. Pure functions have the property
-of [referential transparency][ref_transp], which put simply means we can replace an expression with it's corresponding
-value.
-
-For example, consider the function `fn` (shown to the right). Because the function `fn` is pure, we know that it will
-always return the same result given the same input, so replacing it's call with the return value is going to yield the
-same result.
-
-This can make debugging/testing `another_fn` simpler. The behaviour of `another_fn` is not dependent on `fn`.
-
-:::
-
-:::{.column}
-
-``` r
-fn <- function(x) {
-  x + 3
-}
-```
-
-``` r
-another_fn(fn(3), 2)
-```
-
-``` r
-# we can replace the call to fn() with
-# it's return value
-another_fn(6, 2)
-```
-:::
-
-::::
-
-
-## Testing
-
-:::{.columns}
-
-
-:::{.column}
-
-Knowing that a function will always return the same value given the same inputs makes writing unit tests easier:
-
-* We don't need to set up the global environment correctly before running the function - functions that rely on global state would need to test the function multiple times with the global environment set up with all the possible values.
-
-* We don't need to check the side effects of the function, we just need to check the return value is as expected.
-Functions that rely on a side effect can suffer transient errors, e.g. you try to read data from a database, but the
-server is temporarily down/busy.
-
-* All we need to do is check that the outputs are correct for given inputs.
-
-:::
-
-:::{.column}
-
-``` r
-library(testthat)
-
-triangle_number <- function(x) {
-  0.5 * x * (x + 1)
-}
-
-test_that("it works as expected", {
-  expected_that(triangle_number(1),  1)  
-  expected_that(triangle_number(2),  3)  
-  expected_that(triangle_number(3),  6)  
-  expected_that(triangle_number(4), 10)  
-  expected_that(triangle_number(5), 15)  
-})
-```
-:::
-
-::::
-
-
-
-
-## Iteration with loops
-
-:::{.columns}
-
-
-:::{.column}
-
-Previously we looked at an example where we used a for loop to run the same function on every column in a dataframe.
-
-We had to iterate in this way because the function that we had (`rescale_01`) worked on individual numeric vectors.
-
-We needed to set up the for loop by first extracting the list of columns, then iterating over each column running the
-function.
-
-This is a very common pattern: take a list we want to iterate over, then evaluate some function using that list.
-
-``` r
-for(i in colnames(df)) {
-  df[[i]] <- rescale_01(df[[i]])
-}
-```
-]
-
-:::
-
-:::{.column}
-
-However, it's very easy to make a mistake creating a loop this way: what if we occidentally update the wrong item in the
-dataframe?
-
-``` r
-for(i in colnames(df)) {
-  df[[1]] <- rescale_01(df[[i]])
-}
-```
-
-Or we don't correctly initialise the iteration?
-
-``` r
-for(i in 1:4) {
-  # does our data always have 4 columns?
-  df[[i]] <- rescale_01(df[[i]])
-}
-```
-:::
-
-::::
-
-
-
-## `purrr::map()`
-
-:::{.columns}
-
-
-:::{.column}
-
-The `map` function from `{purrr}` takes a vector/list, and a function. It the evaluates the function once for each
-input, returning the results as a list.
-
-We could replace our loop example quite simply with a map function:
-
-``` r
-df <- map_dfc(df, rescale_01)
-```
-
-The map function's arguments are
-
-``` r
-map(x, fn, ...)
-```
-
-* `x` is the vector you wish to iterate over
-* `fn` if the function
-* ... are any extra arguments the function requires (these are the same for all calls of the function)
-
-:::
-
-:::{.column}
-
-The image, courtesy of Advanced R shows graphically how the map function works.
-
-![](https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png)
-
-:::
-
-::::
-
-
-
-## `map` in action
-
-:::{.columns}
-
-
-:::{.column}
-
-A toy example, let's take a vector of numbers and double them
-``` r
-values <- 1:5
-
-# we can use a "named function"
-double_num <- function(x) 2 * x
-map(values, double_num)
-
-# or, we can use an anonymous function
-map(values, function(x) 2 * x)
-# with R > 4.1, we can use \(x) 2 * x
-map(values, \(x) 2 * x)
-
-# we can also use a formula
-map(values, ~ .x * 2)
-```
-:::
-
-:::{.column}
-
-Any one of these would return the same thing: a list containing the results
-
-```{r echo=FALSE}
-values <- 1:5
-map(values, \(x) 2 * x)
-```
-
-:::
-
-::::
-
-
-## More maps
-
-Other types of map that return specific things
-
-* `map` - list
-* `map_lgl` logical
-* `map_int` integer
-* `map_dbl` double
-* `map_chr` character
-* `map_df` dataframe
-
-Maps are "type-safe" they will fail if they cannot return the correct data type
-
-
-
-## `map_*` variants
-
-:::{.columns}
-
-
-:::{.column}
-
-In the previous example we can see the output of `map` is a list. It would be more useful for that function to return a
-numeric vector instead. Fortunately, there is a simple way to achieve this in purrr:
-
-```{r echo=TRUE}
-map_dbl(values, \(x) 2 * x)
-```
-
-The variants provided are:
-
-* `map_chr` for a function which returns a character
-* `map_int`/`map_dbl` for a function which returns an integer/double
-* `map_lgl` for a function which returns a logical (`TRUE`/`FALSE`)
-* `map_df`/`map_dfr`/`map_dfc` for a function which returns a dataframe
-
-:::
-
-:::{.column}
-
-
-
-
-Now, the example given so far isn't particularly useful: many operations in R are vectorised, so we could just do
-`2 * values` and we would get exactly the same results as `map_dbl(values, \(x) 2 * x)`.
-
-`map` functions are useful for cases where we have functions which aren't vectorised and we need to run the function
-once for each item in the input vector.
-
-:::
-
-::::
-
-
-
-## `map_df` variants
-
-The data frame variants all do the same sort of thing: if a function returns a dataframe, rather than returning a list
-of dataframes, it will bind the results together into a single dataframe:
-
-* `map_df` and `map_dfr` use `bind_rows` to "union" the results together
-* `map_dfc` uses `bind_cols` instead
-
-One of the best use cases for `map_df` is to read in a folder full of csv's and combine the results together.
-
-First, let's get a list of all the files in a folder.
-
-```{r, eval = FALSE}
-csv_files_list_files <- list.files(path = "data/many_files",
-                                    pattern = "csv", full.names = TRUE)
-```
-
-```
- [1] "data/many_files/1.csv"  "data/many_files/10.csv" "data/many_files/11.csv" "data/many_files/12.csv"
- [5] "data/many_files/13.csv" "data/many_files/14.csv" "data/many_files/15.csv" "data/many_files/16.csv"
- [9] "data/many_files/17.csv" "data/many_files/18.csv" "data/many_files/19.csv" "data/many_files/2.csv" 
-[13] "data/many_files/20.csv" "data/many_files/21.csv" "data/many_files/22.csv" "data/many_files/23.csv"
-[17] "data/many_files/24.csv" "data/many_files/25.csv" "data/many_files/3.csv"  "data/many_files/4.csv" 
-[21] "data/many_files/5.csv"  "data/many_files/6.csv"  "data/many_files/7.csv"  "data/many_files/8.csv" 
-[25] "data/many_files/9.csv"
-
-```
-
-
-
-## `map_df` continued
-
-
-Now that we have our list of files to load, we can use the `read_csv` function to load each csv file. 
-
-Here, we pass to
-the `read_csv` function the column types used in the files, and we also set the `.id` argument of `map_dfr`. 
-
-This will
-create a column in the final dataframe containing the "name" of each item in the list, e.g. the date from the filename.
-
-```{r, eval = FALSE}
-df <- map_dfr(csv_files_list_files,
-              ~ read_csv(.x))
-
-```
-
-
-## `map2`
-
-So far we have looked at cases where we have a single vector to iterate over, but what if we have two vectors, both of
-the same length? We can use the `map2` family of functions! 
-
-:::{.columns}
-
-
-:::{.column}
-
-
-```
-map2(.x, .y, .f)
-```
-
-```{r echo=TRUE}
-letters <- c("a", "b", "c")
-times <- 1:3
-
-map2_chr(letters, times, \(x, y) paste(rep(x, y), collapse = ""))
-```
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="100%"}
-knitr::include_graphics("images/map2.png")
-```
-
-:::
-
-::::
-
-
-
-## Functional programming with dplyr
-
-```{r, eval = F}
-penguins_clean_split |> 
-  group_by(species) |> 
-  summarise(
-    across(
-      .cols = where(is.numeric),
-      .fns = ~mean(.x, na.rm = T),
-      .names = "mean_{.col}")
-    )
-
-```
-
-```
-species	mean_sample_number	mean_culmen_length_mm	mean_culmen_depth_mm	mean_flipper_length_mm	mean_body_mass_g	mean_delta_15_n_o_oo	mean_delta_13_c_o_oo
-Adelie	76.5	38.79139	18.34636	189.9536	3700.662	8.859733	-25.80419
-Chinstrap	34.5	48.83382	18.42059	195.8235	3733.088	9.356155	-24.54654
-Gentoo	62.5	47.50488	14.98211	217.1870	5076.016	8.245338	-26.18530
-
-```
-
-
-
-## walk/walk2
-
-Along with map, map2 and pmap, we have the walk family of functions: these are useful for if you want to run a function for it's side-effect. 
-
-The walk functions work similarly to the map functions, but you use them when you’re interested in applying a function that performs an action instead of producing data. 
-
-The walk functions are useful for performing actions like writing files and printing plots.
-
-
-
-## Source scripts & functions
-
-You may find it useful to assemble your custom functions into a dedicated R script.
-
-This can then be sourced for use in any other R scripts when required
-
-```{r, eval = FALSE}
-source("path/to/some/file/functions.R")
-```
-
-Simply add this line to the top of your R script and you’ll be able to use any functions defined in file.R.
-
-
-
-## Packages
-
-Packages are the fundamental units of reproducible code. When functions become routinely useful to you, you might consider turning them into a package for your personal R `library()` to be called at a moments notice. 
-
-[Writing packages](https://r-pkgs.org/)
-
-If your functions might be useful to others, it can be made public (via Github or CRAN), so that others can use it too. 
-
-A reason to remember to always `cite` R packages 
-
-
-# Open Science {background-color="#D9DBDB"}
-
-
-## Turning a question into a model
-
-- Hypotheses in research predict relationships between variables.
-
-- Linear models help test these hypotheses by quantifying these relationships.
-
-- Converting hypotheses into linear models involves identifying dependent and independent variables.
-
-- Considering and including important covariates
-
-- Determining whether interaction terms need to be included
-
-
-## Simple linear model
-
-:::{.incremental}
-
-- **Question**: Does the amount of sunlight affect plant growth?
-
-- **Hypothesis**: More sunlight hours increase plant growth
-
-- **Linear Model**: `height ~ sunlight_hours`
-
-:::
-
-
-## Control variables
-
-:::{.incremental}
-
-- **Question**: Does the amount of sunlight affect plant growth?
-
-- **Hypothesis**: More sunlight hours increase plant growth
-
-- **Control variables**: Soil quality
-
-- **Linear Model**: `height ~ sunlight_hours + soil quality`
-
-:::
-
-## Multiple predictor model
-
-:::{.incremental}
-
-- **Question**: How do water and nutrient levels affect plant growth?
-
-- **Hypothesis**: Both increased water and nutrient levels lead to increased plant growth.
-
-- **Control Variables**: Temperature
-
-- **Linear Model**: `growth ~ water + nutrient + temp_c`
-
-:::
-
-
-## Multiple predictor model
-
-:::{.incremental}
-
-- **Question**: Do water and nutrient levels work together to affect plant growth?
-
-- **Hypothesis**: Increasing water and nutrient levels has a combined effect that leads to increased plant growth, greater than the effect of either on their own.
-
-- **Control Variables**: Temperature
-
-- **Linear Model**: `growth ~ water + nutrient + temp_c + water:nutrient`
-
-:::
-
-## Exercise 1
-
-:::{.incremental}
-
-- **Question**: Does temperature affect the metabolic rate of lizards?
-
-- **Hypothesis**: Temperature increases the metabolic rate of lizards
-
-- **Control Variables**: Age of lizards
-
-- **Linear Model**: `metabolic_rate ~ temp + age`
-
-:::
-
-## Exercise 2:
-
-:::{.incremental}
-
-- **Question**: How does diet and exercise affect cholesterol in mice?
-
-- **Hypothesis**: low fat diets and regular exercise decrease cholesterol levels in mice
-
-- **Control Variables**: Genetic strain of mice
-
-- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain`
-
-- **Linear Model**: `cholesterol ~ diet_fat + daily_exercise_hours + strain + diet_fat:daily_exercise`
-
-:::
-
-
-## Simulate sample size
-
-`cholesterol ~ diet_fat + daily_exercise_hours + strain + diet_fat:daily_exercise`
-
-
-```{r, echo = TRUE}
-simulate_ancova <- function(n, alpha = 0.05, sd = 1){
-
-# Two strains of mice
-group <- factor(rep(1:2, each = n))
-
-# dietary fat 
-fat_amount <- runif(n, min = 20, max = 80)
-# daily exercise
-exercise_amount <- rnorm(n, mean = 30, sd = 4)
-
-# coefficients
-
-# Define coefficients
-beta_fat = 0.08      # Fat increases cholesterol
-beta_exercise = -.03  # Exercise decreases cholesterol
-beta_interaction = -0.01  # Interaction term
-
-strain_effect <- ifelse(group==1, 
-                         rnorm(n, mean = 10), 
-                         rnorm(n, mean = 5))
-
-cholesterol <- rnorm(
-  n = n,
-  mean = 150+
-  (fat_amount*beta_fat)+
-  (exercise_amount*beta_exercise)+
-  (beta_interaction*fat_amount*exercise_amount)+
-  strain_effect,
-  sd = sd)
-
- # Create dataframe
-  data <- data.frame(group = group, 
-                     fat_amount = fat_amount, 
-                     exercise_amount = exercise_amount,
-                     cholesterol = cholesterol)
-
-  # Fit ANCOVA model (y ~ group + covariate)
-  model <- lm(cholesterol ~ group + 
-                fat_amount + 
-                exercise_amount + 
-                fat_amount:exercise_amount, data = data)
-  
-  p_value <- summary(model)$coefficients[5,4]
-  
-   # Return whether the p-value is significant
-  return(p_value < alpha)
-}
-
-```
-
-## Check power
-
-```{r, echo = TRUE}
-
-monte_carlo_power <- function(n_sims=1000, n=30, alpha = 0.05, sd =1) {
-  results <- replicate(n_sims, simulate_ancova(n, alpha))
-  power <- mean(results)
-  return(power)
-}
-
-# Run simulation
-power_estimate <- monte_carlo_power(n_sims = 1000, n = 30, sd =1)
-print(paste("Estimated power:", power_estimate))
-
-```
-
-# Questions?
-
-# Fitting models  {background-color="#D9DBDB"}
-
-## How do I know my model is a good fit?
-
-
-### 1. Statistics are no substitute for judgment
-
-Have a clear hypothesis for why variables are being included (and whether they might interact)
-
-### 2. Check assumptions & diagnostics
-
-A model with poor diagnostics is a bad fit for the data – confidence intervals and p values will not be robust. 
-
-
-## Model checks
-
-- Start by fitting a model that includes your dependent variable(s), covariates and specifies any key interactions
-
-- Check the model is a good fit for the observed data
-
-:::{.incremental}
-
-* Diagnostic plots of residuals
-
-
-* Multicollinearity
-
-
-
-* Omitted Variable Bias
-
-
-
-* Irrelevant variables
-
-
-
-* Hypothesis testing for model simplification
-
-
-:::
-
-## Common misundertandings\n about P values
-
-**A p-value is NOT:**
-
-- The probability that the null hypothesis is true.
-
-- The probability your results occurred "by chance."
-
-- Proof of a meaningful or large effect.
-
-**What it IS:**
-
-- A measure of how surprising your data is under the assumption the null hypothesis is true.
-
-
-[Common misconceptions about P-values](https://daniellakens.blogspot.com/2017/12/understanding-common-misconceptions.html?m=1)
-
-[Evidence of P-hacking](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4359000/#:~:text=Evidence%20for%20p%2Dhacking%20from,test%20function%20in%20R)
-
-
-
-
-## A non-significant p-value DOES NOT mean the null hypothesis is true
-
-::::{.columns}
-
-:::{.column}
-
-In reality, we can’t know for sure if a true mean difference exists.
-
-For illustration: Assume we could know the true mean difference.
-
-The figure shows:
-
-    Grey line: Expected data if the null hypothesis is true.
-
-    Black line: Expected data if the alternative hypothesis is true.
-
-A p-value shows how surprising the data are if the null is true.
-
-A low p-value is evidence against the null, not proof of the alternative.
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="60%"}
-
-knitr::include_graphics("images/null-and-alternate.png")
-
-```
-
-:::
-
-::::
-
-
-## Why a significant p-value does not mean the null hypothesis is false
-
-
-What we can conclude, based on our data, is that we have observed an extreme outcome, that should be considered surprising. But such an outcome is not *impossible* when the null-hypothesis is true.
-
-```{r, echo = FALSE, out.width="60%"}
-
-knitr::include_graphics("images/type-1.png")
-
-```
-
-
-
-## Why a significant p-value is not the same as an important effect
-
-::::{.columns}
-
-:::{.column}
-
-If we plot the null model for a very large sample size, we can see that even very small mean differences will be considered 'surprising'. 
-
-However, just because data is surprising, does not mean we need to care about it. It is mainly the verbal label ‘significant’ that causes confusion here – it is perhaps less confusing to think of a ‘significant’ effect as a ‘surprising’ effect.
-
-:::
-
-:::{.column}
-
-```{r, echo = FALSE, out.width="90%"}
-
-knitr::include_graphics("images/sample-size.png")
-
-```
-
-:::
-
-::::
-
-## Research Challenges
-
-## Are most published results wrong?
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/Ionnadis.png")
-
-```
-
-
-## Are most published results wrong? 
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/effects_wrong.png")
-
-```
-
-
-
-[Smaldino & McElreath 2016](https://royalsocietypublishing.org/doi/full/10.1098/rsos.160384?wm=3049_a111)
-[Ioannidis 2005](https://doi.org/10.1371%2Fjournal.pmed.0020124)
-
-
-## What is the reproducibility crisis?
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/pub_perish.png")
-
-```
-
-## Irreproducible science
-
-### Without realising it, good scientists have been engaging in questionable research practices (QRPs) partly driven by an incentive structure that doesn’t incentivise good scientific practice…
-
-## Questionable Practice
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/manifesto_bad_science.png")
-
-```
-
-## Why do studies fail to replicate?
-
-- There are too many studies with experimental power too low to detect the effect size of interest.
-
-- One of the consequences of a low powered study is that when real effects are detected their magnitude is likely to be over-estimated. 
-
-- Studies which find the effect are published and studies that don’t are not published - due to a bias to publish positive results. 
-
-- Future work may use the published effect size during a priori power analysis (and then fail to find the effect as the new study is effectively under-powered for what it’s looking for).
-
-
-## What can be done?
-
-::::{.columns}
-
-:::{.column width="70%"}
-
-- UK Reproducibility Network - funded by UK Research Council
-
-- 46 member institutions (UEA is one)
-
-- Establish open research practices across UK Research
-
-- [https://www.ukrn.org/](https://www.ukrn.org/)
-
-:::
-
-:::{.column width="30%"}
-
-![](images/UKRN-Logo.png){fig-align="center" fig-alt="UKRN" width=80%}
-
-:::
-
-::::
-
-## Conclusions
-
-- The academic incentive structure has to change.
-
-- There should be less focus/reward for people who are doing expensive science, and more focus/reward for people who are doing better science. 
-
-- Across disciplines and institutions, there can be a surprising lack of understanding about what open research is (and what it isn’t).
-
-## Conclusions
-
-- We need to be teaching open research practices to our students (the next generation of researchers).
-
-- There is a huge computational skills gap amongst PhD students, postdocs, and teaching/research academics - without these skills, people simply cannot adopt open and reproducible research practices.
-
-
-::: aside
-
-https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-021-05883-3
-
-:::
-
-# Discussion {background-color="#D9DBDB"}
-
-
-## Before Data Collection
-
-- Specify your hypotheses and analysis plan.
-
-- Pre-register your hypotheses and analysis plan at (osf.io) 
-
-- Consider data simulation so that you can write your analysis script before you have your real data.
-
-
-## Analysis
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/repro-spectrum.jpg")
-
-```
-
-## Analysis
-
-
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/error_3.png")
-
-```
-
-::: aside
-
-https://www.youtube.com/watch?v=cDA3_5982h8
-
-:::
-
-
-## Errors
-
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/error_1.png")
-
-```
-
-## Errors
-
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/error_2.png")
-
-```
-
-## You NEED Code
-
-- You need to use open source analysis software such as R or Python.
-
-- You need to think about your entire analysis pipeline from data importing, data wrangling, visualisation, statistical modelling, and report generation.  
-
-- Scripts are fine for small tasks but what about the multiple tasks needed in a research project?  How do you connect them together so the entire workflow can be reproduced?
-
-- What happens when you want to share your workflow with colleagues elsewhere or in another lab (with a different infrastructure)?
-
-- "It worked on my machine!" - but it’s not good when it doesn't work on your collaborators' machines (or on your new machine!)
-
-## You need to share it
-
-```{r, echo = FALSE, out.width="80%", fig.alt = "."}
-
-knitr::include_graphics("images/github_front.png")
-
-```
-
-## You need to capture dependencies
-
-- You need to capture the versions of your software packages. 
-
-- This may sound trivial but trying running some old analysis code and be amazed at how many things now don’t work as they once did!
-
-## Summary
-
-- Open data and open code are the future - remember to make your data and code available.
-
-- Pre-registration allows you to capture your predictions - time-stamped at a point in time so when you come to write up your work you can use the pre-reg as evidence that you really did make your predictions before data collection commenced.  
-
-- In many cases conducting research in a reproducible manner is easy - it requires a bit of planning and organisation up-front, but the pay-off is huge.
-
-- Not only will others be able to reproduce your results, but so will you at some future point in time.
-
-- Working in an open and reproducible manner also makes large-scale collaborations easier - with the extra computational skills that you acquire, you’ll be a more effective researcher.
-
-
-# Resources {background-color="#D9DBDB"}
-
-## Additional resources
-
-* Discovering Statistics - Andy Field
-
-* [Happy Git](https://happygitwithr.com/) 
-
-* An Introduction to Generalized Linear Models - Dobson & Barnett
-
-* An Introduction to Statistical Learning with Applications in R - James, Witten, Hastie & Tibshirani
-
-* Mixed Effects Models and Extensions in Ecology with R - Zuur, et al.
-
-* Ecological Statistics with contemporary theory and application
-
-* The Big Book of R (https://www.bigbookofr.com/)
-
-* [British Ecological Society Guides to Better Science](https://www.britishecologicalsociety.org/publications/better-science/)
-
-*[(SORTEE)](https://www.sortee.org/reading/)
-
-
-## Reading list {.smaller}
-
-::::{.columns}
-
-:::{.column}
-
-[Writing statistical methods for ecologists](https://doi.org/10.1002/ecs2.4539)
-
-[Reporting statistical methods and outcome of statistical analyses in research articles](https://link.springer.com/article/10.1007/s43440-020-00110-5)
-
-[Design principles for data analysis](https://doi.org/10.1080/10618600.2022.2104290)
-
-[Log-transformation and its implications for data analysis.](https://doi.org/10.3969%2Fj.issn.1002-0829.2014.02.009)
-
-[Effect size, confidence interval and statistical significance: a practical guide for biologists](https://doi.org/10.1111/j.1469-185X.2007.00027.x)
-
-[Same data, different analysts: variation in effect sizes due to analytical decisions in ecology and evolutionary biology](https://ecoevorxiv.org/repository/view/6000/)
-
-[Misconceptions, Misuses, and Misinterpretations of P Values and Significance Testing](https://doi.org/10.2106/jbjs.16.01314)
-
-:::
-
-:::{.column}
-
-[Ten common statistical mistakes to watch out for when writing or reviewing a manuscript.](https://elifesciences.org/articles/48175)
-
-[Why most published research findings are false](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124)
-
-[Step away from stepwise](https://doi.org/10.1186/s40537-018-0143-6)
-
-[Model averaging and muddled multimodel inference](https://doi.org/10.1890/14-1639.1)
-
-[Make scientific data FAIR](https://www.nature.com/articles/d41586-019-01720-7)
-
-[A brief introduction to mixed effects modelling and multi-model inference in ecology](https://peerj.com/articles/4794/)
-
-[The Practical Alternative to the p Value Is the Correctly Used p Value](https://doi.org/10.1177/1745691620958012)
-
-:::
-
-::::
-
-## Reading list {.smaller}
-
-::::{.columns}
-
-:::{.column}
-
-[Why Science Is Not Necessarily Self-Correcting](https://doi.org/10.1177/1745691612464056)
-
-[The reproducibility debate is an opportunity, not a crisis](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-05942-3)
-
-:::
-
-:::{.column}
-
-
-
 :::
-
-::::
-
-## 
 
-::: columns
-::: {.column}
 
-<br>
 
-{{< fa brands linkedin >}} [philip-leftwich](https://www.linkedin.com/in/philip-leftwich-117052155/)
 
-{{< fa brands mastodon >}} [\@ecoevo.social\@PhilipLeftwich](https://ecoevo.social/@PhilipLeftwich)
 
-{{< fa brands github >}} [PhilipLeftwich](https://github.com/Philip-Leftwich)
-
-{{< fa globe >}} [philip.leftwich.github.io](https://philip.leftwich.github.io/)
-
-
-
-:::
-::: {.column}
-
-
-:::
-:::

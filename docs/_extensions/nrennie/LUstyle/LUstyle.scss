@@ -1,109 +1,636 @@
 /*-- scss:defaults --*/
 
-// fonts
+// =============================================================================
+// FONTS
+// =============================================================================
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;700&display=swap');
 
-// font family
 $font-family-sans-serif: 'Roboto', Arial, sans-serif !default;
-$presentation-heading-font: 'Roboto Slab', Times New Roman, serif  !default;
+$presentation-heading-font: 'Roboto Slab', 'Times New Roman', serif !default;
 
-// font size
+// =============================================================================
+// SPACING SYSTEM
+// =============================================================================
+$spacing-unit: 1rem;
+$spacing-xs: calc($spacing-unit * 0.25);  // 0.25rem
+$spacing-sm: calc($spacing-unit * 0.5);   // 0.5rem
+$spacing-md: $spacing-unit;               // 1rem
+$spacing-lg: calc($spacing-unit * 1.5);   // 1.5rem
+$spacing-xl: calc($spacing-unit * 2);     // 2rem
+$spacing-xxl: calc($spacing-unit * 3);    // 3rem
+
+// =============================================================================
+// TYPOGRAPHY SCALE
+// =============================================================================
+$presentation-font-size-root: 36px;
+$presentation-line-height: 1.5;
+
 $presentation-h1-font-size: 2.6em;
 $presentation-h2-font-size: 1.7em;
 $presentation-h3-font-size: 1.4em;
 $presentation-h4-font-size: 1.1em;
-$presentation-font-size-root: 40px;
-$presentation-line-height: 1.5em;
 
-// font colour
-$presentation-heading-color: #000000 !default;
+// =============================================================================
+// COLOUR PALETTE
+// =============================================================================
 
-// code
-$code-color: #ed61ba !default;
-$code-block-font-size: 0.6em;
-$code-block-border-color: #000000;
-$code-block-bg: #fafafa;
+// Primary colours
+$colour-primary: #c41e8a;      // Accessible pink (WCAG AA compliant)
+$colour-primary-light: #ed61ba; // Original pink for decorative use only
+$colour-primary-dark: #8a1560;  // Darker variant
 
-// bg colours 
-$body-color: #000000;
-$link-color: #ed61ba;
-$body-bg: #ffffff;
+// Neutrals
+$colour-black: #000000;
+$colour-grey-dark: #333333;
+$colour-grey: #666666;
+$colour-grey-light: #b1b1b2;
+$colour-grey-lighter: #e0e0e0;
+$colour-white: #ffffff;
+
+// Background colours
+$colour-bg-light: #fafafa;
+$colour-bg-code: #f5f5f5;
+
+// Semantic colours
+$body-bg: $colour-white;
+$body-color: $colour-black;
+$presentation-heading-color: $colour-black;
+$link-color: $colour-primary;
+$link-hover-color: $colour-primary-dark;
+
+// Code colours
+$code-color: $colour-primary;
+$code-block-bg: $colour-bg-code;
+$code-block-border-color: $colour-grey-light;
+$code-block-font-size: 0.75em; // Increased for readability
+
+// =============================================================================
+// COMPONENT VARIABLES
+// =============================================================================
+
+// Borders
+$border-width: 2px;
+$border-radius: 0.5rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 1rem;
+
+// Transitions
+$transition-speed: 0.2s;
+$transition-timing: ease-in-out;
+
+// Shadows
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 
 /*-- scss:rules --*/
 
-.btn-webr {
-  background-color: $code-block-bg !important;
-  border-color: $link-color;
-  border-width: 3px;
-  border-radius: 15px !important;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-family: $font-family-sans-serif;
-  font-size: 20px;
-  cursor:pointer;
+// =============================================================================
+// TYPOGRAPHY
+// =============================================================================
+
+h2 {
+  padding-bottom: $spacing-lg;
+  margin-bottom: $spacing-md;
+}
+
+h3 {
+  padding-bottom: $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+h4 {
+  padding-bottom: $spacing-sm;
+  margin-bottom: $spacing-sm;
 }
 
 .subtitle {
   font-size: $presentation-h3-font-size;
   font-family: $font-family-sans-serif;
+  font-weight: 400;
+  margin-top: $spacing-md;
 }
 
-h2 {
-  padding-bottom: 35px;
+// =============================================================================
+// LINKS
+// =============================================================================
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  transition: color $transition-speed $transition-timing;
+
+  &:hover,
+  &:focus {
+    color: $link-hover-color;
+    text-decoration: underline;
+  }
 }
+
+section.has-dark-background {
+  a,
+  a:hover,
+  a:focus {
+    color: $body-bg;
+    text-decoration: underline;
+  }
+}
+
+// =============================================================================
+// AUTHOR INFORMATION
+// =============================================================================
 
 .author {
   color: $body-bg;
   font-size: $presentation-h4-font-size;
   font-family: $font-family-sans-serif;
-}
 
-.author a {
-  color: $body-bg;
-  font-size: $presentation-h4-font-size;
-  font-family: $font-family-sans-serif;
-}
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
 
-section.has-dark-background a, section.has-dark-background a:hover {
-  color: $body-bg;
-}
-
-.reveal .footer {
-  color: #000000;
-  font-family: $font-family-sans-serif;
-  padding-bottom: 5px;
-}
-
-.reveal .slide-logo {
-  right: 50px;
-  padding-right: 20px !important;
-  padding-bottom: 30px !important;
-  max-height: 50px !important;
-  z-index: 1;
-}
-
-.reveal .slide-menu-button {
-    left: 5px;
-    top: 15px;
-    padding-left: 10px;
-    color: #b1b1b2;
+    &:hover,
+    &:focus {
+      text-decoration-thickness: 2px;
+    }
   }
+}
 
-.reveal .progress {
-  background: rgb(177, 177, 178);
-  color: #ed61ba;
-  height: 2%;
+// =============================================================================
+// CODE BLOCKS
+// =============================================================================
+
+code {
+  color: $code-color;
+  font-weight: 500;
 }
 
 .reveal pre.sourceCode code {
-  max-height: 650px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: $spacing-md;
+  border: $border-width solid $code-block-border-color;
+  border-radius: $border-radius-sm;
+  line-height: 1.4;
 }
 
-.right {
-  text-align: right !important
+// Scrollbar styling for code blocks
+.reveal pre.sourceCode code::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.reveal pre.sourceCode code::-webkit-scrollbar-track {
+  background: $colour-bg-light;
+  border-radius: $border-radius-sm;
+}
+
+.reveal pre.sourceCode code::-webkit-scrollbar-thumb {
+  background: $colour-grey-light;
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    background: $colour-grey;
+  }
+}
+
+// =============================================================================
+// BUTTONS
+// =============================================================================
+
+.btn-webr {
+  background-color: $code-block-bg;
+  border: 3px solid $link-color;
+  border-radius: $border-radius-lg;
+  padding: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-md;
+  font-family: $font-family-sans-serif;
+  font-size: 0.5em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-speed $transition-timing;
+  box-shadow: $shadow-sm;
+
+  &:hover,
+  &:focus {
+    border-color: $link-hover-color;
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+    outline: none;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+  }
+}
+
+// =============================================================================
+// REVEAL.JS SPECIFIC COMPONENTS
+// =============================================================================
+
+// Footer
+.reveal .footer {
+  color: $colour-grey-dark;
+  font-family: $font-family-sans-serif;
+  font-size: 0.6em;
+  padding-bottom: $spacing-sm;
+  opacity: 0.8;
+}
+
+// Logo
+.reveal .slide-logo {
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  max-height: 3rem;
+  width: auto;
+  z-index: 100;
+  opacity: 0.9;
+  transition: opacity $transition-speed $transition-timing;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Menu button
+.reveal .slide-menu-button {
+  position: absolute;
+  left: $spacing-sm;
+  top: $spacing-md;
+  padding-left: $spacing-sm;
+  color: $colour-grey-light;
+  transition: color $transition-speed $transition-timing;
+
+  &:hover,
+  &:focus {
+    color: $colour-grey;
+  }
+}
+
+// Progress bar
+.reveal .progress {
+  background: rgba($colour-grey-light, 0.3);
+  color: $colour-primary;
+  height: 0.3%;
+  transition: height $transition-speed $transition-timing;
+}
+
+// Slide number
+.reveal .slide-number {
+  color: $colour-grey;
+  background-color: transparent;
+  font-size: 0.5em;
+}
+
+// =============================================================================
+// LAYOUT UTILITIES
+// =============================================================================
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .center-text {
-  text-align: center !important
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+// Flexbox utilities
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Spacing utilities
+.mt-sm { margin-top: $spacing-sm; }
+.mt-md { margin-top: $spacing-md; }
+.mt-lg { margin-top: $spacing-lg; }
+.mt-xl { margin-top: $spacing-xl; }
+
+.mb-sm { margin-bottom: $spacing-sm; }
+.mb-md { margin-bottom: $spacing-md; }
+.mb-lg { margin-bottom: $spacing-lg; }
+.mb-xl { margin-bottom: $spacing-xl; }
+
+.pt-sm { padding-top: $spacing-sm; }
+.pt-md { padding-top: $spacing-md; }
+.pt-lg { padding-top: $spacing-lg; }
+.pt-xl { padding-top: $spacing-xl; }
+
+.pb-sm { padding-bottom: $spacing-sm; }
+.pb-md { padding-bottom: $spacing-md; }
+.pb-lg { padding-bottom: $spacing-lg; }
+.pb-xl { padding-bottom: $spacing-xl; }
+
+// =============================================================================
+// COLUMNS AND LAYOUT
+// =============================================================================
+
+.columns {
+  display: flex;
+  gap: $spacing-lg;
+
+  .column {
+    flex: 1;
+
+    &.narrow {
+      flex: 0.5;
+    }
+
+    &.wide {
+      flex: 1.5;
+    }
+  }
+}
+
+// =============================================================================
+// SPECIAL CONTENT BLOCKS
+// =============================================================================
+
+// Callout boxes
+.callout {
+  padding: $spacing-md;
+  margin: $spacing-md 0;
+  border-left: 4px solid $colour-primary;
+  background-color: $colour-bg-light;
+  border-radius: $border-radius-sm;
+
+  &.callout-warning {
+    border-left-color: #f59e0b;
+  }
+
+  &.callout-info {
+    border-left-color: #3b82f6;
+  }
+
+  &.callout-success {
+    border-left-color: #10b981;
+  }
+}
+
+// Image styling
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: $border-radius-sm;
+}
+
+figure {
+  margin: $spacing-lg 0;
+
+  img {
+    box-shadow: $shadow-md;
+  }
+
+  figcaption {
+    margin-top: $spacing-sm;
+    font-size: 0.8em;
+    color: $colour-grey;
+    font-style: italic;
+    text-align: center;
+  }
+}
+
+// =============================================================================
+// TABLES
+// =============================================================================
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: $spacing-lg 0;
+  font-size: 0.85em;
+
+  thead {
+    background-color: $colour-bg-light;
+
+    th {
+      padding: $spacing-sm $spacing-md;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid $colour-grey-light;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $colour-grey-lighter;
+
+      &:hover {
+        background-color: $colour-bg-light;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+}
+
+// =============================================================================
+// LISTS
+// =============================================================================
+
+ul, ol {
+  margin: $spacing-md 0;
+
+  li {
+    margin-bottom: $spacing-sm;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// =============================================================================
+// BLOCKQUOTES
+// =============================================================================
+
+blockquote {
+  margin: $spacing-lg 0;
+  padding: $spacing-md $spacing-lg;
+  border-left: 4px solid $colour-primary;
+  background-color: $colour-bg-light;
+  font-style: italic;
+
+  p {
+    margin: 0;
+  }
+
+  cite {
+    display: block;
+    margin-top: $spacing-sm;
+    font-size: 0.85em;
+    color: $colour-grey;
+    font-style: normal;
+
+    &::before {
+      content: "— ";
+    }
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY ENHANCEMENTS
+// =============================================================================
+
+// Focus indicators
+*:focus-visible {
+  outline: 2px solid $colour-primary;
+  outline-offset: 2px;
+  border-radius: $border-radius-sm;
+}
+
+// Skip to content link
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: $colour-primary;
+  color: $colour-white;
+  padding: $spacing-sm $spacing-md;
+  text-decoration: none;
+  z-index: 1000;
+
+  &:focus {
+    top: 0;
+  }
+}
+
+// Screen reader only content
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// =============================================================================
+// PRINT STYLES
+// =============================================================================
+
+@media print {
+  .reveal .slide-logo,
+  .reveal .slide-menu-button,
+  .reveal .progress,
+  .reveal .slide-number {
+    display: none;
+  }
+
+  .reveal pre.sourceCode code {
+    max-height: none;
+    page-break-inside: avoid;
+  }
+
+  h2, h3, h4 {
+    page-break-after: avoid;
+  }
+}
+
+// =============================================================================
+// RESPONSIVE ADJUSTMENTS
+// =============================================================================
+
+@media screen and (max-width: 768px) {
+  .columns {
+    flex-direction: column;
+  }
+
+  .reveal .slide-logo {
+    max-height: 2rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  table {
+    font-size: 0.75em;
+  }
+}
+
+// =============================================================================
+// DARK MODE SUPPORT (OPTIONAL)
+// =============================================================================
+
+@media (prefers-color-scheme: dark) {
+  // Uncomment and customise if dark mode is desired
+  /*
+  :root {
+    --body-bg: #1a1a1a;
+    --body-color: #e0e0e0;
+    --code-block-bg: #2d2d2d;
+    --colour-grey-light: #4a4a4a;
+  }
+  */
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s $transition-timing;
+}
+
+// Reveal.js fragment animations
+.reveal .fragment {
+  &.highlight-current-blue.visible.current-fragment {
+    color: #3b82f6;
+  }
+
+  &.highlight-current-red.visible.current-fragment {
+    color: #ef4444;
+  }
+
+  &.highlight-current-green.visible.current-fragment {
+    color: #10b981;
+  }
 }
