@@ -283,6 +283,7 @@ We will build your foundational skills first, then progressively integrate AI to
 ## What to Expect During This Module
 
 ::: {.columns}
+
 ::: {.column width="60%"}
 
 <br>
