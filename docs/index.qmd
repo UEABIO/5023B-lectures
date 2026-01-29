@@ -329,7 +329,7 @@ The answer isn't just about better science—it's about:
 
 ## What is Reproducibility?
 
-![](images/reproducible-matrix.jpg){fig-align="center" fig-alt="Turing Way Community cc-by licence" width=50%}
+![](images/turing way.png){fig-align="center" fig-alt="Turing Way Community cc-by licence" width=50%}
 
 - For Research to be reproducible both data and methods should be available.
 
