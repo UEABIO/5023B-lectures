@@ -4,11 +4,12 @@ format:
   html:
     page-layout: full
     toc: false
-
+    css: landing-page.css
 ---
 
 ::: {.hero-banner}
-## Data Science for Biologists
+<h2>Data Science for Biologists</h2>
+
 **Advanced Statistical Methods and Reproducible Research**
 
 **Instructor:** Dr Philip Leftwich  
@@ -17,33 +18,108 @@ format:
 {{< fa brands linkedin >}} [LinkedIn](https://www.linkedin.com/in/philip-leftwich/)
 :::
 
----
-
-## 📚 Lecture Slides
+## 📚 Lecture Slides {.unnumbered}
 
 ::: {.grid}
 
-::: {.g-col-12 .g-col-md-4}
 ::: {.card}
+<span class="status-badge badge-available">Available</span>
+
 ### Week 1
-**Introduction & Reproducibility**
 
-Why reproducible research matters, Git workflows, and project organization.
+#### Introduction & Reproducibility
 
-[View Slides →](introduction.html){.btn .btn-primary}
+Why reproducible research matters, Git workflows, and project organisation.
+
+::: {.card-footer}
+[View Slides](introduction.html){.btn .btn-primary}
 :::
 :::
 
-::: {.g-col-12 .g-col-md-4}
 ::: {.card}
-### Power Analysis
+<span class="status-badge badge-available">Available</span>
+
+### Week 2
+
+#### Linear Models Review
+
+Refresher on linear regression and ANOVA foundations.
+
+::: {.card-footer}
+[View Slides](linear-models.html){.btn .btn-primary}
+:::
+:::
+
+::: {.card}
+<span class="status-badge badge-available">Available</span>
+
+
+### Week 3
+
+#### Generalised Linear Models
+
+Extending regression to non-normal responses.
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 4
+
+#### Logistic regression
+
+Extending regression to non-normal responses.
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 5
+
+#### Mixed Effects Models
+
+Accounting for hierarchical and repeated measures data.
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 6
+
+#### Causal Inference
+
+Building models around hypothese
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 7
+
+#### Power Analysis
 
 Designing properly powered studies for biological research.
 
-[View Slides →](power.html){.btn .btn-primary}
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
 :::
 :::
 
-:::
-
----
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
