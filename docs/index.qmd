@@ -50,8 +50,8 @@ Refresher on linear regression and ANOVA foundations.
 :::
 :::
 
-::: {.card}
-<span class="status-badge badge-available">Available</span>
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
 
 
 ### Week 3
@@ -121,5 +121,18 @@ Designing properly powered studies for biological research.
 :::
 :::
 
+
 ::: {.card .card-disabled}
 <span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 8
+
+#### AI Pair Programming
+
+Responsible AI use for R programming
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
