@@ -45,15 +45,23 @@ library(MASS)
 By the end of this session, you will be able to:
 
 1. Explain why model assumptions are important
+
 2. Fit appropriate models to rate/count data
+
 3. Evaluate models for best fit
+
+4. Deliver transparent and clear reporting
 
 
 # Recap {background-color="#D9DBDB"}
 
 ## What have you learned so far?
 
+<div style="margin-top: 3em;"></div>
+
 - Tell me one thing you appreciate or understand more about coding, data exploration and version control
+
+<div style="margin-top: 3em;"></div>
 
 - Tell me one thing you don't quite understand or want to check?
 
@@ -67,11 +75,16 @@ cuckoo <- read_csv(here("data_2", "cuckoo.csv"))
 
 ## Visualising Data
 
+:::{.column}
+
 - Mass: nestling mass of chick in grams
 
 - Beg: begging calls per 6 secs
 
 - Species: Warbler or Cuckoo
+:::
+
+:::{.column}
 
 ```{r}
 ggplot(cuckoo, aes(x = Mass, y = Beg, colour = Species)) + 
@@ -82,8 +95,11 @@ ggplot(cuckoo, aes(x = Mass, y = Beg, colour = Species)) +
   theme_minimal()
 
 ```
+:::
 
 ## Linear Model
+
+::: {style="height: 800px;"}
 
 ```{r}
 
@@ -93,17 +109,76 @@ summary(cuckoo_lm)
 
 ```
 
+:::
+
+
 ## Evaluation
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig-align: center, out.width = "80%"}
 
 performance::check_model(
-  cuckoo_lm
+  cuckoo_lm,
+  detrend = FALSE
 )
 
 ```
 
 # GLMs for count data {background-color="#D9DBDB"}
+
+## Linear models
+
+
+Let's start with linear models...
+
+::: {.center-text}
+
+
+$y_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn +\epsilon_i$
+
+
+$\epsilon_i = \mathcal{N}(0, \sigma^2)$
+
+:::
+
+::: {.fragment}
+
+$y_i$ = individual data point
+
+$\epsilon_i$ = Error distribution (here standard Normal)
+
+:::
+
+
+## Generalised Linear models
+
+
+
+Then generalised linear models...
+
+::: {.fragment}
+
+::: {.center-text}
+
+$\mu_i = f(\beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn)$
+
+$\epsilon_i \sim \mathcal{N}(0, \sigma^2)$
+
+:::
+
+:::
+
+
+::: {.fragment}
+
+ - $f$ is the link function to the mean
+ 
+**Examples:** Log, sqrt, identity
+
+ - $\epsilon_i$ is the error term for observation $i$
+
+**Examples:** Gaussian (normal), binomial, Poisson, gamma, etc.
+
+:::
 
 
 ## Poisson
@@ -161,11 +236,15 @@ a discrete distribution with a single parameter, λ (lambda), which defines both
 
 Recall the simple linear regression case (i.e a GLM with a Gaussian error structure and identity link). For the sake of clarity let's consider a single explanatory variable where $\mu$ is the mean for *Y*:
 
+:::{.center}
+
 $\mu_i = \beta0 + \beta_1x1 + \beta_2x2 + ... +\beta_nxn$
 
 $y_i \sim \mathcal{N}(\mu_i, \sigma^2)$
 
 * The mean function is **unconstrained**, i.e the value of $\beta_0 + \beta_1X$ can range from $-\infty$ to $+\infty$. 
+
+:::
 
 :::
 
@@ -258,21 +337,17 @@ summary(cuckoo_glm_additive)
 
 ```
 
-## Model checks
-
-```{r, echo = FALSE, out.width = "100%"}
-
-performance::check_model(
-  cuckoo_glm_additive
-)
-
-```
-
 ## Model predictions
 
 ::::{.columns}
 
 :::{.column}
+
+- This models the mean and 95% confidence intervals
+
+> Uncertainty around true mean NOT prediction of sample distribution
+
+- Modelled on the response/measured scale
 
 ```{r, echo = TRUE}
 predictions_additive <- emmeans(cuckoo_glm_additive,
@@ -330,6 +405,22 @@ fig_main
 :::
 
 
+
+## Model checks
+
+```{r, echo = FALSE, out.width = "80%"}
+
+performance::check_model(
+  cuckoo_glm_additive,
+  residual_type = "normal",
+            detrend = FALSE)
+
+
+```
+
+
+
+
 ## Interaction term
 
 ```{r, echo = TRUE}
@@ -342,17 +433,6 @@ cuckoo_glm_interaction <- glm(Beg ~ Mass + Species+
 summary(cuckoo_glm_interaction)
 
 ```
-
-## Model check
-
-```{r, echo = FALSE, out.width = "100%"}
-
-performance::check_model(
-  cuckoo_glm_interaction
-)
-
-```
-
 
 ## Interaction predictions
 
@@ -414,6 +494,21 @@ fig_main
 :::
 
 :::
+
+
+## Model check
+
+```{r, echo = FALSE, out.width = "80%"}
+
+performance::check_model(
+  cuckoo_glm_interaction,
+  residual_type = "normal",
+            detrend = FALSE)
+
+
+```
+
+
 
 # Overdispersion {background-color="#D9DBDB"}
 
@@ -497,8 +592,9 @@ Overdispersion occurs when the variance in the data is even higher than the mean
 
 ## Overdispersion in the model
 
+- Rough check
 
-$\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{697.25}{217} = 3.21$
+$\phi = \frac{\text{Residual deviance}}{\text{Residual degrees of freedom}}$ = $\frac{436.05}{47} = 9.27$
 
 ```{r}
 #| eval: true
@@ -773,7 +869,9 @@ AIC(cuckoo_nb)
 #| layout-ncol: 2
 #| warning: false
 
-performance::check_model(cuckoo_nb)
+performance::check_model(cuckoo_nb,
+                         residual_type = "normal",
+            detrend = FALSE)
 
 performance::check_zeroinflation(cuckoo_nb)
 
@@ -782,11 +880,7 @@ performance::check_zeroinflation(cuckoo_nb)
 
 ## Comparison of model predictions
 
-- Luckily in this instance we can be assured that each of these models makes very similar predictions:
-
 ```{r}
-
-colours <- c("Quasi" = "darkgreen", "NB" = "darkorange", "Poisson" = "purple")
 
 
 predictions_nb <- emmeans::emmeans(cuckoo_nb, 
@@ -807,22 +901,25 @@ predictions <- rbind(predictions_interaction, predictions_quasi, predictions_nb)
 
 
 fig_main <- ggplot(predictions,
-aes(x = Mass, y = rate)) +
+aes(x = Mass, y = rate,
+    colour = Species,
+    fill = Species)) +
 geom_ribbon(aes(ymin = asymp.LCL, ymax = asymp.UCL,
-colour = model, fill = model),
-            alpha = 0.15, colour = NA) +
+    group = interaction(model,Species)),
+            alpha = 0.15) +
 # Mean estimate
 geom_line(linewidth = 1.2,
-          aes(colour = model, fill = model)) +
-  
+          aes(
+    group = interaction(model,Species))) +
 # Raw data
 geom_point(data = cuckoo,
-aes(y = Beg),
+aes(y = Beg,
+    colour = Species),
 size = 2.5,
 alpha = 0.6) +
 scale_x_continuous(breaks = seq(0, 40, by = 10)) +
 scale_y_continuous(breaks = seq(0, 100, by = 10)) +
-
+gghighlight::gghighlight()+ 
   labs(
 x = "Nestling mass (g)",
 y = "Begging calls per 6 seconds",
@@ -830,9 +927,15 @@ colour = NULL,
 fill = NULL
 ) +
 theme_minimal(base_size = 12)+
-  scale_colour_manual(values = colours)+
-  scale_fill_manual(values = colours)+
-  facet_wrap(~Species)+
+scale_colour_manual(values = c("Cuckoo" = "darkorange", "Warbler" = "steelblue"),
+labels = c("Cuckoo", "Reed warbler")
+
+) +
+scale_fill_manual(values = c("Cuckoo" = "darkorange", "Warbler" = "steelblue"),
+labels = c("Cuckoo", "Reed warbler")
+
+)+
+  facet_wrap(vars(model), ncol = 3)+
   coord_cartesian(ylim = c(0,100))
 
 
@@ -855,6 +958,15 @@ fig_main
 
 ## Write-ups
 
-Begging call rates increased with nestling mass for both species. There was weak evidence that this relationship differed between species as our interaction term was significant under the Poisson GLM (Mass × Species interaction: z = -2.58, P = 0.009, n = 51) but not when accounting for overdispersion with quasi-Poisson (Mass × Species interaction: t(47) = -.93, P = 0.357). Given this uncertainty, we proceeded with an additive model assuming parallel slopes for both species.
+Begging call rates increased with nestling mass for both species. There was weak evidence that this relationship differed between species as our interaction term was significant under the Poisson GLM (Mass × Species interaction: z = -2.58, P = 0.009, n = 51). When accounting for overdispersion with quasi-Poisson this effect was not significant (Mass × Species interaction: t(47) = -.93, P = 0.357), but remains so under a Negative Binomial model (z = -2.913, P = 0.004). Given this uncertainty, we present both specifications here.
 
-Across the observed mass range, each gram increase in mass was associated with a 8% increase in calling rate (rate ratio: 1.08 [95% CI: 1.07–1.09]). Reed warblers called at higher rates (1.04 [95% CI 0.9 - 1.2]) than cuckoos after accounting for body mass differences but this was not statistically significant (Species effect: t(47) = 0.54, P = 0.69)
+In our most conservate (QuasiPoisson model), across the observed mass range, each gram increase in mass was associated with a 8% increase in calling rate (rate ratio: 1.08 [95% CI: 1.07–1.09]). Reed warblers called at higher rates (1.04 [95% CI 0.9 - 1.2]) than cuckoos after accounting for body mass differences but this was not statistically significant (Species effect: t(47) = 0.54, P = 0.69).
+
+## Tables
+
+```{r, echo = T}
+
+sjPlot::tab_model(cuckoo_glm_additive, cuckoo_glm_quasi, cuckoo_nb)
+
+
+```
