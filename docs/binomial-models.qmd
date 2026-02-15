@@ -1,0 +1,778 @@
+---
+title: "Logistic Regression"
+subtitle: "GLMs for proportions"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: "2026-02-19"
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      footer: "Linear Models | UEA | 2026"
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+  
+        
+    
+---
+
+# Introduction {background-color="#D9DBDB"}
+
+```{r, include = FALSE}
+library(tidyverse)
+library(here)
+library(emmeans)
+library(MASS)
+```
+
+## Learning Objectives
+
+By the end of this session, you will be able to:
+
+1. Fit appropriate models to proportional data
+
+2. Evaluate models for best fit
+
+3. Deliver transparent and clear reporting
+
+
+# Recap {background-color="#D9DBDB"}
+
+## What have you learned so far?
+
+<div style="margin-top: 3em;"></div>
+
+- What are the assumptions of the ordinary linear model?
+
+<div style="margin-top: 3em;"></div>
+
+- Tell me one thing you don't quite understand about GLMs?
+
+# Binary outcomes {background-color="#D9DBDB"}
+
+## GLMS for binary data 
+
+Common response variable in ecological datasets is the binary variable: we observe a phenomenon X or its “absence”
+
+::: {.incremental}
+
+* Presence/Absence of a species
+
+* Presence/Absence of a disease
+
+* Success/Failure to observe behaviour
+
+* Survival/Death of organisms
+
+:::
+
+Wish to determine if $P(event)∼ Variable$
+
+Linear regression is inappropriate because probabilities are bounded between 0 and 1
+
+## Binary example: Mayflies
+
+::::: {.columns}
+
+:::: {.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 8
+#| message: false
+#| warning: false
+
+load(file = "../data_2/Mayflies.rda")
+
+```
+
+
+
+::: {.incremental}
+
+- Investigating mayfly abundance in relation to pollution gradient measured in Cumulative Criterion Units (CCU)
+
+- Mayflies serve as indicators of stream health due to sensitivity to metal pollution
+
+- Higher CCU values indicate increased metal pollution, potentially impacting mayfly presence or absence in the stream
+
+:::
+
+::::
+
+:::: {.column}
+
+![](images/Ephemera.png){fig-align="center" fig-alt="Ephemera vulgata" width=60%}
+
+::::
+
+:::::
+
+## Example: Mayflies
+
+Fitting a linear regression vs a logit-link regression:
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 7
+#| layout-ncol: 2
+#| message: false
+#| warning: false
+
+ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
+  geom_smooth(method = "lm")+
+    labs(title = "Linear Regression",
+       x = "CCU", y = "Occupancy") +
+  theme_classic(base_size = 14)
+
+ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
+  geom_smooth(method = "glm", method.args = list(binomial(link = "logit"))) +
+  labs(title = "Logit-link Binomial Regression",
+       x = "CCU", y = "Occupancy") +
+  theme_classic(base_size = 14)
+
+```
+
+## Probability, odds, logit-odds
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+
+# Generate a sequence of independent variable values
+independent_variable <- seq(-10, 10, by = 0.5)
+
+# Define a function to calculate probabilities
+calculate_probability <- function(x) {
+  probability <- 1 / (1 + exp(-x))
+  return(probability)
+}
+
+# Define a function to calculate odds
+calculate_odds <- function(probability) {
+  odds <- probability / (1 - probability)
+  return(odds)
+}
+
+# Define a function to calculate log odds
+calculate_log_odds <- function(odds) {
+  log_odds <- log(odds)
+  return(log_odds)
+}
+
+# Calculate probabilities, odds, and log odds
+probabilities <- sapply(independent_variable, calculate_probability)
+odds <- sapply(probabilities, calculate_odds)
+log_odds <- sapply(odds, calculate_log_odds)
+
+# Plot the relationships
+par(mfrow = c(1, 3), mar = c(5, 5, 2, 2))
+plot(independent_variable, probabilities, type = "l", col = "blue", xlab = "Independent Variable", ylab = "Probability", main = "Change in Probability", ylim = c(0, 1))
+plot(independent_variable, odds, type = "l", col = "red", xlab = "Independent Variable", ylab = "Odds", main = "Change in Odds")
+plot(independent_variable, log_odds, type = "l", col = "green", xlab = "Independent Variable", ylab = "Log Odds", main = "Change in Log Odds")
+
+
+```
+
+:::
+
+::: {.column width="40%"}
+
+- The odds put our expected values on a 0 to +Inf scale.
+
+- The log transformation puts our expected values on a -Inf to +Inf scale.
+
+- Now, the expected values can be linearly related to the linear predictor.
+
+:::
+
+::::
+
+## Fitting the model
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+
+mayfly_glm <- glm(Occupancy ~ CCU, 
+                  family = binomial(link = "logit"), 
+                  data = Mayflies)
+
+summary(mayfly_glm)
+
+```
+
+<div style="margin-top: 3em;"></div>
+
+- Coefficients represent changes in log-odds.
+
+## Interpret the model
+
+::: {.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+
+mayfly_glm <- glm(Occupancy ~ CCU, 
+                  family = binomial(link = "logit"), 
+                  data = Mayflies)
+
+summary(mayfly_glm)
+
+```
+
+:::
+
+
+
+::: {.column}
+
+::: {.incremental}
+
+Each coefficient corresponds to a predictor variable, indicating the change in the **log odds** of the response variable associated with a one-unit change in that predictor, holding other predictors constant.
+
+<br>
+
+- Interpretation of coefficients involves exponentiating them to obtain odds ratios.
+
+- An odds ratio greater than 1 implies higher odds of the event occurring with an increase in the predictor.
+
+- An odds ratio less than 1 implies lower odds of the event occurring with an increase in the predictor.
+
+:::
+
+:::
+
+## Exponentiating
+
+```{r}
+#| eval: true
+#| echo: true
+
+broom::tidy(mayfly_glm, exponentiate = T)
+```
+
+- Exponentiating gives **odds ratios**
+
+- These are multiplicative, while log odds are additive
+
+## Prediction
+
+> How probability of occupancy changes across the pollution gradient.
+
+::: {.column}
+
+```{r, eval = FALSE, echo = TRUE}
+
+emmeans::emmeans(mayfly_glm, 
+                 specs = ~ CCU, 
+                 at=list(CCU=c(0:5)), 
+                 type='response') |> 
+  as_tibble()
+
+
+```
+
+
+:::
+
+::: {.column}
+
+```{r, eval = TRUE, echo = FALSE}
+
+emmeans::emmeans(mayfly_glm, 
+                 specs = ~ CCU, 
+                 at=list(CCU=c(0:5)), 
+                 type='response') |> 
+  as_tibble()
+
+
+```
+
+:::
+
+## Prediction plots with emmeans
+
+We can use `emmeans` package to compute estimated marginal means (EMMs) from a fitted GLM, convert them into a tibble format for visualization with ggplot2, overlay the means with uncertainty ribbons and add them on a scatter plot of the original data.
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 7
+#| message: false
+means <- emmeans::emmeans(mayfly_glm, 
+                 specs = ~ CCU, 
+                 at=list(CCU=c(0:5)), 
+                 type='response') |> 
+  as_tibble()
+
+ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
+    geom_ribbon(data = means,
+              aes(x = CCU,
+                  y = prob,
+                  ymin = asymp.LCL,
+                  ymax = asymp.UCL),
+              alpha = .2)+
+  geom_line(data = means,
+            aes(x = CCU,
+                y = prob)) +  # regression line
+  labs(title = "Logit-link Binomial Regression",
+       x = "CCU", y = "Occupancy")+
+  theme_classic(base_size = 14)
+
+```
+
+:::
+
+::: {.column width="40%"}
+
+
+```{r}
+#| eval: false
+#| echo: true
+#| fig-height: 7
+#| message: false
+means <- emmeans::emmeans(mayfly_glm, 
+                 specs = ~ CCU, 
+                 at=list(CCU=c(0:5)), 
+                 type='response') |> 
+  as_tibble()
+
+ggplot(Mayflies, aes(x=CCU, y=Occupancy)) + geom_point()+
+    geom_ribbon(data = means,
+              aes(x = CCU,
+                  y = prob,
+                  ymin = asymp.LCL,
+                  ymax = asymp.UCL),
+              alpha = .2)+
+  geom_line(data = means,
+            aes(x = CCU,
+                y = prob)) +  # regression line
+  labs(title = "Logit-link Binomial Regression",
+       x = "CCU", y = "Occupancy")+
+  theme_classic(base_size = 14)
+
+```
+
+:::
+
+::::
+
+# Binomial Distribution {background-color="#D9DBDB"}
+
+Binary data = one trial per observation.
+
+Often we observe multiple trials per unit:
+
+Examples:
+
+- Number of seedlings that germinate out of 20 seeds
+
+- Number of insects that die out of 50 exposed individuals
+
+- Number of infected hosts out of a sampled population
+
+This is binomial data.
+
+> The model is the same — only the data structure change
+
+
+## Binomial distribution
+
+:::: columns
+
+::: {.column}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 8
+#| message: false
+
+# Define a range of trials
+trial_sizes <- c(5, 10, 20, 50, 100)
+
+# Define the probability of success
+p_success <- 0.7
+
+# Generate the binomial distribution data
+binom_data <- map_df(trial_sizes, ~tibble(
+  trials = .x,
+  success = 0:.x,
+  probability = dbinom(0:.x, .x, p_success)
+)) |> 
+  mutate(trials = factor(trials, levels = trial_sizes)) # This ensures the plots are ordered correctly
+
+# Plot
+ggplot(binom_data, aes(x = success, y = probability, color = trials)) +
+  geom_line() + # Use geom_point() if you prefer dots
+  scale_color_brewer(palette = "Dark2") +
+  labs(title = "Change in Binomial Distribution with Number of Trials",
+       x = "Number of Successes",
+       y = "Probability",
+       color = "Number of Trials") +
+  theme_minimal()
+
+```
+
+::: 
+
+
+::: {.column}
+
+
+$logit(p) = \log \frac{p}{1 - p}$
+
+$y_i = Binomial(n,p)$
+
+* It is the collection of Bernoulli trials for the same event
+
+* It is represented by the number of Bernoulli trials $n$
+
+* It is also the probability of an event in each trial $p$
+
+:::
+
+::::
+
+## Binomial: Example
+
+
+
+::: {.column}
+
+![](images/Tribolium castaneum.jpg){fig-align="center" fig-alt="Tribolium" width=50%}
+:::
+
+::: {.column}
+
+This small dataset is from an experiment looking at mortality in batches of flour exposed to different doses of pesticides.
+
+The question of interest is: 
+
+> How does pesticide dose affect mortality in the flour beetle *Tribolium castaneum*
+
+:::
+
+
+
+## The data
+
+```{r}
+#|echo: true
+#|message: false
+
+beetles <- read_csv("../data_2/beetles.csv")
+beetles
+```
+
+## Preparing the data
+
+As well as the numbers killed, we need the numbers that remain alive
+
+```{r}
+#| echo: true
+#| eval: true
+
+beetles <- beetles |> 
+  rename("dead" = Number_killed,
+         "trials" = Number_tested) |> 
+  mutate("alive" = trials-dead)
+
+beetles
+
+```
+
+
+## cbind
+
+The GLM of the binomial counts will analyse the number of *each* batch of beetles killed, while taking into account the size of each group
+
+```{r}
+#| echo: true
+#| eval: true
+
+#cbind() creates a matrix of successes and failures for each batch
+
+beetle_glm <- glm(cbind(dead, alive) ~ Dose, family = binomial(link = "logit"), data = beetles)
+
+summary(beetle_glm)
+
+```
+
+
+
+## Checking Binomial model fit
+
+
+
+```{r}
+#| echo: true
+#| eval: true
+
+performance::check_model(beetle_glm,
+                         detrend = FALSE)
+
+```
+
+
+## Estimates of significance
+
+Confidence intervals
+
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+
+library(broom)
+tidy(beetle_glm, conf.int = T)
+
+```
+
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+
+drop1(beetle_glm, test = "Chi")
+
+```
+
+
+## Predictions
+
+
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+emmeans::emmeans(beetle_glm, 
+                 specs = ~ Dose, 
+                 at=list(Dose=c(40, 50, 60, 70, 80)), 
+                 type='response') 
+```
+
+## Predictions plot
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 7
+#| message: false
+
+means <- emmeans::emmeans(beetle_glm, 
+                 specs = ~ Dose, 
+                 at=list(Dose=c(40:80)), 
+                 type='response')  |> 
+  as_tibble()
+
+ggplot(beetles, aes(x=Dose, y=Mortality_rate)) + geom_point()+
+    geom_ribbon(data = means,
+              aes(x = Dose,
+                  y = prob,
+                  ymin = asymp.LCL,
+                  ymax = asymp.UCL),
+              alpha = .2)+
+  geom_line(data = means,
+            aes(x = Dose,
+                y = prob)) +  # regression line
+  labs(title = "Logit-link Binomial Regression",
+       x = "Dose", y = "Mortality")+
+  theme_classic(base_size = 14)
+
+```
+
+
+
+# Overdispersion {background-color="#D9DBDB"}
+
+## A new issue: Overdispersion
+
+If the **residual deviance of the model is > the residual degrees of freedom** - we consider our binomial models to have **overdispersion**. 
+
+This means the variance is greater than predicted by the binomial distribution
+
+$\frac{Residual~Deviance}{Residual~df}$ >1.5 ⇒ Overdispersion
+
+
+
+```{r}
+summary(beetle_glm)
+```
+
+## Why overdispersion matters
+
+If overdispersion is present
+
+- Standard errors are too small
+
+- Confidence intervals are too narrow
+
+- p-values are too optimistic
+
+
+
+## Overdispersion
+
+:::: {.columns}
+
+::: {.column}
+
+**Binomial**
+$P(X = s) = C(n, s) \cdot p^s \cdot (1 - p)^{n - s}$
+
+:::
+
+::: {.column}
+
+**Quasibinomial**
+$P(X = s) = C(n, s) \cdot p(p+k\theta)^{s-1} \cdot (1 - pk\theta)^{n - s}$
+
+:::
+
+::::
+
+Where:
+
+- $n$ is the total number of trials of an event.
+- $s$ corresponds to the number of times an event should occur.
+- $p$ is the probability that the event will occur.
+- $(1 - p)$ is the probability that the event will not occur.
+- $C$ term represents combinations, calculated as $C(n, s) = \frac{n!}{s!(n - s)!}$, representing the number of ways to choose $s$ successes out of $n$ trials.
+
+- $\theta$ term describes additional variance outside of the Binomial distribution
+
+## Fitting the quasibinomial model
+
+```{r}
+#|echo: true
+#|message: false
+
+summary(beetle_glm)
+
+```
+
+```{r}
+#|echo: true
+#|message: false
+
+beetle_quasiglm <- glm(cbind(dead, alive) ~ Dose, family = quasibinomial(link = "logit"), data = beetles)
+
+summary(beetle_quasiglm)
+
+```
+
+
+## Fitting the quasibinomial model
+
+:::: {.columns}
+
+::: {.column}
+
+Standard Error, Confidence intervals and p-values WILL change.
+
+Estimates remain the same
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-height: 6
+#| message: false
+
+means <- emmeans::emmeans(beetle_quasiglm, 
+                 specs = ~ Dose, 
+                 at=list(Dose=c(40:80)), 
+                 type='response')  |> 
+  as_tibble()
+
+ggplot(beetles, aes(x=Dose, y=Mortality_rate)) + geom_point()+
+    geom_ribbon(data = means,
+              aes(x = Dose,
+                  y = prob,
+                  ymin = asymp.LCL,
+                  ymax = asymp.UCL),
+              alpha = .2)+
+  geom_line(data = means,
+            aes(x = Dose,
+                y = prob)) +  # regression line
+  labs(title = "Logit-link Binomial Regression",
+       x = "Dose", y = "Mortality")+
+  theme_classic(base_size = 14)
+
+```
+
+:::
+
+::: {.column}
+
+Likelihood ratio tests should now be applied with an F-statistics
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+
+drop1(beetle_quasiglm, test = "F")
+
+```
+
+:::
+
+::::
+
+
+# What next? {background-color="#D9DBDB"}
+
+## Model limitations
+
+
+
+
+## Write-ups
+
+
+
+## Tables
+
+```{r, echo = T}
+
+sjPlot::tab_model(beetle_quasiglm)
+
+
+```
