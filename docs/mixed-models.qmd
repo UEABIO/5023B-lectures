@@ -1,0 +1,808 @@
+---
+title: "Mixed Models"
+subtitle: "Structured data"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: "2026-02-26"
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      footer: "Linear Models | UEA | 2026"
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+# Introduction {background-color="#D9DBDB"}
+
+```{r, include = FALSE}
+library(tidyverse)
+library(here)
+library(emmeans)
+library(MASS)
+```
+
+## Learning Objectives
+
+
+# Recap {background-color="#D9DBDB"}
+
+## What have you learned so far?
+
+<div style="margin-top: 3em;"></div>
+
+- What are the assumptions of the ordinary linear model?
+
+<div style="margin-top: 3em;"></div>
+
+- Tell me one thing you don't quite understand about LM/GLMs?
+
+
+# Assumptions of a Linear Model {background-color="#D9DBDB"}
+
+## Assumptions of a Linear Model
+
+**Q. What are the assumptions of an ordinary linear model??**
+
+
+## Non-Independence and What It Does to Your p-values
+
+- **non-independence**
+
+      Statistical tests assume that each observation gives you a genuinely new piece of information. When observations are clustered — for example, multiple traps within the same field site, or repeated counts from the same cage — they are more similar to one another than to observations from elsewhere. This violates that assumption.
+      
+- Why does it matter?
+
+    Clustered data artificially inflates your effective sample size. The test thinks it has more independent evidence than it actually does, which makes results appear more precise and statistically significant than they truly are. A p-value of 0.03 from clustered data may reflect a pattern within a cluster rather than a real effect across the population
+    
+## Hidden clusters
+
+```{r}
+library(tidyverse)
+
+set.seed(42)
+
+n_clusters <- 5
+obs_per_cluster <- 20
+
+cluster_data <- tibble(
+  cluster = rep(str_c("Cluster ", 1:n_clusters), each = obs_per_cluster),
+  cluster_mean = rep(rnorm(n_clusters, mean = 0, sd = 2.5), each = obs_per_cluster),
+  noise = rnorm(n_clusters * obs_per_cluster, mean = 0, sd = 0.4)
+) |>
+  mutate(
+    value = cluster_mean + noise,
+    type = "Clustered Data"
+  )
+
+independent_data <- cluster_data |> mutate(type = "Independent Data")
+
+plot_data <- bind_rows(cluster_data, independent_data)
+
+ggplot(plot_data, aes(x = value, y = type)) +
+  
+  geom_jitter(data = plot_data |> filter(type == "Clustered Data"),
+    height = 0.15, size = 2.5, alpha = 0.7,
+              aes(colour = cluster)) +
+  geom_jitter(data = plot_data |> filter(type == "Independent Data"),
+    height = 0.15, size = 2.5, alpha = 0.7
+              ) +
+  
+  labs(
+    title = "Clustered vs Independent Observations",
+    subtitle = "Each point is one observation. \nIn clustered data, points within a group\nare more similar to each other than to the wider population.",
+    x = "Observed Value",
+    y = NULL,
+    colour = "Cluster"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "right",
+    plot.subtitle = element_text(colour = "grey40"),
+    axis.text.y = element_text(face = "bold")
+  )
+
+```
+
+# Linear Mixed Models {background-color="#D9DBDB"}
+
+## Why mixed models?
+
+Standard regression assumes all observations are independent. Biological data rarely satisfies this assumption.
+
+::: {.incremental}
+- Observations within a site, individual, or clutch are more similar to one another than to observations elsewhere — this violates independence
+
+- Biological datasets are often hierarchical: chicks within clutches, clutches within females, plots within sites
+
+- Mixed models explicitly model this grouping structure, separating within-group from between-group variance and yielding valid inference about fixed effects
+
+- They also cope well with missing data, unequal group sizes, and repeated measurements
+:::
+
+## What is a Random Effect? {.smaller}
+
+::: {.incremental}
+
+- A **fixed effect** is a variable whose specific levels are of direct interest — we want to estimate the effect of each level (e.g., treatment vs. control)
+
+- A **random effect** is a grouping variable whose levels represent a *sample* from a larger population of possible levels — we are not interested in each level per se, but in the variance they introduce
+
+- If you were to repeat the study, fixed effect levels would remain the same; random effect levels would likely differ
+
+:::
+
+<div style="margin-top: 2em;"></div>
+
+> A useful heuristic: if you have many levels and they are exchangeable — drawn from some broader population — treat the grouping factor as a random effect (Gelman & Hill, 2007)
+
+::: {.fragment}
+
+| Factor | Type | Why? |
+|---|---|---|
+| Treatment (drug vs. placebo) | Fixed | Specific levels of interest |
+| Hospital site (5 of many) | Random | Sample from larger population |
+| Time point (week 1, 2, 3) | Fixed | Specific levels of interest |
+| Individual patient | Random | Sample from larger population |
+
+:::
+
+---
+
+## Discussion: Fixed or Random? {background-color="#D9DBDB"}
+
+<div style="margin-top: 2em;"></div>
+
+With a neighbour, classify each factor below as **fixed** or **random** — and justify your reasoning.
+
+<div style="margin-top: 1em;"></div>
+
+::: {.incremental}
+
+1. You test three fertiliser treatments (none, low, high nitrogen). Is fertiliser treatment fixed or random?
+
+2. Plants are grown across six glasshouses, chosen from the available facilities on campus. Is glasshouse fixed or random?
+
+3. You sample 20 birds from each of 40 woodland sites across the UK, chosen at random. Is site fixed or random?
+
+:::
+
+::: {.fragment}
+
+<div style="margin-top: 1em;"></div>
+
+> There is rarely one uniquely correct answer — justifying your choice clearly is as important as the choice itself
+
+:::
+
+
+## Consequences of Ignoring Structure {.smaller}
+
+::: {.incremental}
+- If a fixed effect is manipulated at the level of the clutch, treating multiple chicks from a single clutch as independent represents **pseudoreplication** — the test sees more independent evidence than actually exists
+- This artificially inflates the effective sample size, producing p-values that are too small and confidence intervals that are too narrow
+- Random effects represent grouping and allow the estimation of variance *within and among* groups, correcting inference accordingly
+:::
+
+::: {.fragment}
+
+**Structured data examples**
+
+*Hierarchy* — estimating scores on a standardised maths test; students from the same class should be grouped:
+```r
+lmer(test_score ~ study_time + (1 | class))
+```
+
+*Repeated measures* — medical interventions on blood sugar; each person measured multiple times:
+```r
+lmer(blood_sugar ~ treatment + time + (1 | individual))
+```
+
+:::
+
+## Fixed and Random Effects
+
+:::: {.columns}
+
+::: {.column}
+
+### Fixed Effect
+
+Fixed effects are variables you want to estimate directly (treatment, temperature, time).
+
+${y_i = \beta0 + \beta1x+\epsilon_i}$
+
+
+```
+y ~ x, data = data)
+```
+
+One intercept. One slope. The line is the same regardless of which site or individual an observation came from.
+
+:::
+
+::: {.column}
+
+### Random Effect
+
+A grouping factor that induces correlation (site, individual, clutch); we estimate its *variance*, not a separate coefficient for each level.
+
+${y_{ij} = \beta0_{j} + \beta1x+\epsilon_i}$
+
+
+```
+y ~ x + (1|group), data = data)
+```
+
+Intercepts shift by group. The slope remains shared.
+
+:::
+
+::::
+
+
+
+## Fixed vs Random Intercept — Visualised {.smaller}
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 4.2
+#| fig-align: center
+
+library(tidyverse)
+library(patchwork)
+
+set.seed(101)
+n_sites         <- 6
+n_per           <- 20
+sites           <- str_c("Site ", LETTERS[1:n_sites])
+site_intercepts <- rnorm(n_sites, mean = 20, sd = 5)
+
+dat <- map2_dfr(sites, site_intercepts, function(s, b0) {
+    tibble(
+        site = s,
+        x    = runif(n_per, 0, 10),
+        y    = b0 + 1.5 * x + rnorm(n_per, 0, 1.8)
+    )
+})
+
+pal <- c("#2E4A62","#3D8EB9","#F0A500","#2A7E52","#C0392B","#8E44AD")
+
+# --- Fixed effect plot (unchanged) ---
+fixed_fit  <- lm(y ~ x, data = dat)
+fixed_line <- tibble(x = c(0, 10),
+                     y = predict(fixed_fit, newdata = tibble(x = c(0, 10))))
+
+p_fixed <- ggplot(dat, aes(x = x, y = y, colour = site)) +
+    geom_point(alpha = 0.55, size = 1.8) +
+    geom_line(data = fixed_line, aes(x = x, y = y),
+              colour = "#1B2A3B", linewidth = 1.1, inherit.aes = FALSE) +
+    scale_colour_manual(values = pal) +
+    labs(title    = "Fixed Effect Only",
+         subtitle = expression(y[i] == beta[0] + beta[1]*x[i] + epsilon[i]),
+         x = "Predictor (x)", y = "Response (y)", colour = "Site") +
+    theme_minimal(base_size = 11) +
+    theme(plot.title       = element_text(face = "bold", colour = "#1B2A3B"),
+          plot.subtitle    = element_text(colour = "#5A7A8A", size = 10),
+          legend.position  = "right",
+          panel.grid.minor = element_blank())
+
+# --- Random intercept lines ---
+site_df <- dat |>
+    group_by(site) |>
+    summarise(b0 = coef(lm(y ~ x))[1], .groups = "drop") |>
+    mutate(slope = coef(lm(y ~ x, data = dat))[2])
+
+lines_ri <- site_df |>
+    reframe(x = c(0, 10), y = b0 + slope * x, .by = site)
+
+# --- Rotated normal density polygon for the y-axis margin ---
+# Uses residual SD from the pooled fixed-effects fit — this is the quantity
+# whose normality the model actually assumes
+resid_sd   <- sigma(fixed_fit)
+y_seq      <- seq(min(dat$y) - 2, max(dat$y) + 2, length.out = 400)
+dens       <- dnorm(y_seq, mean = coef(fixed_fit)[1], sd = resid_sd)
+
+# Protrusion width in x-axis units — adjust to taste
+scale_width <- 1.8
+x_anchor    <- 0   # flush against the y-axis
+
+# Closed polygon: outward (density) edge + return along x = x_anchor
+dens_poly <- tibble(
+    x = c(x_anchor + (dens / max(dens)) * scale_width, rep(x_anchor, 400)),
+    y = c(y_seq, rev(y_seq))
+)
+
+# --- Random intercept plot with marginal density ---
+p_ri <- ggplot(dat, aes(x = x, y = y, colour = site)) +
+    # Density polygon drawn first so points sit on top
+    geom_polygon(
+        data        = dens_poly,
+        aes(x = x, y = y),
+        inherit.aes = FALSE,
+        fill        = "#1B2A3B",
+        colour      = "#1B2A3B",
+        alpha       = 0.1,
+        linewidth   = 0.35
+    ) +
+    geom_point(alpha = 0.55, size = 1.8) +
+    geom_line(
+        data        = lines_ri,
+        aes(x = x, y = y, colour = site),
+        linewidth   = 1.0,
+        inherit.aes = FALSE
+    ) +
+    scale_colour_manual(values = pal) +
+    # Expand x-axis left to accommodate the density protrusion
+    coord_cartesian(xlim = c(-scale_width * 1.1, 10)) +
+    labs(title    = "Random Intercept Model",
+         subtitle = expression(y[ij] == beta[0][j] + beta[1]*x[ij] + epsilon[ij]),
+         x = "Predictor (x)", y = "Response (y)", colour = "Site") +
+    theme_minimal(base_size = 11) +
+    theme(plot.title       = element_text(face = "bold", colour = "#1B2A3B"),
+          plot.subtitle    = element_text(colour = "#5A7A8A", size = 10),
+          legend.position  = "right",
+          panel.grid.minor = element_blank())
+
+# --- Combine ---
+p_fixed + p_ri + plot_layout(guides = "collect") &
+    theme(legend.position = "right")
+```
+
+> In the fixed-effect model, a single line is fitted across all sites — ignoring that each site has a different baseline. The random intercept model allows each site its own intercept whilst sharing a common slope, correctly partitioning the variance.
+
+
+## When is a Fixed Effects Model Sufficient? {.smaller}
+
+Mixed models are not always necessary — or better. Consider a fixed effects approach when:
+
+::: {.incremental}
+
+- You have **few groups** (< 5–6 levels) and are interested in those specific levels — random effect variance cannot be estimated reliably from so few units (Gelman & Hill, 2007)
+
+- The **variance explained by random effects are negligible** — if clustering accounts for very little variance, the added complexity of a mixed model may not be warranted
+
+- Your grouping factor is a **primary variable of interest** — if you want to test differences *between* specific sites, schools, or batches, model them as fixed
+
+- You have a **balanced, complete design** with no missing data — a fixed effects ANOVA may give equivalent inference with simpler interpretation
+
+:::
+
+::: {.fragment}
+
+> The decision should be driven by your research question and study design, not by which model produces a smaller p-value
+
+:::
+
+---
+
+## Discussion: Fixed or Mixed? {background-color="#D9DBDB"}
+
+<div style="margin-top: 2em;"></div>
+
+Consider the following scenarios. For each, discuss with a neighbour:
+
+**Should you use a fixed effects model or a mixed model — and why?**
+
+<div style="margin-top: 1em;"></div>
+
+::: {.incremental}
+
+1. You measure plant growth under three fertiliser treatments, with plants grown in four controlled growth chambers. Each chamber contains plants from all three treatments.
+
+2. You record antibiotic resistance scores from bacteria sampled at 40 farms, chosen randomly from across the UK. You want to generalise your findings to UK farms broadly.
+
+3. You run a cognitive test on 15 participants, each participant is tested under two conditions (quiet vs. noisy). 
+
+:::
+
+::: {.fragment}
+
+<div style="margin-top: 1em;"></div>
+
+> There is rarely one correct answer — justifying your choice clearly is as important as the choice itself
+
+:::
+
+
+# Examples {background-color="#D9DBDB"}
+
+## Worked Example: Orthodontic Growth Data {.smaller}
+
+Children's jaw growth (mm) measured at ages 8, 10, 12, and 14.  
+**Research question**: Does jaw distance increase with age, accounting for repeated measures within each child?
+```{r, echo = T}
+library(nlme)
+library(lme4)
+library(lmerTest)
+
+data("Orthodont")
+
+# Each child measured 4 times — individual is the grouping factor
+head(Orthodont)
+```
+
+- `distance`: jaw measurement in mm (response)  
+- `age`: age in years (fixed effect)  
+- `Subject`: individual child (random intercept — each child has a different baseline jaw size)
+
+## Regression
+
+
+```{r, echo = F, fig.width = 12}
+
+ggplot(Orthodont, aes(x = age, 
+                 y = distance)) +
+  geom_point() +
+  labs(x = "Age", 
+       y = "Distance")+
+  geom_smooth(method = "lm")
+
+```
+
+## Mean between groups
+
+:::: {.columns}
+
+::: {.column}
+
+```{r, echo = F, fig.width = 8}
+
+ggplot(Orthodont, aes(x = Subject, 
+                 y = distance)) +
+  geom_boxplot() +
+  labs(x = "Subject", 
+       y = "Distance")
+
+```
+
+:::
+
+::: {.column}
+
+```{r, echo = F, fig.width = 8}
+
+ggplot(Orthodont, aes(x = age, 
+                 y = distance)) +
+    geom_point(alpha = 0.6, size = 2,
+             aes(color = Subject,
+                  group = Subject))+
+  labs(x = "Age", 
+       y = "Distance")+
+  geom_smooth(method = "lm")+
+     theme(legend.position="none")
+
+
+```
+
+:::
+
+::::
+
+The mean value is slightly different between each group
+
+## Stratified analysis
+
+One way to analyse this data would be to conduct **independent** regressions for each group: 
+
+```{r, echo = F, fig.width = 12}
+
+# Plotting the relationship between x and y with group-level smoothing
+ggplot(Orthodont, aes(x = age, y = distance, color = Subject, group = Subject)) +
+  geom_point(alpha = 0.6) +  # Scatter plot of x and y with transparency
+  labs(title = "Data Colored by Group", x = "Independent Variable", y = "Dependent Variable") +
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm") +  # Group-level linear regression smoothing
+  facet_wrap(~Subject)  # Faceting the plot by group
+
+```
+
+> Each analysis will be restricted by its sample size, and the reduction in power will inflate sampling bias - leading to inconclusive results
+
+
+## Mixed model
+
+::: {.incremental}
+
+- Complete pooling models all the information together and ignores structure
+
+- Mixed models employ partial pooling:
+
+    - Fixed effects calculated on pooled data
+
+    - For each group the random effect estimates the intercept
+
+:::
+
+```{r, echo = F, fig.width = 10}
+
+plot_function2 <- function(model, title = "Data Coloured by Group"){
+  
+Orthodont <- Orthodont |>  
+  mutate(fit.m = predict(model, re.form = NA),
+         fit.c = predict(model, re.form = NULL))
+
+Orthodont |> 
+  ggplot(aes(x = age, y = distance, col = Subject)) +
+  geom_point(pch = 16, alpha = 0.6) +
+  geom_line(aes(y = fit.c, col = Subject), size = 2)  +
+  labs(title = title, 
+       x = "Independent Variable", 
+       y = "Dependent Variable") 
+}
+
+mixed_model <- lmer(distance ~ age + (1 | Subject), data = Orthodont)
+
+plot_function2(mixed_model, "Random intercept")
+
+```
+
+
+
+
+## Fit the Model {.smaller}
+```{r, echo = T}
+orth_mod <- lmer(distance ~ age + (1 | Subject), data = Orthodont)
+```
+
+::: {.fragment}
+**Check the ICC before inspecting fixed effects**
+```{r, echo = T}
+library(performance)
+icc(orth_mod)
+```
+
+An ICC substantially above 0.05 confirms that observations within children are more similar than observations between children — a mixed model is warranted.
+:::
+
+## Assumptions of a Linear Mixed Model {.smaller}
+
+LMMs extend the assumptions of the ordinary linear model. The key assumptions are:
+
+::: {.incremental}
+
+- **Linearity** — the relationship between fixed predictors and the outcome is linear
+
+- **Independence of residuals** — after accounting for random effects, residuals should be independent
+
+- **Normality of residuals** — residuals at the observation level should be approximately normally distributed
+
+- **Homoscedasticity** — residual variance should be approximately constant across fitted values
+
+- **Normality of random effects** — the estimated random effects (e.g., group intercepts) should themselves be approximately normally distributed with mean zero
+
+:::
+
+::: {.fragment}
+> Violations of random effect normality are generally less consequential than violations of residual normality, particularly with larger numbers of groups (Barr et al., 2013)
+:::
+
+## Check Assumptions {.smaller}
+
+:::{.column}
+
+```{r, echo = T, eval = F}
+check_model(orth_mod, detrend = FALSE)
+```
+
+```{r, echo = F}
+check_model(orth_mod, detrend = FALSE)
+```
+
+:::
+
+:::{.column}
+
+Inspect:
+
+::: {.incremental}
+- **Linearity** — residuals vs. fitted should show no systematic curve
+- **Normality of residuals** — QQ plot should follow the diagonal
+- **Homoscedasticity** — spread of residuals should be consistent across fitted values
+- **Normality of random effects** — random intercepts should be approximately normally distributed
+:::
+
+:::
+
+
+## Inspect the Summary {.smaller}
+
+```{r, echo = T}
+summary(orth_mod)
+```
+
+::: {.fragment}
+From the random effects table, calculate the ICC by hand:
+
+$$ICC = \frac{\sigma^2_{Subject}}{\sigma^2_{Subject} + \sigma^2_{residual}} = \frac{4.47}{6.47} = 0.69$$
+
+Compare this to the `icc()` output — they should match.
+
+```{r, echo = FALSE}
+icc(orth_mod)
+
+```
+
+:::
+
+## Test the Fixed Effect {.smaller}
+```{r, echo = T}
+drop1(orth_mod, test = "F")
+```
+
+::: {.fragment}
+`drop1()` uses the Kenward-Roger or Satterthwaite approximation for degrees of freedom (provided by `lmerTest`) — this is important because LMMs do not have exact F-distributions in the way that OLS models do.
+:::
+
+## Comparing to a Fixed Effect Model  {.smaller}
+
+:::{.column}
+
+```{r}
+orth_mod_fixed <- lm(distance ~ age + Subject, data = Orthodont)
+
+summary(orth_mod_fixed)
+```
+
+:::
+
+:::{.column}
+
+```{r, echo = T}
+summary(orth_mod)
+```
+
+:::
+
+## Estimated Marginal Means {.smaller}
+
+`emmeans()` provides model-estimated means at specific values of the predictor, with correct uncertainty propagation through the random effects structure.
+```{r, echo = T}
+library(emmeans)
+
+emmeans(orth_mod, specs = ~ age, 
+        at = list(age = c(8, 10, 12, 14)))
+```
+
+::: {.fragment}
+These are the predicted jaw distances at each age, averaged across the random effect of Subject — i.e. for a hypothetical average child.
+:::
+
+---
+
+## Reporting Template {.smaller}
+
+> Jaw distance increased significantly with age (F(1, 80.0) = ___, p < 0.001; estimate = ___ mm/year, 95% CI [___, ___]). Individual variation in baseline jaw size was accounted for by including Subject as a random intercept (σ² = ___; ICC = ___), confirming substantial within-subject correlation in repeated measurements. Model assumptions were checked using `performance::check_model()` and were satisfactorily met.
+
+::: {.fragment}
+```{r, echo = T}
+sjPlot::tab_model(orth_mod)
+```
+:::
+
+
+
+
+
+# Common issues {background-color="#D9DBDB"}
+
+
+## Singular Fits and Convergence Warnings {.smaller}
+
+You will likely encounter warnings such as:
+
+```
+boundary (singular) fit: see help('isSingular')
+Warning: Model failed to converge
+```
+
+::: {.incremental}
+
+- A **singular fit** occurs when the estimated variance of a random effect is zero (or near zero) — the model cannot meaningfully estimate that grouping structure
+
+- Common causes include: too few levels in the grouping factor (fewer than ~5–6 is problematic), insufficient data per group, or an overly complex random effects structure
+
+- A **convergence warning** indicates the optimiser did not reach a stable solution — results may be unreliable
+
+:::
+
+::: {.fragment}
+
+Recommended responses:
+
+- Simplify the random effects structure
+- Increase the number of iterations or try an alternative optimiser
+- If variance is genuinely near zero, consider whether the random effect is warranted
+
+```{r, echo = T, eval = F}
+# Try an alternative optimiser if convergence fails
+lmer(y ~ x + (1|group), data = data, 
+     control = lmerControl(optimizer = "bobyqa"))
+```
+
+:::
+
+> Barr et al. (2013) recommend keeping the maximal random effects structure justified by the design, but Matuschek et al. (2017) argue for parsimonious structures when data are limited — both papers are worth reading.
+
+---
+
+## Choosing your model
+
+- Explore your data and understand it
+
+- Think carefully before deciding on the structure of your model
+
+
+---
+
+## Reporting models
+
+1. Describe and justify your model (summarize the model fit).
+
+  - Specify all fixed and random effects, interactions, intercepts, and slopes
+  - Specify sample size: number of observations, and number of levels for each grouping factor
+
+2. Mention that you checked assumptions (and how), and that the assumptions are satisfied.
+
+3. Fixed effects: Report significance (test statistic (t/F), degrees of freedom, p-value) and actual estimates for coefficients (effect size: magnitude and direction, standard errors, and confidence intervals). Report Post-hoc tests (`emmeans()`).
+
+4. Random effects: Report the variances, standard deviations
+
+
+## Recommended {.smaller}
+
+:::: {.columns}
+
+::: {.column}
+
+- Cite the relevant packages for constructing and presenting analyses
+
+- Include plots of data and models
+
+- Report fixed effects as you would for a fixed-effects model
+
+- Make sure to include a summary of random effect specifications and s.d.
+
+
+
+:::
+
+::: {.column}
+```{r, echo = T, eval = F}
+
+sjPlot::tab_model(model)
+
+```
+:::
+
+::::
+
+---
+
+## Key References {.smaller}
+
+- Barr, D.J., Levy, R., Scheepers, C. & Tily, H.J. (2013). Random effects structure for confirmatory hypothesis testing: Keep it maximal. *Journal of Memory and Language*, 68(3), 255–278.
+
+- Gelman, A. & Hill, J. (2007). *Data Analysis Using Regression and Multilevel/Hierarchical Models*. Cambridge University Press.
+
+- Hartig, F. (2022). *DHARMa: Residual Diagnostics for Hierarchical (Multi-Level/Mixed) Regression Models*. R package version 0.4.6.
+
+- Matuschek, H., Kliegl, R., Vasishth, S., Baayen, H. & Bates, D. (2017). Balancing Type I error and power in linear mixed models. *Journal of Memory and Language*, 96, 124–133.
+
+- Nakagawa, S. & Schielzeth, H. (2013). A general and simple method for obtaining R² from generalized linear mixed-effects models. *Methods in Ecology and Evolution*, 4(2), 133–142.
