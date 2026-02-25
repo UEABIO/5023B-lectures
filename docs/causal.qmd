@@ -1,0 +1,823 @@
+---
+title: "Causal Models"
+subtitle: "Selecting predictors with confidence"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: "2026-02-26"
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      footer: "Linear Models | UEA | 2026"
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+# Model Selection and Causal Inference {background-color="#D9DBDB"}
+
+
+## Learning Objectives 
+
+By the end of this lecture, you should be able to:
+
+1. Explain why automated variable selection is problematic
+
+2. Understand when to use hierarchical regression
+
+3. Identify confounders, colliders, and mediators
+
+4. Use DAGs to make principled modelling decisions
+
+5. Avoid common statistical pitfalls in model specification
+
+
+
+## The Problem 
+
+You've measured 10 variables in your experiment. Which ones should go in your model?
+
+**Common (wrong) answer**: "Let the computer decide!"
+
+**Why this matters**:
+
+- Poor selection → biased estimates
+
+- Wrong variables → wrong conclusions
+
+- Overfitting → results don't replicate
+
+- Inflated Type I error rates
+
+> Your model specification is a scientific decision, not a statistical one
+
+
+
+# Part 1: What NOT to Do {background-color="#D9DBDB"}
+
+
+## Automated Variable Selection 
+
+**Common approaches you'll encounter**:
+
+:::: {.columns}
+::: {.column}
+**Stepwise methods**:
+- Forward selection
+
+- Backward elimination
+
+- Stepwise (AIC/p-values)
+
+**Information criteria**:
+- AIC comparison
+
+- Model dredging
+
+- All-subsets regression
+:::
+
+::: {.column}
+**Problems**:
+- Capitalise on chance
+
+- Inflated Type I error
+
+- Unstable across samples
+
+- Ignore causal structure
+
+- Over-confident estimates
+:::
+::::
+
+::: aside
+Harrell (2015); Heinze et al. (2018) "Step away from stepwise"
+:::
+
+
+
+## AIC: What It Can and Can't Do 
+
+**Akaike Information Criterion (AIC)**:
+
+$$\text{AIC} = 2k - 2\ln(\hat{L})$$
+
+- $k$ = number of parameters
+- $\hat{L}$ = maximised likelihood
+- Lower AIC = better balance of fit vs complexity
+- Δ AIC < 2 suggests equivalent models
+
+**AIC can**:
+- Compare non-nested models
+- Compare different GLM families
+
+**AIC cannot**:
+- Compare models with transformed responses
+- Compare models with different datasets
+- Tell you which variables are *causally* important
+
+
+
+## Model Dredging Example 
+
+```{r, echo = TRUE, eval = FALSE}
+library(MuMIn)
+
+# Fit model with all interactions
+model <- lm(bill_length ~ bill_depth * body_mass * species,
+            data = penguins, 
+            na.action = "na.fail")
+
+# Try every possible combination
+dredge(model)
+```
+
+```
+   Model selection table 
+   df   AICc  delta  weight
+24  8  1541.3  0.00   0.619
+32  9  1543.2  1.94   0.234
+56 10  1544.2  2.87   0.147
+```
+
+**Problems**:
+- Which model do you report? Top one? All of them?
+
+- Model weights apply to entire models, not individual predictors
+
+- Multicollinearity makes weights unreliable
+
+- You've just run hundreds of tests without correction
+
+
+## When IS Automated Selection Acceptable?
+
+**Likelihood Ratio Tests** can be useful:
+
+```{r, echo = TRUE, eval = FALSE}
+# Test if interaction improves fit
+model_full <- lm(height ~ fertiliser * sunlight, data = plants)
+
+model_reduced <- lm(height ~ fertiliser + sunlight, data = plants)
+
+anova(model_reduced, model_full)
+```
+
+**When this works**:
+- Testing a specific, pre-planned hypothesis
+- Comparing exactly two nested models
+- Not running multiple tests
+
+**When it fails**:
+- Repeatedly testing many terms
+- "Fishing" for significance
+- No correction for multiple comparisons
+
+
+
+
+# Part 2: A Better Approach - Hierarchical Regression {background-color="#D9DBDB"}
+
+
+## Hierarchical Regression
+
+**The idea**: Enter variables in theoretically motivated blocks
+
+**Example**: Predicting blood pressure
+
+**Block 1 - Demographics** (fundamental factors):
+```{r, echo = TRUE, eval = FALSE}
+model1 <- lm(blood_pressure ~ age + sex + ethnicity, data = health)
+```
+
+**Block 2 - Add Lifestyle** (potentially modifiable):
+```{r, echo = TRUE, eval = FALSE}
+model2 <- lm(blood_pressure ~ age + sex + ethnicity +
+                              activity + smoking + alcohol + sleep, 
+             data = health)
+
+anova(model1, model2)  # Does lifestyle add explanatory power?
+```
+
+
+## Why Hierarchical Regression Works
+
+**Advantages**:
+- Transparent and defensible
+- Based on theory, not data mining
+- Dramatically reduces number of tests
+- Each test answers a meaningful question
+- Can work forwards or backwards
+
+**Example questions**:
+- "Do lifestyle factors matter beyond demographics?"
+- "Does treatment work beyond baseline characteristics?"
+- "Do environmental variables add to genetic predictors?"
+
+**Key principle**: You're testing theoretical blocks, not individual variables
+
+
+
+## Part 3: Causal Inference Basics {background-color="#D9DBDB"}
+
+
+## Why Causality Matters 
+
+**Question**: Does this fertiliser increase plant growth?
+
+**You measure**:
+- Fertiliser (yes/no)
+- Plant height
+- Sunlight exposure
+
+**You find**: Fertilised plants are 20% taller (p < 0.001)
+
+**But**: You fertilised plants near windows (easier to reach)
+
+> Is it the fertiliser or the sunlight?
+
+**Regression only estimates causal effects when the model reflects causal structure**
+
+
+
+## Three Key Variable Types 
+
+**1. Confounder** → affects both exposure AND outcome
+
+```
+         Age
+        ↙   ↘
+   Exercise → Heart Disease
+```
+
+**2. Mediator** → on the causal pathway
+
+```
+Exercise → Weight Loss → Heart Disease
+```
+
+**3. Collider** → caused by two variables
+
+```
+Feeding → Predator Visits ← Egg Count
+```
+
+## Confounder
+
+**1. Confounder** → affects both exposure AND outcome
+
+```
+         Age
+        ↙   ↘
+   Exercise → Heart Disease
+```
+Age makes you less likely to exercise AND increases heart disease risk
+
+**Must adjust** to remove spurious association
+
+
+## Mediator
+
+**2. Mediator** → on the causal pathway
+
+```
+Exercise → Weight Loss → Heart Disease
+```
+Weight loss is HOW exercise works
+
+**Don't adjust** if you want total effect  
+**Do adjust** if you want direct effect only
+
+
+## Collider
+
+**3. Collider** → caused by two variables
+
+```
+Feeding → Predator Visits ← Egg Count
+```
+Both active birds AND large nests attract predators
+
+**Never adjust** - creates spurious associations (collider bias)
+
+
+## Quick Reference 
+
+| Variable Type | Structure | Adjust? | Why? |
+|--------------|-----------|---------|------|
+| **Confounder** | → Treatment<br>→ Outcome | ✅ YES | Blocks backdoor path |
+| **Mediator** | Treatment → M → Outcome | 🟡 DEPENDS | Are you asking about total or direct effect? |
+| **Collider** | Treatment → C ← Outcome | ❌ NEVER | Creates bias |
+
+**Golden rule**: Adjust for confounders, not mediators or colliders
+
+
+
+## Example 1: Blood Pressure Drug
+
+**Scenario**: Testing a new blood pressure medication
+
+**Variables**:
+- Drug treatment
+- Blood pressure reduction
+- Cholesterol reduction
+
+**Causal structure**:
+```
+Drug → Cholesterol → Blood Pressure
+```
+
+Cholesterol is a **mediator** (how the drug works)
+
+
+
+## Wrong Model 
+
+```{r, echo = TRUE, eval = FALSE}
+# WRONG - adjusts for mediator
+model_wrong <- lm(bp_reduction ~ drug + cholesterol, data = bp_data)
+```
+
+```
+Coefficients:
+                Estimate  p-value
+drug               2.1    0.234    # Not significant!
+cholesterol        0.3    <0.001
+```
+
+**What went wrong?**
+- We blocked the pathway through cholesterol
+- Now estimating only the *direct* effect
+- But the drug works *through* cholesterol!
+- We've answered the wrong question
+
+---
+
+## Correct Model
+
+```{r, echo = TRUE, eval = FALSE}
+# CORRECT - estimates total effect
+model_correct <- lm(bp_reduction ~ drug, data = bp_data)
+```
+
+```
+Coefficients:
+             Estimate  p-value
+drug            11.2   <0.001   # Now significant!
+```
+
+**Why this works**:
+- Estimates total effect (all pathways)
+- Includes the mediation through cholesterol
+- Answers: "Does the drug work?"
+
+---
+
+## Example 2: Antibiotic Treatment 
+
+**Question**: Does a new antibiotic reduce recovery time?
+
+**Variables**:
+- New antibiotic (yes/no)
+- Recovery time
+- Infection severity
+- Intensive care admission
+
+**Key facts**:
+- Severe infections → more likely to get new antibiotic
+- Severe infections → longer recovery
+- New antibiotic requires monitoring → intensive care
+- Severe infections also → intensive care
+
+Should we adjust for intensive care?
+
+
+
+## Antibiotic DAG 
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r, eval = FALSE, echo = TRUE}
+library(ggdag)
+
+dag <- dagify(
+  recovery ~ antibiotic + 
+             severity + 
+             icu,
+  antibiotic ~ severity,
+  icu ~ antibiotic + severity,
+  
+  exposure = "antibiotic",
+  outcome = "recovery"
+)
+
+ggdag_status(dag) +
+  theme_dag()
+```
+:::
+
+::: {.column width="60%"}
+```{r, echo = FALSE}
+# DAG visualization appears here
+```
+
+**Severity** = Confounder  
+**ICU** = Collider
+
+:::
+::::
+
+
+
+## What Should We Adjust For? (Slide 17)
+
+```{r, echo = TRUE, eval = FALSE}
+ggdag_adjustment_set(dag)
+```
+
+**Result**: `{ infection_severity }`
+
+**Correct model**:
+```{r, echo = TRUE, eval = FALSE}
+lm(recovery_time ~ antibiotic + infection_severity, data = hospital)
+```
+
+**Why?**
+- ✅ Adjusts for confounder (severity)
+- ❌ Does NOT adjust for collider (ICU)
+
+**If we adjusted for ICU**: Would create spurious association between antibiotic and recovery through collider bias
+
+
+
+## Example 3: Exercise & Heart Disease (Slide 18)
+
+**Question**: Does exercise reduce heart disease?
+
+**Variables**:
+- Exercise (hours/week)
+- Heart disease (yes/no)
+- Age
+- Weight loss
+- Genetics
+
+**Think about the causal structure before looking at the next slide...**
+
+
+
+## Exercise DAG 
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r, eval = FALSE, echo = TRUE}
+dag <- dagify(
+  heart_disease ~ exercise + 
+                  age + 
+                  weight_loss + 
+                  genetics,
+  exercise ~ age + genetics,
+  weight_loss ~ exercise,
+  
+  exposure = "exercise",
+  outcome = "heart_disease"
+)
+
+ggdag_adjustment_set(dag)
+```
+:::
+
+::: {.column width="60%"}
+**Result**: `{ age, genetics }`
+
+**Correct model**:
+```{r, eval = FALSE}
+lm(heart_disease ~ exercise + 
+                   age + 
+                   genetics,
+   data = health)
+```
+
+**Why?**
+- Age & genetics = confounders
+- Weight loss = mediator (don't adjust for total effect)
+:::
+::::
+
+
+
+## Example 4: Fertiliser & Crop Yield 
+
+**Question**: Does organic fertiliser increase yield?
+
+**Variables**:
+- Fertiliser type
+- Crop yield
+- Soil quality
+- Rainfall
+- Pest damage
+
+**Key fact**: Pest damage is caused by BOTH fertiliser type (attracts pests) AND rainfall (wet = more pests)
+
+What is pest damage? **Collider!**
+
+
+## Fertiliser DAG
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r, eval = FALSE, echo = TRUE}
+dag <- dagify(
+  yield ~ fertiliser + 
+          soil + 
+          rainfall + 
+          pests,
+  fertiliser ~ soil,
+  pests ~ fertiliser + 
+          rainfall,
+  
+  exposure = "fertiliser",
+  outcome = "yield"
+)
+
+ggdag_collider(dag)
+```
+:::
+
+::: {.column width="60%"}
+
+**Pest damage is a collider**
+
+```{r, eval = FALSE}
+ggdag_adjustment_set(dag)
+```
+
+**Result**: `{ soil_quality, rainfall }`
+
+**Correct model**:
+```{r, eval = FALSE}
+lm(yield ~ fertiliser + 
+           soil_quality + 
+           rainfall,
+   data = farms)
+```
+
+**NOT pests** - that's the collider!
+:::
+::::
+
+
+
+## Directed Acyclic Graphs (DAGs)
+
+**DAGs help us**:
+1. Make causal assumptions explicit
+2. Identify confounders, mediators, colliders
+3. Decide what to adjust for
+4. Communicate our reasoning
+
+**Critical point**: DAGs encode assumptions, they don't prove causality
+
+**Building a DAG**:
+- Use biological/domain knowledge
+- Consider temporal order (causes come before effects)
+- Think about unmeasured variables
+- Draw it BEFORE collecting data (ideally)
+
+
+
+## Using DAGs in R 
+
+```{r, echo = TRUE, eval = FALSE}
+library(ggdag)
+
+# Define causal structure
+my_dag <- dagify(
+  outcome ~ treatment + confounder,
+  treatment ~ confounder,
+  
+  exposure = "treatment",
+  outcome = "outcome"
+)
+
+# Visualise
+ggdag_status(my_dag) + theme_dag()
+
+# Find confounders
+ggdag_adjustment_set(my_dag)
+
+# Check for colliders
+ggdag_collider(my_dag)
+```
+
+**The software can't make causal decisions for you - but it can check your logic**
+
+
+## Common Pitfalls (Slide 24)
+
+**1. "Control for everything"**
+- ❌ Adjusts for mediators (wrong question)
+- ❌ Adjusts for colliders (creates bias)
+- ✅ Only adjust based on causal structure
+
+**2. Confusing association with causation**
+- Just because X correlates with treatment and outcome doesn't make it a confounder
+- Check: Does X *cause* both?
+
+**3. Ignoring temporal order**
+- Causes must come before effects
+- Drought during fire year can't cause thinning decisions made years earlier
+
+**4. Adjusting for treatment consequences**
+- Variables caused by treatment are mediators or colliders
+- Usually shouldn't adjust (unless you want direct effect)
+
+
+
+## Decision Workflow 
+
+**Before running ANY regression**:
+
+1. **Draw your DAG**
+   - What is exposure/treatment?
+   - What is outcome?
+   - What causes what?
+
+2. **Identify variable roles**
+   - Confounders (adjust)
+   - Mediators (depends on question)
+   - Colliders (never adjust)
+
+3. **Use ggdag to check**
+   - `ggdag_adjustment_set()` - what to include
+   - `ggdag_collider()` - what to avoid
+
+4. **Fit appropriate model**
+   - Include confounders
+   - Exclude mediators (for total effect) or include (for direct effect)
+   - Never include colliders
+
+5. **Be transparent**
+   - Report your DAG
+   - Justify decisions
+   - Acknowledge assumptions
+
+
+## Practical Guidance
+
+**When planning your analysis**:
+
+✅ **Do**:
+- Draw DAGs before collecting data
+- Use subject knowledge to build causal models
+- Test specific, pre-planned hypotheses
+- Use hierarchical regression for exploration
+- Adjust for confounders
+- Be transparent about decisions
+
+❌ **Don't**:
+- Use stepwise/automated selection
+- Adjust for mediators (unless you want direct effect)
+- Adjust for colliders
+- Let software make causal decisions
+- Confuse statistical significance with causal validity
+- Model dredge
+
+
+
+## Key Takeaways
+
+**1. Statistical significance ≠ Causal validity**
+- p < 0.05 doesn't mean you've found a cause
+
+**2. Model specification is a scientific decision**
+- Based on causal theory, not statistical tests
+
+**3. Three critical structures**:
+- Confounders: adjust for them
+- Mediators: depends on your question
+- Colliders: never adjust
+
+**4. DAGs make assumptions explicit**
+- Force you to think causally
+- Help avoid common mistakes
+- Improve transparency
+
+**5. There are no automatic solutions**
+- No algorithm can replace causal thinking
+- Domain knowledge is essential
+
+
+## What's Next? 
+
+**In the workshop you will**:
+- Build DAGs from biological scenarios
+- Use `ggdag` to analyse causal structures
+- See how wrong adjustments create bias
+- Practice with real datasets
+- Apply this to your own research questions
+
+**Further reading**:
+- Coursebook chapter on Causal Inference with DAGs
+- Huntington-Klein (2021) ["The Effect"](https://theeffectbook.net/index.html)
+
+
+
+## Questions? 
+
+**Think about**:
+- Your own research/projects
+- What variables might be confounders?
+- What might be mediators?
+- Are there potential colliders?
+
+**Common questions**:
+
+Q: "When is it OK to use AIC?"  
+A: For comparing specific hypotheses, not for variable hunting
+
+Q: "What if I'm not sure about the causal structure?"  
+A: Draw multiple DAGs, check robustness. Honesty about uncertainty is better than false confidence
+
+Q: "Can I ever adjust for a mediator?"  
+A: Yes - if you specifically want the direct effect. Just be clear that's what you're estimating
+
+---
+
+## Summary 
+
+**The old way**:
+1. Collect data
+2. Put ALL predictors in
+3. Report "significant" variables
+4. Hope for the best
+
+**The principled way**:
+1. Draw causal DAG (before data!)
+2. Identify confounders, mediators, colliders
+3. Use ggdag to check logic
+4. Fit causally-informed model
+5. Interpret appropriately
+
+> **Model selection is too important to be left to algorithms**
+
+**See you in the workshop!**
+
+
+
+## Backup Slides
+
+### Detailed AIC Example (Backup 1)
+
+```{r, echo = TRUE, eval = FALSE}
+model1 <- lm(height ~ fertiliser, data = plants)
+model2 <- lm(height ~ fertiliser + sunlight, data = plants)
+
+AIC(model1, model2)
+```
+
+```
+        df      AIC
+model1   3   456.2
+model2   4   423.8
+```
+
+**Interpretation**: 
+- Model 2 has lower AIC (better fit despite extra parameter)
+- But this doesn't tell you if sunlight is a confounder!
+- Need causal reasoning
+
+
+
+## Using drop1() (Backup 2)
+
+```{r, echo = TRUE, eval = FALSE}
+full_model <- lm(height ~ fertiliser * sunlight, data = plants)
+
+drop1(full_model, test = "F")
+```
+
+```
+                      Df Sum of Sq    RSS    AIC F value   Pr(>F)    
+<none>                             156.2  78.1                        
+fertiliser:sunlight    1     124.5  280.7  95.3  18.23  <0.001 ***
+```
+
+**Use for**: Testing if interaction can be removed  
+**Don't use for**: Choosing which main effects to include (use DAG instead)
+
+
