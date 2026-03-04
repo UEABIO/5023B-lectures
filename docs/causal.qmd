@@ -3,7 +3,7 @@ title: "Causal Models"
 subtitle: "Selecting predictors with confidence"
 author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
 institute: "University of East Anglia"
-date: "2026-02-26"
+date: "2026-03-05"
 format:
     LUstyle-revealjs:
       self-contained: true
@@ -77,9 +77,6 @@ You've measured 10 variables in your experiment. Which ones should go in your mo
 :::: {.columns}
 ::: {.column}
 **Stepwise methods**:
-- Forward selection
-
-- Backward elimination
 
 - Stepwise (AIC/p-values)
 
@@ -88,7 +85,6 @@ You've measured 10 variables in your experiment. Which ones should go in your mo
 
 - Model dredging
 
-- All-subsets regression
 :::
 
 ::: {.column}
@@ -130,7 +126,6 @@ $$\text{AIC} = 2k - 2\ln(\hat{L})$$
 - Compare models with transformed responses
 - Compare models with different datasets
 - Tell you which variables are *causally* important
-
 
 
 ## Model Dredging Example 
@@ -181,13 +176,12 @@ anova(model_reduced, model_full)
 **When this works**:
 - Testing a specific, pre-planned hypothesis
 - Comparing exactly two nested models
-- Not running multiple tests
+- Not running **multiple** tests
 
 **When it fails**:
 - Repeatedly testing many terms
 - "Fishing" for significance
 - No correction for multiple comparisons
-
 
 
 
@@ -233,23 +227,26 @@ anova(model1, model2)  # Does lifestyle add explanatory power?
 
 
 
-## Part 3: Causal Inference Basics {background-color="#D9DBDB"}
+# Part 3: Causal Inference Basics {background-color="#D9DBDB"}
 
 
 ## Why Causality Matters 
 
-**Question**: Does this fertiliser increase plant growth?
+**Question**: Does smoking reduce lung capacity?
 
 **You measure**:
-- Fertiliser (yes/no)
-- Plant height
-- Sunlight exposure
 
-**You find**: Fertilised plants are 20% taller (p < 0.001)
+- Age (10 - 35)
+- Smoking (yes/no)
+- Lung capacity
 
-**But**: You fertilised plants near windows (easier to reach)
+**You perform**: A simple regression (lung capacity ~ smoking)
 
-> Is it the fertiliser or the sunlight?
+**You find**: Smokers have a *greater lung capacity* (p < 0.001)
+
+**But**: Only adults in the study are smokers 
+
+> So have you measured smokings effect on lung capacity or the effect of being an adult?
 
 **Regression only estimates causal effects when the model reflects causal structure**
 
@@ -257,6 +254,7 @@ anova(model1, model2)  # Does lifestyle add explanatory power?
 
 ## Three Key Variable Types 
 
+:::{.fragment}
 **1. Confounder** → affects both exposure AND outcome
 
 ```
@@ -264,18 +262,24 @@ anova(model1, model2)  # Does lifestyle add explanatory power?
         ↙   ↘
    Exercise → Heart Disease
 ```
+:::
 
+:::{.fragment}
 **2. Mediator** → on the causal pathway
 
 ```
 Exercise → Weight Loss → Heart Disease
 ```
+:::
+
+:::{.fragment}
 
 **3. Collider** → caused by two variables
 
 ```
 Feeding → Predator Visits ← Egg Count
 ```
+:::
 
 ## Confounder
 
@@ -291,6 +295,40 @@ Age makes you less likely to exercise AND increases heart disease risk
 **Must adjust** to remove spurious association
 
 
+## Confounder
+
+```{r}
+library(tidyverse)
+
+set.seed(42)
+n <- 500
+
+# Confounder: affects both exposure and outcome
+age      <- rnorm(n, mean = 50, sd = 10)
+
+# Exposure: age reduces exercise
+exercise <- -0.5 * age + rnorm(n, sd = 5)
+
+# Outcome: age increases risk, exercise reduces it
+heart_disease_risk <- 0.6 * age +
+                     -0.2 * exercise +
+                      rnorm(n, sd = 3)
+
+confounder_data <- tibble(age, exercise, heart_disease_risk)
+
+# Model 1: Unadjusted - confounded estimate of exercise
+# age drives both down, making exercise appear MORE protective than it is
+model_unadjusted <- lm(heart_disease_risk ~ exercise, data = confounder_data)
+summary(model_unadjusted)
+
+# Model 2: Adjusted - blocks the backdoor path through age
+# Recovers the true exercise coefficient of approximately -0.2
+model_adjusted <- lm(heart_disease_risk ~ exercise + age, data = confounder_data)
+summary(model_adjusted)
+
+```
+
+
 ## Mediator
 
 **2. Mediator** → on the causal pathway
@@ -300,8 +338,46 @@ Exercise → Weight Loss → Heart Disease
 ```
 Weight loss is HOW exercise works
 
-**Don't adjust** if you want total effect  
-**Do adjust** if you want direct effect only
+**Don't adjust** if you want *total effect*  
+
+**Do adjust** if you want *direct effect* only
+
+## Mediator
+
+```{r}
+library(tidyverse)
+
+set.seed(42)
+n <- 500
+
+# Simulate the causal chain
+exercise    <- rnorm(n, mean = 5, sd = 1.5)      # hours per week
+
+# Mediator: exercise causes weight loss
+weight_loss <- 0.6 * exercise + rnorm(n, sd = 2)  # kg lost
+
+# Outcome: both exercise (directly) and weight loss affect heart disease risk
+heart_disease_risk <- -0.3 * exercise +            # small direct effect
+                      -0.7 * weight_loss +          # dominant mediated effect
+                      rnorm(n, sd = 2)
+
+mediator_data <- tibble(
+  exercise,
+  weight_loss,
+  heart_disease_risk
+)
+
+# Model 1: Total effect of exercise (DO NOT adjust for mediator)
+# Captures both direct path and path through weight loss
+model_total <- lm(heart_disease_risk ~ exercise, data = mediator_data)
+summary(model_total)
+
+# Model 2: Direct effect only (adjust for mediator)
+# Asks: what does exercise do INDEPENDENT of weight loss?
+model_direct <- lm(heart_disease_risk ~ exercise + weight_loss, data = mediator_data)
+summary(model_direct)
+
+```
 
 
 ## Collider
@@ -316,6 +392,44 @@ Both active birds AND large nests attract predators
 **Never adjust** - creates spurious associations (collider bias)
 
 
+## Collider
+
+```{r}
+
+library(tidyverse)
+
+set.seed(42)
+n <- 500
+
+# Simulate independent causes
+feeding_activity <- rnorm(n, mean = 50, sd = 10)
+egg_count        <- rnorm(n, mean = 8,  sd = 2)
+
+# Collider
+predator_visits <- 0.4 * feeding_activity +
+                   0.6 * egg_count +
+                   rnorm(n, mean = 0, sd = 5)
+
+collider_data <- tibble(
+  feeding_activity,
+  egg_count,
+  predator_visits
+)
+
+# Model 1: Marginal - egg_count predicts feeding_activity (no collider)
+# Coefficient on egg_count should be near zero
+model_marginal <- lm(feeding_activity ~ egg_count, data = collider_data)
+summary(model_marginal)
+
+# Model 2: Conditioning on collider - collider bias induced
+# Coefficient on egg_count should now be spuriously negative
+model_collider <- lm(feeding_activity ~ egg_count + predator_visits, data = collider_data)
+summary(model_collider)
+
+```
+
+
+
 ## Quick Reference 
 
 | Variable Type | Structure | Adjust? | Why? |
@@ -324,8 +438,7 @@ Both active birds AND large nests attract predators
 | **Mediator** | Treatment → M → Outcome | 🟡 DEPENDS | Are you asking about total or direct effect? |
 | **Collider** | Treatment → C ← Outcome | ❌ NEVER | Creates bias |
 
-**Golden rule**: Adjust for confounders, not mediators or colliders
-
+**Golden rule**: *Adjust for confounders*, *DO NOT ADJUST for mediators or colliders*
 
 
 ## Example 1: Blood Pressure Drug
@@ -343,7 +456,6 @@ Drug → Cholesterol → Blood Pressure
 ```
 
 Cholesterol is a **mediator** (how the drug works)
-
 
 
 ## Wrong Model 
@@ -386,7 +498,78 @@ drug            11.2   <0.001   # Now significant!
 - Includes the mediation through cholesterol
 - Answers: "Does the drug work?"
 
----
+
+## Directed Acyclic Graphs (DAGs)
+
+**DAGs help us**:
+1. Make causal assumptions explicit
+2. Identify confounders, mediators, colliders
+3. Decide what to adjust for
+4. Communicate our reasoning
+
+**Critical point**: DAGs encode assumptions, they don't prove causality
+
+**Building a DAG**:
+- Use biological/domain knowledge
+- Consider temporal order (causes come before effects)
+- Think about unmeasured variables
+- Draw it BEFORE collecting data (ideally)
+
+
+
+## Using DAGs in R 
+
+::: {.column}
+
+```{r, echo = TRUE, eval = FALSE}
+library(ggdag)
+
+# Define causal structure
+my_dag <- dagify(
+  outcome ~ treatment + confounder,
+  treatment ~ confounder,
+  
+  exposure = "treatment",
+  outcome = "outcome"
+)
+
+# Visualise
+ggdag_status(my_dag) + theme_dag()
+
+# Find confounders
+ggdag_adjustment_set(my_dag)
+
+# Check for colliders
+ggdag_collider(my_dag)
+```
+
+:::
+
+::: {.column}
+
+```{r, echo = FALSE, eval = TRUE}
+library(ggdag)
+
+# Define causal structure
+my_dag <- dagify(
+  outcome ~ treatment + confounder,
+  treatment ~ confounder,
+  
+  exposure = "treatment",
+  outcome = "outcome"
+)
+
+# Visualise
+ggdag_status(my_dag) 
+
+
+```
+
+
+:::
+
+**The software can't make causal decisions for you - but it can check your logic**
+
 
 ## Example 2: Antibiotic Treatment 
 
@@ -404,7 +587,7 @@ drug            11.2   <0.001   # Now significant!
 - New antibiotic requires monitoring → intensive care
 - Severe infections also → intensive care
 
-Should we adjust for intensive care?
+**Q: Should we adjust for intensive care?**
 
 
 
@@ -429,22 +612,39 @@ dag <- dagify(
 ggdag_status(dag) +
   theme_dag()
 ```
+
+**Severity** = Confounder  
+**ICU** = Collider
+
 :::
 
 ::: {.column width="60%"}
 ```{r, echo = FALSE}
-# DAG visualization appears here
+library(ggdag)
+
+dag <- dagify(
+  recovery ~ antibiotic + 
+             severity + 
+             icu,
+  antibiotic ~ severity,
+  icu ~ antibiotic + severity,
+  
+  exposure = "antibiotic",
+  outcome = "recovery"
+)
+
+ggdag_status(dag) +
+  theme_dag()
 ```
 
-**Severity** = Confounder  
-**ICU** = Collider
+
 
 :::
 ::::
 
 
 
-## What Should We Adjust For? (Slide 17)
+## What Should We Adjust For? 
 
 ```{r, echo = TRUE, eval = FALSE}
 ggdag_adjustment_set(dag)
@@ -465,7 +665,7 @@ lm(recovery_time ~ antibiotic + infection_severity, data = hospital)
 
 
 
-## Example 3: Exercise & Heart Disease (Slide 18)
+## Example 3: Exercise & Heart Disease 
 
 **Question**: Does exercise reduce heart disease?
 
@@ -499,13 +699,42 @@ dag <- dagify(
 
 ggdag_adjustment_set(dag)
 ```
+
+**Result**: `{ age, genetics }`
+
 :::
 
 ::: {.column width="60%"}
-**Result**: `{ age, genetics }`
+
+```{r, eval = TRUE, echo = FALSE}
+
+dag <- dagify(
+  heart_disease ~ exercise + 
+                  age + 
+                  weight_loss + 
+                  genetics,
+  exercise ~ age + genetics,
+  weight_loss ~ exercise,
+  
+  exposure = "exercise",
+  outcome = "heart_disease"
+)
+
+ggdag_status(dag) +
+  theme_dag()
+```
+
+:::
+::::
+
+## Corrected model
+
+
+:::{.fragment}
 
 **Correct model**:
-```{r, eval = FALSE}
+
+```{r, eval = FALSE, echo = TRUE}
 lm(heart_disease ~ exercise + 
                    age + 
                    genetics,
@@ -515,8 +744,8 @@ lm(heart_disease ~ exercise +
 **Why?**
 - Age & genetics = confounders
 - Weight loss = mediator (don't adjust for total effect)
+
 :::
-::::
 
 
 
@@ -562,14 +791,39 @@ ggdag_collider(dag)
 
 **Pest damage is a collider**
 
+```{r, echo = FALSE, eval = TRUE}
+dag <- dagify(
+  yield ~ fertiliser + 
+          soil + 
+          rainfall + 
+          pests,
+  fertiliser ~ soil,
+  pests ~ fertiliser + 
+          rainfall,
+  
+  exposure = "fertiliser",
+  outcome = "yield"
+)
+
+ggdag_collider(dag)
+
+```
+
+:::
+::::
+
+## Fertiliser DAG
+
 ```{r, eval = FALSE}
 ggdag_adjustment_set(dag)
 ```
 
 **Result**: `{ soil_quality, rainfall }`
 
+:::{.fragment}
+
 **Correct model**:
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 lm(yield ~ fertiliser + 
            soil_quality + 
            rainfall,
@@ -577,57 +831,14 @@ lm(yield ~ fertiliser +
 ```
 
 **NOT pests** - that's the collider!
+
 :::
-::::
 
 
 
-## Directed Acyclic Graphs (DAGs)
-
-**DAGs help us**:
-1. Make causal assumptions explicit
-2. Identify confounders, mediators, colliders
-3. Decide what to adjust for
-4. Communicate our reasoning
-
-**Critical point**: DAGs encode assumptions, they don't prove causality
-
-**Building a DAG**:
-- Use biological/domain knowledge
-- Consider temporal order (causes come before effects)
-- Think about unmeasured variables
-- Draw it BEFORE collecting data (ideally)
 
 
-
-## Using DAGs in R 
-
-```{r, echo = TRUE, eval = FALSE}
-library(ggdag)
-
-# Define causal structure
-my_dag <- dagify(
-  outcome ~ treatment + confounder,
-  treatment ~ confounder,
-  
-  exposure = "treatment",
-  outcome = "outcome"
-)
-
-# Visualise
-ggdag_status(my_dag) + theme_dag()
-
-# Find confounders
-ggdag_adjustment_set(my_dag)
-
-# Check for colliders
-ggdag_collider(my_dag)
-```
-
-**The software can't make causal decisions for you - but it can check your logic**
-
-
-## Common Pitfalls (Slide 24)
+## Common Pitfalls
 
 **1. "Control for everything"**
 - ❌ Adjusts for mediators (wrong question)
@@ -650,6 +861,7 @@ ggdag_collider(my_dag)
 
 ## Decision Workflow 
 
+::: {.column}
 **Before running ANY regression**:
 
 1. **Draw your DAG**
@@ -665,6 +877,9 @@ ggdag_collider(my_dag)
 3. **Use ggdag to check**
    - `ggdag_adjustment_set()` - what to include
    - `ggdag_collider()` - what to avoid
+:::
+
+:::{.column}
 
 4. **Fit appropriate model**
    - Include confounders
@@ -676,6 +891,7 @@ ggdag_collider(my_dag)
    - Justify decisions
    - Acknowledge assumptions
 
+:::
 
 ## Practical Guidance
 
