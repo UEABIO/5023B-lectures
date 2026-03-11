@@ -1,0 +1,380 @@
+---
+title: "Where Do Effect Size Estimates Come From?"
+subtitle: "Sequential Challenge — Session 3"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: "2026-03-13"
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+# The Research Scenario {background-color="#D9DBDB"}
+
+## Your Study
+
+You are designing a study to examine the effect of **grazing exclusion** on **plant species richness** in upland heath.
+
+:::{.fragment}
+**Study design:**
+
+- Grazed plots compared to plots where livestock have been excluded for three years
+- Species richness recorded as a count of vascular plant species per 1m² quadrat
+- You need to specify an effect size for a power analysis
+
+:::
+
+:::{.fragment}
+**Your task for each option:**
+
+Write down **two things** before any group discussion begins:
+
+1. Would you use this option as the basis for your power analysis? One sentence.
+2. What specific evidence or argument would make you abandon this option? Be concrete — "if the study was better" is not acceptable.
+
+:::
+
+:::{.callout-important}
+Do not discuss until everyone has written their individual response. You have two minutes per option.
+:::
+
+
+
+# Option 1 {background-color="#D9DBDB"}
+
+
+## Expert Opinion
+
+```{r}
+countdown::countdown(
+  minutes = 2,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+A leading vegetation ecologist has stated in a published review that grazing exclusion typically produces **"moderate to large"** increases in plant species richness in upland heath systems.
+
+:::{.fragment}
+**Details:**
+
+- The author draws on 30 years of fieldwork experience across multiple sites in northern Europe
+- No primary data or quantitative summary underlies the claim
+- The review does not define what "moderate to large" means numerically
+
+:::
+
+:::{.fragment}
+**Write individually first — then discuss:**
+
+Would you use this as the basis for your power analysis? What would make you abandon it?
+
+:::
+
+:::{.fragment}
+**Group discussion question:**
+
+Under what conditions is expert opinion a legitimate source of effect size information? What is it substituting for, and what does that substitution cost you?
+
+:::
+
+
+
+# Option 2 {background-color="#D9DBDB"}
+
+
+
+## A Single Published Study
+
+
+```{r}
+countdown::countdown(
+  minutes = 2,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+A study conducted at a single upland heath site in Wales recorded:
+
+:::{.fragment}
+
+| Group | Mean species richness |
+|---|---|
+| Grazed plots | 8.2 per quadrat |
+| Excluded plots | 11.4 per quadrat |
+
+- Sample size: n = 9 per treatment
+- p = 0.047 (just reached significance)
+- No standard deviation or confidence interval reported
+- Cited 14 times, mostly in passing
+
+:::
+
+:::{.fragment}
+**Revise your position from Option 1:**
+
+Would you switch to this, stay with Option 1, or reject both? Write your reasoning in two sentences before discussing.
+:::
+
+:::{.fragment}
+**Group discussion question:**
+
+This option gives you a number with apparent precision. Does precision make it more trustworthy than Option 1? What is the relationship between precision and accuracy?
+:::
+
+
+
+
+# Option 3 {background-color="#D9DBDB"}
+
+
+
+
+## A Minimum Meaningful Difference
+
+
+```{r}
+countdown::countdown(
+  minutes = 2,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+A national vegetation monitoring programme has defined a threshold for **"meaningful recovery"** in upland heath.
+
+:::{.fragment}
+**Details:**
+
+- Threshold: an increase of **2 or more species per quadrat** relative to baseline grazed conditions
+- Agreed by an expert panel
+- Incorporated into agri-environment scheme monitoring guidelines
+- This threshold is **smaller** than the effect reported in Option 2
+
+:::
+
+:::{.fragment}
+**Revise your position again:**
+
+What does this option offer that Options 1 and 2 do not? Write one sentence before discussing.
+:::
+
+:::{.fragment}
+**Group discussion question:**
+
+This effect size is defined by its consequences rather than its empirical prevalence. Is that a strength or a weakness as a basis for power analysis? Who made this judgement, and does it matter for your study?
+:::
+
+
+
+
+# Option 4 {background-color="#D9DBDB"}
+
+
+## A Well-Powered Replication Study
+
+
+```{r}
+countdown::countdown(
+  minutes = 2,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+A pre-registered study conducted across 14 upland heath sites in Scotland and northern England reported:
+
+:::{.fragment}
+
+| Group | Mean | SD |
+|---|---|---|
+| Grazed plots | 9.1 per quadrat | 2.8 |
+| Excluded plots | 11.6 per quadrat | 3.1 |
+
+- Mean difference: **2.5 species per quadrat** (95% CI: 1.8 to 3.2)
+- Total n = 168 quadrats across 14 sites
+- Pre-registered; full data in supplementary material
+- Species composition in Scottish sites **differs** from your English upland study area
+
+:::
+
+:::{.fragment}
+**Make your final decision:**
+
+Which option do you use and why? Acknowledge the strongest objection to your choice in one sentence.
+:::
+
+:::{.fragment}
+**Group discussion question:**
+
+This is the most statistically reliable option. Does that make it the correct choice? What conditions would need to hold for the system difference to be negligible?
+:::
+
+
+# Whole-Group Debrief {background-color="#D9DBDB"}
+
+## What Did Your Group Decide?
+
+Each group reads out:
+
+1. Which option they chose
+2. Their one-sentence justification
+3. Their one-sentence acknowledgement of the strongest objection
+
+:::{.fragment}
+**One question for the room:**
+
+Did any group change their mind between options? What caused the change?
+:::
+
+:::{.fragment}
+:::{.callout-important}
+## There is no correct answer
+
+The goal is to carry a specific, justified, and honestly scrutinised effect size into the simulation — and to be able to state clearly what would have to be true for that estimate to be reliable.
+
+The effect size you choose now will appear in your take-home assessment. You will be asked to connect it explicitly to this discussion.
+:::
+:::
+
+---
+
+## What You Are Carrying Forward
+
+Before moving to the Interlude, record the following on paper or in your notes:
+
+:::{.fragment}
+1. **Your chosen effect size value** — the specific number you will use in the simulation
+2. **Its source** — which option it came from and why
+3. **Your key assumption** — what would have to be true for this estimate to be reliable
+4. **Your strongest concern** — the objection you acknowledged in your justification
+:::
+
+:::{.fragment}
+You will need these in:
+
+- Section 4 when you parameterise your simulation
+- The take-home assessment Component 2 (Decision Audit, Question 3)
+:::
+
+---
+
+## Option 1 — Facilitator Prompt
+
+*Advance to this slide only if discussion stalls*
+
+:::{.callout-note}
+## If groups reach consensus too quickly
+
+If a subsequent option offered a quantitative estimate from a single study with n = 8, would that be better or worse than this?
+
+What does your answer reveal about what you value in an effect size source?
+:::
+
+**Key insight to draw out:**
+
+"Moderate to large" cannot be entered into a simulation without additional quantification. Expert opinion has value as a starting point — it tells you the direction and approximate magnitude — but it is not sufficient on its own. The question is what it is substituting for and whether that substitution is acceptable given the stakes of the power analysis.
+
+---
+
+## Option 2 — Facilitator Prompt
+
+*Advance to this slide only if discussion stalls*
+
+:::{.callout-note}
+## If groups accept Option 2 uncritically
+
+The effect just crossed p < 0.05 in a study with n = 9.
+
+What does the winner's curse imply about the likely relationship between this reported effect size and the true effect size? In which direction does this bias a power analysis that uses it?
+:::
+
+**Key insight to draw out:**
+
+Option 2 provides a number but a compromised one. The n = 9 study is underpowered — the reported difference of 3.2 species is very likely inflated due to the winner's curse. The absence of a standard deviation is also a practical barrier for simulation. Precision (having a specific number) is not the same as accuracy (that number being close to the truth).
+
+---
+
+
+
+## Option 3 — Facilitator Prompt
+
+*Advance to this slide only if discussion stalls*
+
+:::{.callout-note}
+## If groups accept or reject Option 3 without interrogating it
+
+Your study is in a different country with a different regulatory context. The 2-species threshold does not formally apply to your system.
+
+Does that invalidate this option entirely, or only partially? What would you need to do to adapt it legitimately?
+:::
+
+**Key insight to draw out:**
+
+Option 3 is scientifically the most principled choice — it specifies the effect that matters rather than the effect that happened to be observed. However it requires accepting that the expert panel's threshold is applicable to your study system. That is a scientific and contextual judgement, not a statistical one.
+
+---
+
+## Option 4 — Facilitator Prompt
+
+*Advance to this slide only if discussion stalls*
+
+:::{.callout-note}
+## If groups choose the point estimate without interrogating it
+
+The confidence interval runs from 1.8 to 3.2. If you power for the point estimate (2.5) but the true effect is at the lower bound (1.8), what happens to your actual power?
+
+Should you power for the point estimate or for something more conservative?
+:::
+
+**Key insight to draw out:**
+
+Option 4 is the most statistically reliable but the system mismatch is a legitimate concern. The confidence interval lower bound of 1.8 is close to the Option 3 threshold of 2.0 — this connection is worth highlighting. The SD of approximately 3.0 can be used directly in the Gaussian simulation. A conservative approach would power for the lower bound rather than the point estimate.
+
