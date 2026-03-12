@@ -117,7 +117,7 @@ Building models around hypotheses
 Designing properly powered studies for biological research.
 
 ::: {.card-footer}
-[View Slides](power.html){.btn .btn-primary}
+[View Slides](power_analysis_lecture.html){.btn .btn-primary}
 :::
 :::
 
