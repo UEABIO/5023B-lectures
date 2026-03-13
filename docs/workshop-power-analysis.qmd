@@ -31,14 +31,16 @@ execute:
 
 ## Your Study
 
-You are designing a study to examine the effect of **grazing exclusion** on **plant species richness** in upland heath.
+You are designing a field experiment to test whether supplementary feeding improves body condition in juvenile great tits (*Parus major*). 
 
 :::{.fragment}
 **Study design:**
 
-- Grazed plots compared to plots where livestock have been excluded for three years
-- Species richness recorded as a count of vascular plant species per 1m² quadrat
-- You need to specify an effect size for a power analysis
+- Nest boxes are randomly assigned to either a supplementary feeding treatment or a control. 
+
+- At the end of six weeks, juvenile birds are caught and weighed. 
+
+- Body mass (grams) is the response variable. Tarsus length (mm) is also recorded as a measure of structural body size.
 
 :::
 
@@ -83,7 +85,7 @@ A highly cited review of supplementary feeding experiments in passerine birds co
 :::{.fragment}
 **Details:**
 
-- The lead author, a recognised authority in the field, states in a conference presentation that "you would expect to see condition improvements of somewhere between half and one standard deviation above controls in a well-designed feeding study."
+- The lead author states at a conference that effects of "roughly half a gram to one gram above controls would be a reasonable expectation in a well-designed study."
 
 - No primary data or quantitative summary underlies the claim
 
@@ -127,7 +129,7 @@ countdown::countdown(
 )
 ```
 
-A study of supplementary feeding in blue tits (Cyanistes caeruleus) — a closely related species with similar ecology — reported a mean condition index of 0.31 in fed birds and −0.18 in unfed birds (difference = 0.49 condition index units).
+A study of supplementary feeding in blue tits (*Cyanistes caeruleus*) — a closely related species with similar ecology — reported that fed birds were on average 1.8g heavier than unfed birds after adjusting for tarsus length
 
 :::{.fragment}
 
@@ -135,7 +137,7 @@ A study of supplementary feeding in blue tits (Cyanistes caeruleus) — a closel
 - The study used 12 nest boxes per treatment at a single woodland site in southern England. 
 - The effect reached p = 0.041.
 - No standard deviation or confidence interval reported
--  The study has been cited 22 times.
+- The study has been cited 22 times.
 
 :::
 
@@ -177,14 +179,16 @@ countdown::countdown(
 )
 ```
 
-A long-term monitoring programme tracking juvenile great tit survival and recruitment at Wytham Woods has established that juveniles with a body condition index at least 0.3 units above the site mean have significantly higher overwinter survival and first-year recruitment rates. 
+A long-term monitoring programme tracking juvenile great tit survival and recruitment at Wytham Woods has established that juveniles with a body condition index at least 0.8g above the site mean at fledging have significantly higher overwinter survival and first-year recruitment rates. 
 
 :::{.fragment}
 **Details:**
 
-- The programme's steering committee has adopted 0.3 condition index units as the minimum ecologically meaningful difference for intervention studies at this and comparable sites
+- The programme's steering committee has adopted 0.8g as the minimum ecologically meaningful difference for intervention studies at this and comparable sites
+
 - Agreed by an expert panel
-- The within-group standard deviation at Wytham Woods across fifteen years of monitoring is 0.72 condition index units.
+
+- The residual standard deviation of body mass after adjusting for tarsus length across fifteen years of Wytham data is 2.10g.
 
 :::
 
@@ -230,9 +234,9 @@ A pre-registered multi-site study examined supplementary feeding effects on juve
 
 - The study used 25 nest boxes per treatment per site (total n = 400 per treatment across sites).
 
-- Fed birds had a mean condition index of 0.41 (SD = 0.68) and unfed birds −0.09 (SD = 0.71), giving a mean difference of 0.50 condition index units (95% CI: 0.41 to 0.59)
+- Fed birds were on average 1.50g  (95% CI: 1.15 to 1.85g) heavier than unfed birds after adjusting for tarsus length).
 
-- Raw data are available via the Open Science Framework
+- Residual SD = 2.20g
 
 - The study sites include upland oak woodland and lowland mixed woodland — your study site is lowland mixed woodland, which matches two of the eight sites directly
 
@@ -247,7 +251,7 @@ Which option do you use and why? Acknowledge the strongest objection to your cho
 :::{.fragment}
 **Group discussion question:**
 
-the confidence interval runs from 0.41 to 0.59. Should you power your study for the point estimate (0.50) or the lower bound (0.41)? What are the consequences of each choice if the true effect is at the lower end of the interval?
+Group discussion: the confidence interval runs from 1.15 to 1.85. Should you power for the point estimate or the lower bound? What are the consequences of each choice?
 :::
 
 
