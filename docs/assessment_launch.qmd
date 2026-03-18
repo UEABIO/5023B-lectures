@@ -1,0 +1,753 @@
+---
+title: "Reproducible Research Project"
+subtitle: "Assessment Launch and AI Guidance"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: today
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+# Before We Start {background-color="#D9DBDB"}
+
+## One Question
+
+You have read the assessment brief.
+
+```{r}
+countdown::countdown(
+  minutes = 1L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+:::{.fragment}
+**What is the one thing you are most uncertain about?**
+
+Take 60 seconds. Write it down.
+:::
+
+:::{.fragment}
+We will come back to these at the end.
+:::
+
+
+# What This Assessment Is Actually Doing {background-color="#D9DBDB"}
+
+## The Design Logic
+
+This assessment has an unusual structure. It is worth understanding why.
+
+:::{.incremental}
+- Most coursework lets you analyse data and write up at the same time
+- This makes it very difficult to distinguish **good decisions** from **decisions that produced a tidy result**
+- Pre-registering your analysis plan before seeing the data separates these two things
+:::
+
+:::{.fragment}
+**The result is an assessment where genuine understanding is worth more than a polished document**
+:::
+
+
+
+## The Three Components
+
+| Component | Weight | What it establishes |
+|---|---|---|
+| Preregistration | 25% | That you thought carefully before seeing the data |
+| Analysis report and repository | 25% | That you completed a genuine analysis |
+| Viva | 50% | That you understood what you did |
+
+:::{.fragment}
+**The written components exist primarily as material for the viva**
+
+A polished preregistration that you cannot discuss is worth very little.
+A rougher one that reflects genuine thinking is worth considerably more.
+:::
+
+
+
+## The Preregistration Is Not a Contract
+
+:::{.fragment}
+**Deviation from your preregistered plan is expected and is not penalised**
+:::
+
+:::{.incremental}
+- Real data rarely behaves exactly as anticipated
+- Cleaning decisions, unexpected distributions, variables that do not work as planned — these are normal
+- What is required is that deviation is **explicitly flagged** in your report with a brief explanation
+:::
+
+:::{.fragment}
+> The preregistration makes your thinking visible before the data does.
+> The viva asks you to account for the gap between the two.
+:::
+
+:::{.callout-warning}
+Unexplained deviation — where your analysis differs from the preregistration without acknowledgement — will be penalised.
+:::
+
+
+
+
+# AI Tools — Where They Help and Where They Hurt {background-color="#D9DBDB"}
+
+## Let's Name the Tools
+
+You are using these. We know you are using them. This session will tell you where they help and where they will cause you problems.
+
+:::{.incremental}
+- **Research Rabbit, Connected Papers** — literature mapping
+- **Consensus** — AI-assisted literature search
+- **ChatGPT, Claude** — writing assistance, concept explanation
+- **GitHub Copilot, ChatGPT** — code generation and debugging
+:::
+
+:::{.fragment}
+The assessment does not have a blanket prohibition on AI tools.
+
+It has a **boundary defined by what the viva will expose.**
+:::
+
+
+
+## ✅ Fully Permitted: AI for Coding
+
+Using AI tools to write, debug, and improve your R code in the analysis report is **explicitly permitted**.
+
+:::{.incremental}
+- This reflects how quantitative researchers actually work
+- Copilot, ChatGPT, and similar tools are legitimate coding assistants
+- Getting help fixing an error, writing a ggplot, or restructuring a pipeline is fine
+:::
+
+:::{.fragment}
+**The only requirement is that you understand what the code is doing well enough to explain it in the viva**
+
+The viva question will not be "did you write this?" — it will be "walk me through what this code does and why you structured it this way"
+:::
+
+
+
+## ✅ Permitted With Documentation: AI Literature Tools
+
+Research Rabbit, Connected Papers, and Consensus are useful for **finding** papers.
+
+:::{.incremental}
+- Use them to map the literature efficiently
+- Use them to identify papers that cite your anchor paper
+- Use them to check whether a topic has been studied quantitatively
+:::
+
+:::{.fragment}
+**The requirement: document your search method transparently**
+
+Record which tools you used and what you found. The Blackboard test asks for this explicitly.
+:::
+
+:::{.callout-note}
+AI literature tools should not be used directly to find papers. 
+Search is opaque and may be biased.
+AI tools can help evaluate them. **But** The effect size extraction requires you to have read the methods and results sections of specific papers.
+:::
+
+
+
+## ⚠️ Where AI Assistance Actively Hurts You
+
+Three components where AI assistance removes understanding you need for the viva:
+
+:::: {.columns}
+::: {.column}
+**The DAG**
+
+Your DAG must use the actual variable headers from your dataset. Every directed path must reflect your causal reasoning from the literature.
+
+The viva will ask: *why did you include this confounder and not that one?*
+
+> If an AI drew your DAG, you will not have an answer.
+:::
+
+::: {.column}
+**Hypotheses and model specification**
+
+These require reasoning about your specific question, your specific variables, and what your DAG implies about adjustment.
+
+The viva will ask: *what does your DAG tell you about which variables need to be in your model?*
+
+> If AI generated this, you will not be able to explain the connection.
+:::
+::::
+
+
+## ✋ Think-Pair-Share (2 minutes)
+
+```{r}
+countdown::countdown(
+  minutes = 2L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+**With the person next to you:**
+
+If you used ChatGPT to write your model specification, what viva question would expose that?
+
+*Be prepared to share one answer with the room.*
+
+
+
+## The AI Boundary — Summary
+
+| Activity | Status |
+|---|---|
+| AI coding assistance in the analysis report | ✅ Permitted |
+| AI literature tools to identify papers | ✅ Permitted with documentation |
+| AI to generate the DAG, hypotheses, or model specification | ⚠️ Will be exposed in viva |
+| AI to generate effect size extraction or scale judgements | ⚠️ Requires reading the papers |
+| Discussing your approach with other students | ✅ Permitted |
+| Sharing your dataset or code with other students | ❌ Not permitted |
+
+::: {.notes}
+Use this as a summary slide. Students can photograph it. It is also available in the assessment brief — point them to section 5.5.
+:::
+
+
+# The Preregistration Blackboard Test {background-color="#D9DBDB"}
+
+## Six Sections — What Matters in Each
+
+The Blackboard test has six sections. Submitting it releases your dataset automatically.
+
+:::{.callout-important}
+You have one attempt. Draft your responses offline before entering them into Blackboard. The test has no time limit but once submitted it is locked.
+:::
+
+::: {.notes}
+Emphasise the one-attempt, draft-offline point strongly. Students who type directly into Blackboard without drafting first will produce weaker responses and may lose work.
+:::
+
+## Section 1: Research Question
+
+**Four components, one sentence each**
+
+:::{.incremental}
+- The biological system or population
+- The treatment, condition, or exposure
+- The response variable — **be specific about units**
+- The comparison you are making
+:::
+
+:::{.fragment}
+This is the foundation everything else builds on. A vague research question produces a vague preregistration and a difficult viva.
+:::
+
+::: {.notes}
+Spend 60 seconds on this. It is straightforward but the specificity of the response variable is worth emphasising — students consistently write "species richness" when they mean "macroinvertebrate family richness recorded as a count per Surber sample."
+:::
+
+## Section 2: Literature Search Documentation
+
+**Document what you actually did — not what looks systematic in retrospect**
+
+:::{.incremental}
+- Record every tool you used: Google Scholar, Research Rabbit, Connected Papers, Consensus
+- Record any search strings exactly as entered
+- Record the number of results before filtering
+- For each included paper: one phrase on why included
+- For each excluded paper: one phrase on why excluded
+:::
+
+:::{.fragment}
+The search log is a record of a prospective process, not a post-hoc narrative. The viva will ask about specific exclusion decisions.
+:::
+
+::: {.notes}
+The key point is prospective versus retrospective. A search log that looks suspiciously tidy — exactly the right papers, no exclusions — will be probed in the viva. A messier log that reflects genuine searching is more credible.
+:::
+
+## Section 3: Effect Size Extraction
+
+**Four items per paper — this requires reading the methods and results sections**
+
+| Item | What to record |
+|---|---|
+| Sample size | Total and per group where relevant |
+| Key result | Number with units — state what type of effect it is |
+| Variability | SD, SE, or CI — or write "not reported" |
+| Scale judgement | One sentence justifying your assessment |
+
+:::{.fragment}
+A rough guide for the scale judgement: fewer than 30 observations per group and p just below 0.05 should be treated with caution — recall the winner's curse from the power analysis lecture.
+:::
+
+::: {.notes}
+Reassure students that this does not require statistical expertise. The sample size is usually in the first paragraph of the methods. If variance is not reported, writing "not reported" is the correct answer — that absence is itself informative.
+:::
+
+## Section 4: The DAG
+
+**Two parts: paste your ggdag code, then annotate it**
+
+:::{.incremental}
+- Your code must be **runnable** — your marker will run it
+- Variable names must match the **dataset headers you have been given** — not generic placeholders
+- The directed paths in the code must match the annotation
+:::
+
+:::{.fragment}
+**The annotation asks five things:**
+
+Exposure variable — outcome variable — confounders with justification — total or direct effect — variables you will adjust for
+:::
+
+:::{.callout-warning}
+A DAG using generic variable names like `X`, `Y`, and `Z` rather than your actual dataset variables suggests the DAG was drawn without reference to the data structure. This will be noted.
+:::
+
+::: {.notes}
+The runnable code point is critical. A DAG that produces an error gets no marks. Encourage students to test their code in a clean R session before pasting it. The mismatch between generic names and actual variable headers is the most common indicator of AI-generated DAGs.
+:::
+
+## Section 5: Hypothesis Registration
+
+**Directional where the literature supports direction**
+
+:::{.incremental}
+- Between one and three hypotheses
+- Each must state the predicted relationship, the direction, and the justification from the literature
+- If you cannot justify a direction, register a non-directional hypothesis and explain why
+:::
+
+:::{.fragment}
+**The format:**
+
+*Based on [Author, Year], who found [specific result], I predict that [exposure] will [direction] [outcome] compared to [comparison group].*
+:::
+
+::: {.notes}
+The format is worth displaying and reading aloud. Students who follow it produce hypotheses that are clearly testable and clearly grounded in evidence. Students who do not produce vague statements that cannot be evaluated.
+:::
+
+## Section 6: Model Specification
+
+**A paragraph, not a list — start from your DAG**
+
+:::{.incremental}
+- What is your response variable and what type of data is it?
+- What does your DAG tell you about which variables need to be in your model?
+- What model will you fit and why does that follow from your response variable and causal reasoning?
+- If you anticipate more than one model, what is the relationship between them?
+:::
+
+:::{.fragment}
+Four to six sentences. Reads as a coherent plan. Connects the DAG to the model.
+:::
+
+
+
+::: {.notes}
+The most common failure mode is a list of technical specifications that do not connect to each other. The prose format forces students to make the connections explicit. If a student cannot write this as a connected paragraph, they have not yet thought through how their DAG leads to their model.
+:::
+
+
+# The Analysis Report and Repository {background-color="#D9DBDB"}
+
+## After the Dataset Is Released
+
+You have the data. You have a preregistered plan. Now you analyse.
+
+:::{.incremental}
+- Import, clean, and analyse the data in a **Quarto document**
+- The document must **render cleanly** from a clean environment — no manual steps
+- Submit as a **rendered PDF or zipped HTML** via Blackboard
+- Your repository must be **committed and pushed** — submit the URL via Blackboard
+:::
+
+:::{.fragment}
+**The analysis report is not the primary site of assessment. The viva is.**
+
+Its purpose is to demonstrate that you completed a genuine analysis and to provide material the viva will interrogate.
+:::
+
+::: {.notes}
+The submission mechanics are worth repeating clearly. HTML must be zipped. Repository must be committed and pushed before the deadline. A report without a repository or a repository without a report is not a complete submission.
+:::
+
+## The Commit Log
+
+**The commit log is live assessment material, not an administrative requirement**
+
+Every commit message must follow the two-field format:
+
+:::{.fragment}
+**Field 1:** The decision made
+
+**Field 2:** The reason
+:::
+
+:::{.fragment}
+| ❌ Insufficient | ✅ Sufficient |
+|---|---|
+| *added cleaning step* | *removed three observations with missing outcome variable — these could not be imputed without strong assumptions given the pattern of missingness* |
+| *updated model* | *switched from lm() to glm(family = poisson) after inspection showed response variable was a count with no decimal values* |
+:::
+
+::: {.notes}
+Students consistently underestimate how much the commit log matters. It is direct material for the viva — you will be asked to walk through specific commits. A log that says "updated code" five times tells the examiner nothing. A log that records specific decisions and reasons tells the examiner a great deal about whether the student was genuinely engaged.
+:::
+
+## Deviations from the Preregistration
+
+:::{.fragment}
+When your analysis differs from your registered plan — and it will — flag it explicitly.
+:::
+
+:::{.incremental}
+- A sentence or two in the analysis section is sufficient
+- Explain what changed and why
+- You do not need to write a justification essay — the viva is where this is discussed in depth
+:::
+
+:::{.fragment}
+**Clearly explained deviation is neutral or positive**
+
+It reflects genuine engagement with the data.
+
+**Unexplained deviation is penalised**
+
+It suggests the preregistration was not taken seriously.
+:::
+
+::: {.notes}
+Repeat the deviation policy here as well as in the preregistration section. Students who miss it in one place will catch it in the other.
+:::
+
+## Multiple Models
+
+You may fit more than one model — but only where there is a genuine reason.
+
+:::{.incremental}
+- A variable sitting close to a significance threshold whose inclusion materially affects your conclusions
+- A borderline decision about model structure that requires sensitivity checking
+:::
+
+:::{.fragment}
+In these cases, present the additional model explicitly as a **sensitivity analysis** and explain what question it is answering.
+:::
+
+:::{.callout-warning}
+Fitting models until a preferred result emerges is not acceptable and will be apparent in the viva.
+
+All fitted models must appear in the report — do not report only the ones that worked.
+:::
+
+::: {.notes}
+This is the fishing point. Students who have tried multiple models and only reported the significant one will be asked in the viva about models they tried and did not report. The commit log will also make multiple model attempts visible. Say this plainly.
+:::
+
+
+# The Viva {background-color="#D9DBDB"}
+
+## What the Viva Is
+
+A 10 to 15 minute in-person conversation about the decisions you made.
+
+:::{.incremental}
+- Not a memory test
+- Not a presentation
+- Not an ambush
+:::
+
+:::{.fragment}
+**It is a conversation about your work**
+
+Why you made the choices you did, what you considered and rejected, what you would do differently.
+:::
+
+:::{.fragment}
+The best preparation is to **know your own work well enough to discuss it honestly**, including its limitations.
+:::
+
+::: {.notes}
+Students are often anxious about the viva format, particularly if they have not encountered it before. Normalise it as a conversation rather than an examination. The perturbation phase in particular will need explanation.
+:::
+
+## Three Phases
+
+:::: {.columns}
+::: {.column}
+**Phase 1 — Your journey (2–3 min)**
+
+What you found when you first looked at the data, what surprised you, what the main decision was.
+
+*Warm-up. Not independently assessed. Speak plainly.*
+
+**Phase 2 — Specific decisions (5–7 min)**
+
+Your examiner refers directly to your submitted work — a commit message, a modelling decision, a deviation, a scale judgement.
+
+*Adaptive. Follow-up questions if you answer well.*
+:::
+
+::: {.column}
+**Phase 3 — Perturbation (3–4 min)**
+
+A small change to your analytical situation. A recoding issue. A retracted paper. What if your sample had been half the size?
+
+*Tests whether your understanding is transferable, not whether you can recall facts.*
+:::
+::::
+
+::: {.notes}
+The perturbation phase is the one that surprises students most. Explain that it is not a trick — it is asking whether understanding is flexible enough to apply to a new situation. A student who genuinely understands their analysis can engage with it. A student who memorised their submitted work cannot.
+:::
+
+## What the Viva Is Marking
+
+Four criteria, each worth 12.5% of the total mark:
+
+:::{.incremental}
+1. **Understanding of analytical decisions** — can you explain why you made each choice specifically, connecting it to your data and your DAG?
+
+2. **Engagement with the literature** — can you connect your results to the papers in your extraction table with specificity?
+
+3. **Honest treatment of limitations and deviations** — can you identify limitations proactively and explain deviations without defensiveness?
+
+4. **Transferable reasoning** — in Phase 3, can you apply your understanding to a situation that differs from the one you analysed?
+:::
+
+::: {.notes}
+Read these aloud. Students need to hear that intellectual honesty about uncertainty scores better than false confidence. This is counterintuitive for students who have been rewarded throughout their education for having the right answer.
+:::
+
+## Preparing for the Viva
+
+Re-read your submitted work critically and ask yourself:
+
+:::{.incremental}
+- For every decision in the preregistration or analysis — **why did I make this choice and what would have changed if I had made a different one?**
+- For every deviation from the preregistration — **can I explain this clearly in one or two sentences?**
+- For every commit message — **can I expand on the reasoning I recorded there?**
+- For every paper in my extraction table — **what specifically did this paper tell me and how does my result compare to it?**
+:::
+
+:::{.fragment}
+If there are parts of your analysis you do not fully understand — a line of code that worked but that you cannot explain — **these are the parts most likely to be probed**.
+
+The honest response in the viva is to say so and describe what you do understand.
+:::
+
+::: {.notes}
+The honest response point is worth dwelling on. Examiners can tell the difference between a student who says "I'm not certain why this converged differently but I think it relates to the variance structure" and a student who bluffs. The former is much better received.
+:::
+
+
+# Putting It Together {background-color="#D9DBDB"}
+
+## Timeline
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, out.width = "120%"}
+library(tidyverse)
+
+event_dates <- as.Date(c(
+  "2026-03-23",
+  "2026-03-31",
+  "2026-04-23",   
+  "2026-05-07",
+  "2026-05-08",
+  "2026-05-15"
+))
+
+timeline <- tibble(
+  event = c(
+    "Anchor paper released",
+    "Optional video call window opens",
+    "Preregistration deadline",
+    "Analysis report deadline",
+    "Viva window opens",
+    "Viva window closes"
+  ),
+  date = event_dates,
+  type = c("resource", "support", "deadline", "deadline", "viva", "viva")
+)
+
+colours <- c(
+  resource = "#457B9D",
+  support  = "#2A9D8F",
+  deadline = "#E63946",
+  viva     = "#E76F51"
+)
+
+ggplot(timeline, aes(x = date, y = 1, colour = type, label = event)) +
+  geom_point(size = 5) +
+  geom_text(angle = 35, hjust = -0.1, vjust = -0.5, size = 3.2) +
+  geom_hline(yintercept = 1, colour = "grey70", linewidth = 0.5) +
+  scale_colour_manual(
+    values = colours,
+    name   = "Event type",
+    labels = c("Deadline", "Resource released", "Support available", "Viva")
+  ) +
+  scale_x_date(
+    breaks       = sort(unique(event_dates)),
+    date_labels  = "%d %b",
+    expand       = expansion(mult = c(0.05, 0.20))
+  ) +
+  scale_y_continuous(limits = c(0.8, 1.4)) +
+  labs(title = "Assessment Timeline", x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x  = element_text(angle = 45, hjust = 1),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid   = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+
+
+
+## The Optional Video Call
+
+You may book a single 20-minute call with your supervisor before the preregistration deadline.
+
+:::{.incremental}
+- Not assessed — nothing said affects your mark
+- Purpose: to help you resolve genuine uncertainties before you commit
+- Available during weeks three and four — book via the course portal
+:::
+
+:::{.fragment}
+**Come with a specific question**
+
+A call without a clear purpose is unlikely to be useful. Your supervisor will not tell you whether your preregistration is correct. They will help you think through a problem you have identified yourself.
+:::
+
+:::{.callout-note}
+You are entitled to one call. Additional calls will not be scheduled.
+:::
+
+
+## Key Takeaways
+
+**1. The viva is the assessment — the written work is the evidence base**
+
+**2. The preregistration is a record of your thinking, not a contract**
+
+Deviation is expected. Unexplained deviation is penalised.
+
+**3. AI has a clear boundary in this assessment**
+
+Coding: permitted. Literature finding: permitted with documentation.
+DAG, hypotheses, model specification: will be exposed in the viva.
+
+**4. The commit log is live assessment material**
+
+Two-field format. Decisions and reasons. Written as if someone who does not know your analysis will read it — because they will.
+
+**5. Intellectual honesty in the viva scores better than false confidence**
+
+Saying "I am not certain but I think..." with reasoning is better than a confident wrong answer.
+
+::: {.notes}
+Use this as a closing summary. Students can photograph it.
+:::
+
+
+# Questions {background-color="#D9DBDB"}
+
+## Back to the Board
+
+We wrote down your uncertainties at the start of the session.
+
+:::{.fragment}
+Let us address any that have not been covered.
+:::
+
+:::{.fragment}
+If any remain genuinely unresolved, I will follow up in writing via the course portal within 48 hours.
+:::
+
+
+
+## Before You Leave
+
+What is the **first concrete thing** you are going to do this week to start the preregistration?
+
+```{r}
+countdown::countdown(
+  minutes = 1L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+Take two or three answers from the room.
+
+
+---
+
+## Common Questions
+
+**Q: Can I change my hypothesis after seeing the data?**
+
+You can — but you must flag it as a deviation in your report and explain why. The viva will ask you to discuss it.
+
+**Q: What if my analysis does not reproduce on the marker's machine?**
+
+Note the problem explicitly in your document with an explanation. An acknowledged reproducibility issue is treated more favourably than a silent failure.
+
+**Q: What if I cannot find enough papers for the effect size extraction?**
+
+Note this in your preregistration. Fewer than three papers is itself informative about the state of the literature. A sensitivity analysis across plausible effect sizes is the appropriate response.
+
+**Q: What if my results are null?**
+
+A null result reported honestly with appropriate context is worth more than an overinterpreted significant result. The viva rewards honest engagement with what you found, not a particular outcome.
+
+
