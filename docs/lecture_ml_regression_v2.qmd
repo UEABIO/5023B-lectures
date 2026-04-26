@@ -1,0 +1,858 @@
+---
+title: "From Inference to Prediction"
+subtitle: "Linear and Logistic Regression as Machine Learning Tools"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: "2026-04-26"
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+```{r, echo = F, warning = F, message = F}
+library(tidyverse)
+library(patchwork)
+```
+
+# Machine Learning Is Already Changing Biology {background-color="#D9DBDB"}
+
+## Learning Objectives
+
+By the end of this lecture, you should be able to:
+
+:::{.incremental}
+1. Give three biological examples where regression models are used for prediction rather than inference
+
+2. Explain the fundamental difference between statistical inference and machine learning prediction
+
+3. Identify which concepts from statistics carry directly into machine learning — and which do not
+
+4. Explain the role of the train/test split and cross-validation in honest model evaluation
+
+5. Interpret key evaluation metrics for regression and classification tasks
+
+6. Explain why simple interpretable models are often preferable to complex ones in biological research
+:::
+
+## Predicting Age Without a Birth Certificate
+
+Wild animals rarely come with dates of birth attached. Knowing an individual's age matters for population demography, reproductive ecology, and conservation management — but direct ageing is often impossible.
+
+:::: {.columns}
+::: {.column}
+
+:::{.incremental}
+- DNA methylation at CpG sites changes predictably with age across vertebrates
+
+- A regression model trained on individuals of known age can predict age from a blood or tissue sample
+
+- Horvath (2013) demonstrated this in humans with remarkable accuracy using 353 CpG sites
+
+- The same approach has since been applied to bats, dolphins, wolves, and dozens of other species
+
+- This is the problem you worked on in Workshop 1
+:::
+
+:::
+::: {.column}
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+set.seed(42)
+n <- 80
+true_age <- runif(n, 0, 25)
+pred_age <- true_age + rnorm(n, sd = 1.8)
+
+tibble(actual = true_age, predicted = pred_age) |>
+  ggplot(aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.6, colour = "#457B9D") +
+  geom_abline(linetype = "dashed", colour = "#E63946") +
+  labs(
+    x = "Known age (years)",
+    y = "Predicted age from methylation (years)",
+    title = "Epigenetic clock: bat methylation",
+    subtitle = "Each point is one individual"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+:::
+::::
+
+## Predicting Disease from Genotype
+
+Genome-wide association studies identify SNPs statistically associated with a trait. But association is not the same as prediction.
+
+:::: {.columns}
+::: {.column}
+
+:::{.incremental}
+- Logistic regression with SNP predictors can classify affected versus unaffected individuals
+
+- Greer et al. (2015) identified a genomic region on chromosome 27 associated with cleft lip in Nova Scotia Duck Tolling Retrievers
+
+- This approach underpins **polygenic risk scores** — now used clinically to stratify human patients for cardiovascular disease, type 2 diabetes, and some cancers
+
+- The same logistic regression framework applies from veterinary genetics to human medicine
+
+- This is the problem you worked on in Workshop 2
+:::
+
+:::
+::: {.column}
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+set.seed(42)
+n <- 100
+x <- rnorm(n)
+prob <- 1 / (1 + exp(-1.5 * x))
+y <- rbinom(n, 1, prob)
+
+tibble(x, prob = 1/(1+exp(-1.5*x)), y = factor(y, labels = c("Unaffected", "Affected"))) |>
+  ggplot(aes(x = x, y = as.numeric(y == "Affected"))) +
+  geom_point(aes(colour = y), alpha = 0.6, size = 2) +
+  geom_smooth(method = "glm", method.args = list(family = binomial),
+              colour = "grey30", se = TRUE) +
+  scale_colour_manual(values = c("Unaffected" = "#457B9D",
+                                 "Affected"   = "#E63946")) +
+  labs(
+    x = "Genetic risk score",
+    y = "Probability of being affected",
+    title = "Logistic regression for disease classification",
+    colour = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+:::
+::::
+
+## Other Biological Applications
+
+Machine learning using regression models is already embedded in biological research across many domains
+
+:::{.incremental}
+
+**Species distribution modelling**
+Logistic regression predicts the probability of species presence at a location from environmental predictors — temperature, rainfall, habitat type. MaxEnt, the dominant tool in conservation ecology, is a form of regularised regression.
+
+**Predicting antibiotic resistance**
+Linear and logistic models trained on bacterial genome sequences predict minimum inhibitory concentrations and resistance phenotypes. Rapid prediction without culture reduces time-to-treatment in clinical microbiology.
+
+**Crop yield prediction**
+Ridge and lasso regression on hyperspectral reflectance data predict yield before harvest, supporting precision agriculture and food security planning.
+
+**Protein structure and function**
+Before AlphaFold, regression models on sequence features predicted secondary structure elements, solubility, and thermostability. These remain useful for rapid screening of variant libraries.
+
+:::
+
+:::{.fragment}
+In every case the same question applies: **not whether a relationship exists, but how accurately a model predicts an outcome it has not seen before**
+:::
+
+# The Fundamental Shift {background-color="#D9DBDB"}
+
+## Two Questions, Same Model
+
+You have used linear and logistic regression before — for inference. The models in this course are the same. The question is different.
+
+:::: {.columns}
+::: {.column}
+
+### Statistical Inference
+
+> Is there a significant relationship between methylation and age?
+
+**We want:**
+
+- Coefficients and their uncertainty
+- p-values and confidence intervals
+- An explanation of variance in the observed data
+
+**We evaluate on:** the same data used to fit the model
+
+:::
+
+::: {.column}
+
+### Machine Learning Prediction
+
+> Given this bat's methylation profile, how accurately can I predict its age?
+
+**We want:**
+
+- Accurate predictions on new, unseen data
+- An honest estimate of prediction error
+- A model that generalises beyond the training sample
+
+**We evaluate on:** data the model has never seen
+
+:::
+::::
+
+:::{.fragment}
+The mathematics of the model does not change. **The question, the evaluation, and the decisions that follow all change.**
+:::
+
+# ✋ Stop and Think {background-color="#D9DBDB"}
+
+## Discussion: Inference or Prediction?
+
+```{r}
+countdown::countdown(
+  minutes = 3L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+Decide whether each question below calls for **inference**, **prediction**, or **both** — and what that means for how you would analyse the data.
+
+**Question A:** Does habitat fragmentation significantly reduce the probability of red squirrel presence, controlling for woodland area?
+
+**Question B:** Can we predict whether a new woodland patch will be occupied by red squirrels based on its area, connectivity, and surrounding land use?
+
+**Question C:** A conservation charity wants to prioritise which of 500 unsampled woodland patches to survey first, based on predicted occupancy probability.
+
+**Discuss with the person next to you:**
+
+1. Which framework applies to each question?
+2. For Question C — does the model need to be significant, accurate, or both?
+3. Can a single model serve all three purposes, and if so, what would you need to report?
+
+*Be prepared to share one point with the room*
+
+# Honest Evaluation {background-color="#D9DBDB"}
+
+## The Problem with Evaluating on Training Data
+
+If you fit a model to your data and then measure how well it fits the same data, you are measuring **memorisation**, not generalisation
+
+:::{.fragment}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+set.seed(42)
+x <- seq(0, 10, length.out = 20)
+y <- 2 + 0.5 * x + rnorm(20, sd = 1.5)
+df <- tibble(x, y)
+x_new <- seq(0, 10, length.out = 200)
+
+overfit <- lm(y ~ poly(x, 15), data = df)
+goodfit <- lm(y ~ x, data = df)
+
+pred_df <- tibble(
+  x       = x_new,
+  overfit = predict(overfit, newdata = tibble(x = x_new)),
+  goodfit = predict(goodfit, newdata = tibble(x = x_new))
+)
+
+ggplot() +
+  geom_point(data = df, aes(x = x, y = y), size = 3, colour = "grey40") +
+  geom_line(data = pred_df, aes(x = x, y = overfit, colour = "Overfit model"),
+            linewidth = 1) +
+  geom_line(data = pred_df, aes(x = x, y = goodfit, colour = "Linear model"),
+            linewidth = 1) +
+  scale_colour_manual(values = c("Overfit model" = "#E63946",
+                                 "Linear model"  = "#457B9D")) +
+  labs(x = "Predictor", y = "Response",
+       title = "Both models were fitted to the same training data",
+       subtitle = "The overfit model fits the training points perfectly — but which would you trust for a new observation?",
+       colour = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+:::
+
+## The Train/Test Split
+
+:::: {.columns}
+::: {.column}
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+set.seed(42)
+n <- 50
+tibble(
+  x   = runif(n, 0, 10),
+  y   = 2 + 0.5 * runif(n, 0, 10) + rnorm(n, sd = 1.5),
+  set = c(rep("Training (80%)", 40), rep("Test (20%)", 10))
+) |>
+  ggplot(aes(x = x, y = y, colour = set, shape = set)) +
+  geom_point(size = 4) +
+  scale_colour_manual(values = c("Training (80%)" = "#457B9D",
+                                 "Test (20%)"     = "#E63946")) +
+  labs(x = "Predictor", y = "Response",
+       title = "Training and test sets",
+       subtitle = "The model never sees the test set during fitting",
+       colour = NULL, shape = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+:::
+::: {.column}
+
+:::{.incremental}
+- **Training set** — the model is fitted on this
+
+- **Test set** — held out entirely until final evaluation
+
+- Prediction error on the test set is an **honest** estimate of performance on new data
+
+- A single split can be unstable — especially in small datasets — because which individuals land in the test set affects the result
+
+- This is why we varied the seed and proportion in the workshops
+:::
+
+:::
+::::
+
+## Cross-Validation
+
+When data are limited, a single split is unreliable. Cross-validation makes better use of the available training data.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=4}
+tibble(
+  fold = rep(1:5, each = 50),
+  obs  = rep(1:50, times = 5),
+  role = c(
+    rep("Validation", 10), rep("Training", 40),
+    rep("Training", 10), rep("Validation", 10), rep("Training", 30),
+    rep("Training", 20), rep("Validation", 10), rep("Training", 20),
+    rep("Training", 30), rep("Validation", 10), rep("Training", 10),
+    rep("Training", 40), rep("Validation", 10)
+  )
+) |>
+  ggplot(aes(x = obs, y = factor(fold), 
+             fill = role,
+             alpha = role)) +
+  geom_tile(colour = "white", linewidth = 0.5) +
+  scale_fill_manual(values = c("Training" = "#457B9D", "Validation" = "#E63946")) +
+  scale_alpha_manual(values = c(.7,.9))+
+  labs(x = "Observation", y = "Fold",
+       title = "5-fold cross-validation",
+       subtitle = "Each fold serves as the validation set once. \nPerformance is averaged across all five.",
+       fill = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+:::{.fragment}
+In Workshop 1, cross-validation was used to choose the ridge penalty **lambda** — fitting at 50 candidate values across five folds and selecting the lambda with the lowest average RMSE. The test set was not touched during this process.
+:::
+
+# Linear Regression for Prediction {background-color="#D9DBDB"}
+
+## What Carries Over from Statistics
+
+:::: {.columns}
+::: {.column}
+
+**Still relevant in prediction:**
+
+- The model structure: $\hat{y} = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p$
+- Residuals as a diagnostic tool
+- Assumption checking — linearity, homoscedasticity
+- The concept of variance explained
+
+:::
+::: {.column}
+
+**No longer the focus:**
+
+- p-values on individual coefficients
+- Confidence intervals on parameters
+- Hypothesis tests against a null model
+- R-squared on training data as performance evidence
+
+:::
+::::
+
+:::{.fragment}
+The shift is from **"is this coefficient significantly different from zero?"** to **"how accurately does this model predict an observation it has never seen?"**
+
+These are genuinely different questions and the same model can give different answers to each.
+:::
+
+## Evaluating a Regression Model
+
+:::{.incremental}
+
+**RMSE — Root Mean Squared Error**
+
+Prediction error in the same units as the outcome. An RMSE of 2 years means the model is wrong by approximately 2 years on average. Larger errors are penalised more heavily than small ones because errors are squared before averaging.
+
+$$RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}$$
+
+**MAE — Mean Absolute Error**
+
+The average absolute error. Less sensitive to occasional large errors than RMSE. If RMSE is much larger than MAE, a small number of observations are being predicted very poorly — the two metrics together tell you about the shape of the error distribution.
+
+**Test-set R-squared**
+
+The proportion of variance in the outcome explained by the model, evaluated on held-out data. Unlike training R-squared — which always increases as predictors are added — test R-squared can fall when additional predictors cause overfitting.
+
+:::
+
+## Diagnosing with Plots, Not Just Numbers
+
+RMSE summarises error but conceals structure. A model can have an acceptable RMSE while failing systematically in ways that matter biologically.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+set.seed(42)
+n <- 60
+age_true   <- runif(n, 1, 20)
+pred_good  <- age_true + rnorm(n, sd = 2)
+pred_bias  <- age_true * 0.7 + 3 + rnorm(n, sd = 1.5)
+
+bind_rows(
+  tibble(actual = age_true, predicted = pred_good, model = "Well calibrated"),
+  tibble(actual = age_true, predicted = pred_bias, model = "Systematic underestimation of older bats")
+) |>
+  ggplot(aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(linetype = "dashed", colour = "red") +
+  geom_smooth(method = "loess", colour = "#457B9D", se = TRUE) +
+  facet_wrap(~model) +
+  labs(x = "Actual age (years)", y = "Predicted age (years)",
+       title = "Both models might have similar RMSE",
+       subtitle = "The plot reveals systematic bias that the number does not") +
+  theme_minimal(base_size = 13)
+```
+
+:::{.fragment}
+Systematic underestimation of age in older bats matters biologically — it would misclassify post-reproductive individuals and bias demographic estimates. **RMSE alone would not flag this.**
+:::
+
+## Overfitting and Ridge Regression
+
+With many predictors relative to observations — the situation in both workshops — linear regression can overfit by assigning large coefficients to predictors that capture noise rather than signal.
+
+:::: {.columns}
+::: {.column}
+
+**Ridge regression** adds a penalty proportional to the sum of squared coefficients:
+
+$$\text{Minimise: } \underbrace{\sum(y_i - \hat{y}_i)^2}_{\text{fit}} + \underbrace{\lambda\sum\beta_j^2}_{\text{penalty}}$$
+
+- $\lambda = 0$: ordinary linear regression
+- $\lambda$ large: all coefficients shrunk towards zero
+- $\lambda$ chosen by cross-validation on the training set
+
+:::
+::: {.column}
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+lambda <- seq(0, 5, length.out = 100)
+rmse_train <- 1.2 * exp(-0.5 * lambda) + 0.5
+rmse_test  <- 0.5 + 0.4 * exp(-1.2 * lambda) + 0.15 * lambda
+
+tibble(lambda, rmse_train, rmse_test) |>
+  pivot_longer(-lambda, names_to = "set", values_to = "rmse") |>
+  mutate(set = recode(set,
+                      rmse_train = "Training RMSE",
+                      rmse_test  = "Test RMSE")) |>
+  ggplot(aes(x = lambda, y = rmse, colour = set)) +
+  geom_line(linewidth = 1.2) +
+  scale_colour_manual(values = c("Training RMSE" = "#457B9D",
+                                 "Test RMSE"     = "#E63946")) +
+  labs(x = "Lambda (penalty strength)", y = "RMSE",
+       title = "Ridge tuning: training vs. test error",
+       subtitle = "The optimal lambda minimises test error, not training error",
+       colour = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+:::
+::::
+
+# Logistic Regression for Classification {background-color="#D9DBDB"}
+
+## The Same Logic, A Different Outcome
+
+When the outcome is binary — affected or unaffected, present or absent — linear regression is structurally wrong. Predicted values can fall outside 0 to 1 and the residual structure is inappropriate.
+
+:::: {.columns}
+::: {.column}
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+x <- seq(-4, 4, length.out = 200)
+tibble(x, prob = 1 / (1 + exp(-2 * x))) |>
+  ggplot(aes(x = x, y = prob)) +
+  geom_line(colour = "#457B9D", linewidth = 1.5) +
+  geom_hline(yintercept = c(0, 1), linetype = "dashed", colour = "grey50") +
+  geom_hline(yintercept = 0.5, linetype = "dotted", colour = "#E63946") +
+  annotate("text", x = 3, y = 0.53,
+           label = "Default threshold\n(0.5)", colour = "#E63946", size = 3.5) +
+  labs(x = "Linear predictor (SNP genotype score)",
+       y = "Predicted probability of cleft lip",
+       title = "Logistic regression maps any predictor value to (0, 1)") +
+  theme_minimal(base_size = 13)
+```
+
+:::
+::: {.column}
+
+:::{.incremental}
+- Logistic regression predicts **probability of class membership**
+
+- The logistic function ensures predictions stay between 0 and 1
+
+- A probability above 0.5 is classified as the positive class — but this threshold is a choice, not a law
+
+- Coefficients are on the **log-odds scale**; exponentiate to get odds ratios — the currency of genetics and epidemiology
+
+- The model is fitted by maximum likelihood, not ordinary least squares
+
+:::
+
+:::
+::::
+
+## Evaluating a Classification Model
+
+:::{.incremental}
+
+**Confusion matrix** — the four possible prediction outcomes
+
+| | Predicted positive | Predicted negative |
+|---|---|---|
+| **Actually positive** | True positive ✅ | False negative ❌ |
+| **Actually negative** | False positive ❌ | True negative ✅ |
+
+**Sensitivity** — proportion of truly affected individuals correctly identified (true positive rate). High sensitivity means few missed cases.
+
+**Specificity** — proportion of truly unaffected individuals correctly identified (true negative rate). High specificity means few false alarms.
+
+**ROC-AUC** — area under the receiver operating characteristic curve. Summarises discrimination across all possible thresholds. 0.5 = no better than chance; 1.0 = perfect.
+
+:::
+
+## The Threshold Is a Biological Decision
+
+The default 0.5 threshold is not optimal for all applications. Changing it trades sensitivity against specificity.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+set.seed(42)
+n     <- 200
+score <- rnorm(n)
+prob  <- 1 / (1 + exp(-1.8 * score))
+y     <- rbinom(n, 1, prob)
+
+df <- tibble(
+  prob   = prob,
+  outcome = factor(y, labels = c("Unaffected", "Affected"))
+)
+
+ggplot(df, aes(x = prob, fill = outcome)) +
+  geom_histogram(bins = 25, alpha = 0.7, position = "identity") +
+  geom_vline(xintercept = 0.5, linetype = "dashed", colour = "grey30", linewidth = 1) +
+  geom_vline(xintercept = 0.3, linetype = "dotted", colour = "#E63946", linewidth = 1) +
+  annotate("text", x = 0.52, y = 18, label = "0.5\ndefault", size = 3.5, hjust = 0) +
+  annotate("text", x = 0.32, y = 18, label = "0.3\nhigh sensitivity", colour = "#E63946",
+           size = 3.5, hjust = 0) +
+  scale_fill_manual(values = c("Unaffected" = "#457B9D", "Affected" = "#E63946")) +
+  labs(x = "Predicted probability of being affected",
+       y = "Count", fill = "True outcome",
+       title = "Lowering the threshold catches more affected individuals",
+       subtitle = "But also increases false positives among unaffected individuals") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+:::{.fragment}
+In a breeding programme to eliminate cleft lip, a false negative — missing a carrier — has population-level consequences across generations. A false positive — excluding a healthy dog — has individual consequences. **The relative costs determine the threshold.**
+:::
+
+# Why Simple Models Matter {background-color="#D9DBDB"}
+
+## The Bias-Variance Trade-off
+
+Every modelling decision involves a trade-off between two sources of error
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5}
+complexity <- seq(1, 10, length.out = 100)
+bias       <- 2 / complexity
+variance   <- 0.1 * complexity ^ 1.5
+total      <- bias + variance
+
+tibble(complexity, bias, variance, total) |>
+  pivot_longer(-complexity, names_to = "component", values_to = "error") |>
+  mutate(component = factor(component,
+                            levels = c("bias", "variance", "total"),
+                            labels = c("Bias²", "Variance", "Total error"))) |>
+  ggplot(aes(x = complexity, y = error, colour = component)) +
+  geom_line(linewidth = 1.2) +
+  scale_colour_manual(values = c("Bias²"      = "#E63946",
+                                 "Variance"   = "#457B9D",
+                                 "Total error" = "grey30")) +
+  labs(x = "Model complexity", y = "Prediction error",
+       title = "The bias-variance trade-off",
+       subtitle = "The optimal model minimises total error — not bias or variance alone",
+       colour = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+:::{.fragment}
+Ridge regression deliberately **increases bias** — shrinking coefficients away from their least-squares values — in order to **reduce variance** — making predictions more stable on new data. This is only worthwhile if total error falls.
+:::
+
+## The Case for Simple Interpretable Models
+
+Machine learning offers increasingly complex alternatives — random forests, gradient boosting, neural networks. Why persist with linear and logistic regression?
+
+:::{.incremental}
+
+**Biological interpretability**
+A logistic regression coefficient tells you which SNP increases the odds of cleft lip and by how much. A random forest gives a prediction with no such mechanistic insight. In biology, understanding *why* often matters as much as predicting *what*.
+
+**Reliability with small samples**
+Biology frequently involves small, hard-won datasets. Complex models overfit aggressively in this regime. A simple model that generalises is more useful than a complex one that does not.
+
+**Auditability and accountability**
+In clinical, conservation, or regulatory contexts, decisions based on model predictions must be explainable. A logistic regression coefficient is defensible to a regulator. A neural network layer is not.
+
+**A genuine baseline**
+A simple model that performs well is evidence the problem does not require complexity. If a complex model cannot beat linear regression, the additional machinery is unjustified. Always establish the simple baseline first.
+
+:::
+
+# ✋ Stop and Think {background-color="#D9DBDB"}
+
+## Q&A: Which Model for Which Problem?
+
+```{r}
+countdown::countdown(
+  minutes = 4L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+For each scenario, decide with your neighbour: **which model, and why?**
+
+**Scenario 1:** Body condition scores (continuous, 1–9) measured in 200 hedgehogs. Predictors include 12 habitat variables, several of which are correlated with each other.
+
+**Scenario 2:** Predicting whether a woodland patch will be occupied by red squirrels (yes/no) from area, connectivity, and surrounding land use. You have survey data for 85 patches.
+
+**Scenario 3:** Building an epigenetic clock for a species with no prior data. You have methylation at 300 CpG sites for 35 individuals of known age.
+
+**Scenario 4:** You want to know whether a rewilding intervention significantly increased invertebrate species richness at treated sites compared with controls. You have 20 sites.
+
+*Scenario 4 is a trap — discuss why before you answer*
+
+# What You Should Know {background-color="#D9DBDB"}
+
+## Concepts Covered in the Workshops
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+tibble(
+  Concept = c(
+    "Train/test split",
+    "Cross-validation",
+    "RMSE and MAE",
+    "Ridge penalty (lambda)",
+    "Predicted vs. actual plot",
+    "Residual plot",
+    "Confusion matrix",
+    "Sensitivity and specificity",
+    "ROC-AUC",
+    "Predicted probability distributions",
+    "Coefficient plots"
+  ),
+  Workshop = c(
+    "Both", "Workshop 1", "Workshop 1",
+    "Workshop 1", "Both", "Both",
+    "Workshop 2", "Workshop 2", "Workshop 2",
+    "Workshop 2", "Both"
+  ),
+  Purpose = c(
+    "Honest evaluation on unseen data",
+    "Stable lambda selection without using test set",
+    "Quantify average prediction error in outcome units",
+    "Control overfitting with many correlated predictors",
+    "Identify systematic bias across the outcome range",
+    "Check error structure and assumption violations",
+    "Summarise the four classification outcomes",
+    "Understand the cost trade-off between error types",
+    "Evaluate discrimination across all thresholds",
+    "Assess model confidence and separation between classes",
+    "Identify which predictors drive model predictions"
+  )
+) |>
+  knitr::kable()
+```
+
+## Concepts the Workshops Did Not Cover Explicitly
+
+These appeared implicitly or were noted as gaps. You should be aware of them.
+
+:::{.incremental}
+
+**Odds ratios**
+Logistic regression coefficients are on the log-odds scale. Exponentiating them gives odds ratios — the standard currency of genetics and epidemiology papers. A coefficient of 0.7 becomes an odds ratio of $e^{0.7} = 2.01$: each unit increase in the predictor roughly doubles the odds of the outcome.
+
+**Calibration**
+A model can discriminate well (high AUC) while being miscalibrated — predicting probabilities of 0.8 for cases that are actually positive only 50% of the time. Calibration curves and the Brier score assess this. If you will use predicted probabilities to make decisions — rather than just classifications — calibration matters.
+
+**The 0.5 threshold**
+A predicted probability above 0.5 is classified as positive by default. This is a choice, not a statistical requirement. The optimal threshold depends on the relative costs of false positives and false negatives in your specific application. The ROC curve shows the full range of trade-offs.
+
+**Assumption checking**
+The `performance` package runs `check_model()` on models extracted from tidymodels workflows. It checks linearity, homoscedasticity, normality of residuals, and influential observations on the training data — complementing the test-set diagnostics in the workshops.
+
+:::
+
+# Key Takeaways {background-color="#D9DBDB"}
+
+## What to Carry Forward
+
+:::{.incremental}
+
+**1. Machine learning is not a separate discipline**
+Linear and logistic regression are the same models you used in statistics. The question being asked, and how the answer is evaluated, is what changes.
+
+**2. Honest evaluation requires data the model has never seen**
+Evaluating any model on its training data is not a test of generalisation. The train/test split and cross-validation are not bureaucratic requirements — they are the only way to know whether a model will work on new observations.
+
+**3. Simple models are not inferior models**
+Interpretability, reliability with small samples, and auditability are genuine advantages in biological research. Complexity requires justification from improved predictive performance.
+
+**4. Metrics summarise — plots diagnose**
+RMSE and AUC tell you how a model performs on average. Predicted versus actual plots, residual plots, and probability distributions tell you how and where it fails. Always use both.
+
+**5. The threshold and the metric are biological decisions**
+Whether to optimise sensitivity or specificity, and what error level is acceptable, depends on the application — not on a statistical convention. These are scientific judgements, not default settings.
+
+:::
+
+## What Comes Next
+
+**Workshop 3 — Random Forests**
+The same dog SNP dataset, the same classification problem. A more complex ensemble model with no interpretable coefficients. Does added complexity improve performance enough to justify it?
+
+**Workshop 4 — Clustering**
+The first unsupervised session. No outcome variable, no right answer, no accuracy metric. A genuinely different kind of biological question.
+
+**Workshop 5 — Dimensionality Reduction**
+PCA and UMAP on gene expression data. Making high-dimensional biological data visible and interpretable.
+
+# Further Reading {background-color="#D9DBDB"}
+
+## Five Things Worth Reading
+
+**1. Greener et al. (2022)** *A guide to machine learning for biologists.* Nature Reviews Molecular Cell Biology, 23, 40–55.
+
+The conceptual map for this entire course. Covers the main model families, their biological applications, and common pitfalls. Accessible without mathematical background. Read this first.
+
+---
+
+**2. James et al. (2021)** *An Introduction to Statistical Learning with Applications in R.* 2nd edition. Freely available at statlearning.com
+
+Chapters 2 to 4 cover the bias-variance trade-off, linear regression, and classification in depth. The R labs at the end of each chapter are practical. The mathematical treatment is gentler than most textbooks. Use this as your reference when the workshops raise questions you want answered properly.
+
+---
+
+**3. Kuhn & Silge (2022)** *Tidy Modelling with R.* Freely available at tmwr.org
+
+The reference text for everything done in the workshops. Explains every `tidymodels` function used and why. Read the chapters on resampling and model evaluation if cross-validation or the train/test split felt unclear.
+
+---
+
+**4. Horvath (2013)** *DNA methylation age of human tissues and cell types.* Genome Biology, 14, R115.
+
+The foundational epigenetic clock paper. Read it to understand what the bat methylation workshop is modelling and why. The methods are sophisticated but the biological framing is accessible. A good example of a prediction paper that reports honestly on test-set performance.
+
+---
+
+**5. Shmueli (2010)** *To explain or to predict?* Statistical Science, 25, 289–310.
+
+The most direct treatment of the inference versus prediction distinction available. Explains clearly why the same model can give different answers depending on which question is being asked, and why choosing the wrong framework leads to incorrect conclusions. Particularly relevant if the distinction felt abstract during this lecture.
+
+---
+
+# Backup Slides
+
+## The Logit Link in Detail (Backup 1)
+
+Logistic regression models the log-odds of the outcome as a linear function of the predictors:
+
+$$\log\frac{p}{1-p} = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p$$
+
+The log-odds (logit) scale is unbounded — it runs from $-\infty$ to $+\infty$ — which allows a linear model to be fitted without predicting probabilities outside (0, 1).
+
+Converting back to probability requires the inverse logit:
+
+$$p = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_1 + ... + \beta_p x_p)}}$$
+
+Exponentiating a coefficient gives the **odds ratio**: the multiplicative change in odds for a one-unit increase in the predictor, holding all others constant. An odds ratio of 2 means the outcome is twice as likely; an odds ratio of 0.5 means it is half as likely.
+
+## Why Not Just Use Accuracy? (Backup 2)
+
+Suppose 90% of dogs in a dataset are unaffected. A model that predicts "unaffected" for every dog achieves **90% accuracy** without learning anything about the data.
+
+| | Predicted affected | Predicted unaffected |
+|---|---|---|
+| **Actually affected** | 0 | 10 |
+| **Actually unaffected** | 0 | 90 |
+
+- Accuracy: 90%
+- Sensitivity: 0%
+- Specificity: 100%
+- AUC: 0.5
+
+This is why sensitivity, specificity, and AUC are reported alongside accuracy — particularly when classes are imbalanced or when missing a positive case carries a high cost.
+
+## The Performance Package (Backup 3)
+
+The `performance` package connects the tidymodels workflow to familiar diagnostic outputs from statistics:
+
+```r
+library(performance)
+
+# Extract the underlying model object from the workflow
+lm_base <- lm_fit |> extract_fit_engine()
+
+# Full diagnostic suite on training data
+check_model(lm_base)
+
+# Individual checks
+check_normality(lm_base)
+check_heteroscedasticity(lm_base)
+check_outliers(lm_base)
+```
+
+`check_model()` evaluates on the **training data** — it diagnoses model assumptions and fit. The predicted versus actual plots in the workshops evaluate on the **test set** — they assess generalisation. Both are necessary. They answer different questions and should not be confused.

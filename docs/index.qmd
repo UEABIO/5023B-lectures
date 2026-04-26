@@ -136,3 +136,58 @@ Responsible AI use for R programming
 :::
 :::
 
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 10
+
+#### Introduction to Machine Learning
+
+Linear and Logistic Regression as Machine Learning Tools
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 11 - part 1
+
+#### Random Forests 
+
+Complex supervised learning
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 11 - part 2
+
+#### Random Forests 
+
+Clustering - unsupervised learning
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
+
+::: {.card .card-disabled}
+<span class="status-badge badge-coming-soon">Coming Soon</span>
+
+### Week 12 
+
+#### Dimensionality reduction
+
+PCA and UMAP
+
+::: {.card-footer}
+<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+:::
+:::
