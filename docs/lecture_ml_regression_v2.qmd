@@ -39,7 +39,7 @@ library(patchwork)
 By the end of this lecture, you should be able to:
 
 :::{.incremental}
-1. Give three biological examples where regression models are used for prediction rather than inference
+1. Give biological examples where regression models are used for prediction rather than inference
 
 2. Explain the fundamental difference between statistical inference and machine learning prediction
 
@@ -151,17 +151,17 @@ Machine learning using regression models is already embedded in biological resea
 
 :::{.incremental}
 
-**Species distribution modelling**
-Logistic regression predicts the probability of species presence at a location from environmental predictors — temperature, rainfall, habitat type. MaxEnt, the dominant tool in conservation ecology, is a form of regularised regression.
+- **Species distribution modelling**
+      
+    Logistic regression predicts the probability of species presence at a location from environmental predictors — temperature, rainfall, habitat type.
 
-**Predicting antibiotic resistance**
-Linear and logistic models trained on bacterial genome sequences predict minimum inhibitory concentrations and resistance phenotypes. Rapid prediction without culture reduces time-to-treatment in clinical microbiology.
+- **Predicting antibiotic resistance**
 
-**Crop yield prediction**
-Ridge and lasso regression on hyperspectral reflectance data predict yield before harvest, supporting precision agriculture and food security planning.
+    Linear and logistic models trained on bacterial genome sequences predict minimum inhibitory concentrations and resistance phenotypes.
 
-**Protein structure and function**
-Before AlphaFold, regression models on sequence features predicted secondary structure elements, solubility, and thermostability. These remain useful for rapid screening of variant libraries.
+- **Protein structure and function**
+
+    Regression models on sequence features predicted secondary structure elements, solubility, and thermostability. 
 
 :::
 
@@ -173,8 +173,24 @@ In every case the same question applies: **not whether a relationship exists, bu
 
 ## Two Questions, Same Model
 
+```{r}
+countdown::countdown(
+  minutes = 1L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
 You have used linear and logistic regression before — for inference. The models in this course are the same. The question is different.
 
+:::::{.fragment}
 :::: {.columns}
 ::: {.column}
 
@@ -209,9 +225,10 @@ You have used linear and logistic regression before — for inference. The model
 :::
 ::::
 
-:::{.fragment}
 The mathematics of the model does not change. **The question, the evaluation, and the decisions that follow all change.**
-:::
+
+:::::
+
 
 # ✋ Stop and Think {background-color="#D9DBDB"}
 
@@ -234,11 +251,14 @@ countdown::countdown(
 
 Decide whether each question below calls for **inference**, **prediction**, or **both** — and what that means for how you would analyse the data.
 
-**Question A:** Does habitat fragmentation significantly reduce the probability of red squirrel presence, controlling for woodland area?
+:::{.incremental}
+- **Question A:** Does habitat fragmentation significantly reduce the probability of red squirrel presence, controlling for woodland area?
 
-**Question B:** Can we predict whether a new woodland patch will be occupied by red squirrels based on its area, connectivity, and surrounding land use?
+- **Question B:** Can we predict whether a new woodland patch will be occupied by red squirrels based on its area, connectivity, and surrounding land use?
 
-**Question C:** A conservation charity wants to prioritise which of 500 unsampled woodland patches to survey first, based on predicted occupancy probability.
+- **Question C:** A conservation charity wants to prioritise which of 500 unsampled woodland patches to survey first, based on predicted occupancy probability.
+
+:::
 
 **Discuss with the person next to you:**
 
@@ -400,6 +420,8 @@ These are genuinely different questions and the same model can give different an
 
 ## Evaluating a Regression Model
 
+:::{.column}
+
 :::{.incremental}
 
 **RMSE — Root Mean Squared Error**
@@ -418,6 +440,26 @@ The proportion of variance in the outcome explained by the model, evaluated on h
 
 :::
 
+:::
+
+:::{.column}
+
+```{r, eval = FALSE}
+# Generate predictions on the held-out test set
+lm_preds <- lm_fit |>
+  predict(bat_test) |>
+  bind_cols(bat_test |> select(age))
+
+# Calculate evaluation metrics
+lm_metrics <- lm_preds |>
+  metrics(truth = age, estimate = .pred)
+
+lm_metrics
+
+```
+
+:::
+
 ## Diagnosing with Plots, Not Just Numbers
 
 RMSE summarises error but conceals structure. A model can have an acceptable RMSE while failing systematically in ways that matter biologically.
@@ -431,7 +473,7 @@ pred_bias  <- age_true * 0.7 + 3 + rnorm(n, sd = 1.5)
 
 bind_rows(
   tibble(actual = age_true, predicted = pred_good, model = "Well calibrated"),
-  tibble(actual = age_true, predicted = pred_bias, model = "Systematic underestimation of older bats")
+  tibble(actual = age_true, predicted = pred_bias, model = "Less well calibrated")
 ) |>
   ggplot(aes(x = actual, y = predicted)) +
   geom_point(alpha = 0.5) +
@@ -591,6 +633,214 @@ In a breeding programme to eliminate cleft lip, a false negative — missing a c
 
 # Why Simple Models Matter {background-color="#D9DBDB"}
 
+## Bias-Variance
+
+```{r}
+library(tidyverse)
+library(patchwork)
+
+# True underlying relationship
+true_fn <- function(x) 1.5 + 1.8 * x - 0.15 * x^2
+
+set.seed(42)
+n_train <- 20
+n_test  <- 10
+
+x_train <- sort(runif(n_train, 0, 10))
+y_train <- true_fn(x_train) + rnorm(n_train, sd = 1.4)
+
+x_test  <- sort(runif(n_test, 0, 10))
+y_test  <- true_fn(x_test) + rnorm(n_test, sd = 1.4)
+
+df_train <- tibble(x = x_train, y = y_train, set = "Training")
+df_test  <- tibble(x = x_test,  y = y_test,  set = "Test")
+
+# Fit models
+fit_bias     <- lm(y ~ x,           data = df_train)   # linear — too simple
+fit_variance <- lm(y ~ poly(x, 12), data = df_train)   # degree 12 — too complex
+
+# Prediction grid for smooth lines
+x_grid <- seq(0, 10, length.out = 300)
+pred_grid <- tibble(
+  x        = x_grid,
+  bias     = predict(fit_bias,     newdata = tibble(x = x_grid)),
+  variance = predict(fit_variance, newdata = tibble(x = x_grid)),
+  truth    = true_fn(x_grid)
+)
+
+# Predictions on test points
+test_preds <- df_test |>
+  mutate(
+    pred_bias     = predict(fit_bias,     newdata = tibble(x = x_test)),
+    pred_variance = predict(fit_variance, newdata = tibble(x = x_test))
+  )
+
+# RMSE helper
+rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted)^2))
+}
+
+rmse_bias_train     <- rmse(y_train, predict(fit_bias,     newdata = tibble(x = x_train)))
+rmse_variance_train <- rmse(y_train, predict(fit_variance, newdata = tibble(x = x_train)))
+rmse_bias_test      <- rmse(y_test,  test_preds$pred_bias)
+rmse_variance_test  <- rmse(y_test,  test_preds$pred_variance)
+
+# Shared axis limits
+ylims <- c(-1, 11)
+
+# ---- Panel 1: High bias on training data ----
+p1 <- ggplot() +
+  geom_point(data = df_train,
+             aes(x = x, y = y),
+             colour = "grey30", size = 3, alpha = 0.9) +
+  geom_line(data = pred_grid,
+            aes(x = x, y = truth),
+            colour = "grey70", linetype = "dotted", linewidth = 0.8) +
+  geom_line(data = pred_grid,
+            aes(x = x, y = bias),
+            colour = "#E63946", linewidth = 1.3) +
+  geom_segment(
+    data = tibble(x = x_train,
+                  y = y_train,
+                  yend = predict(fit_bias, newdata = tibble(x = x_train))),
+    aes(x = x, xend = x, y = y, yend = yend),
+    colour = "#E63946", alpha = 0.35, linewidth = 0.5
+  ) +
+  annotate("label", x = 0.5, y = 10,
+           label = paste0("Training RMSE: ", round(rmse_bias_train, 2), " yrs"),
+           fill = "#E63946", colour = "white",
+           size = 3.2, hjust = 0, label.size = 0,
+           label.padding = unit(0.3, "lines")) +
+  scale_y_continuous(limits = ylims) +
+  labs(
+    title    = "High bias — training data",
+    subtitle = "Linear model misses the curve.\nResiduals are systematic, not random.",
+    x = NULL, y = "Age (years)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title    = element_text(face = "bold", colour = "#E63946", size = 12),
+    plot.subtitle = element_text(colour = "grey40", size = 9)
+  )
+
+# ---- Panel 2: High variance on training data ----
+p2 <- ggplot() +
+  geom_point(data = df_train,
+             aes(x = x, y = y),
+             colour = "grey30", size = 3, alpha = 0.9) +
+  geom_line(data = pred_grid,
+            aes(x = x, y = truth),
+            colour = "grey70", linetype = "dotted", linewidth = 0.8) +
+  geom_line(data = pred_grid |> filter(x > 0.3 & x < 9.7),
+            aes(x = x, y = variance),
+            colour = "#457B9D", linewidth = 1.3) +
+  geom_segment(
+    data = tibble(x = x_train,
+                  y = y_train,
+                  yend = predict(fit_variance, newdata = tibble(x = x_train))),
+    aes(x = x, xend = x, y = y, yend = yend),
+    colour = "#457B9D", alpha = 0.35, linewidth = 0.5
+  ) +
+  annotate("label", x = 0.5, y = 10,
+           label = paste0("Training RMSE: ", round(rmse_variance_train, 2), " yrs"),
+           fill = "#457B9D", colour = "white",
+           size = 3.2, hjust = 0, label.size = 0,
+           label.padding = unit(0.3, "lines")) +
+  scale_y_continuous(limits = ylims) +
+  labs(
+    title    = "High variance — training data",
+    subtitle = "Polynomial threads through every point.\nResiduals are tiny — suspiciously so.",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title    = element_text(face = "bold", colour = "#457B9D", size = 12),
+    plot.subtitle = element_text(colour = "grey40", size = 9)
+  )
+
+# ---- Panel 3: High bias on test data ----
+p3 <- ggplot() +
+  geom_line(data = pred_grid,
+            aes(x = x, y = bias),
+            colour = "#E63946", linewidth = 1.3, alpha = 0.4) +
+  geom_segment(
+    data = test_preds,
+    aes(x = x, xend = x, y = y, yend = pred_bias),
+    colour = "#E63946", alpha = 0.5, linewidth = 0.6
+  ) +
+  geom_point(data = df_test,
+             aes(x = x, y = y),
+             colour = "grey30", size = 3,
+             shape = 17, alpha = 0.9) +
+  geom_point(data = test_preds,
+             aes(x = x, y = pred_bias),
+             colour = "#E63946", size = 2.5, shape = 1, stroke = 1.2) +
+  annotate("label", x = 0.5, y = 10,
+           label = paste0("Test RMSE: ", round(rmse_bias_test, 2), " yrs"),
+           fill = "#E63946", colour = "white",
+           size = 3.2, hjust = 0, label.size = 0,
+           label.padding = unit(0.3, "lines")) +
+  scale_y_continuous(limits = ylims) +
+  labs(
+    title    = "High bias — new data",
+    subtitle = "Consistent errors remain.\nModel generalises but is systematically wrong.",
+    x = "Methylation (PC1)", y = "Age (years)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title    = element_text(face = "bold", colour = "#E63946", size = 12),
+    plot.subtitle = element_text(colour = "grey40", size = 9)
+  )
+
+# ---- Panel 4: High variance on test data ----
+p4 <- ggplot() +
+  geom_line(data = pred_grid |> filter(x > 0.3 & x < 9.7),
+            aes(x = x, y = variance),
+            colour = "#457B9D", linewidth = 1.3, alpha = 0.4) +
+  geom_segment(
+    data = test_preds,
+    aes(x = x, xend = x, y = y, yend = pred_variance),
+    colour = "#457B9D", alpha = 0.5, linewidth = 0.6
+  ) +
+  geom_point(data = df_test,
+             aes(x = x, y = y),
+             colour = "grey30", size = 3,
+             shape = 17, alpha = 0.9) +
+  geom_point(data = test_preds,
+             aes(x = x, y = pred_variance),
+             colour = "#457B9D", size = 2.5, shape = 1, stroke = 1.2) +
+  annotate("label", x = 0.5, y = 10,
+           label = paste0("Test RMSE: ", round(rmse_variance_test, 2), " yrs"),
+           fill = "#457B9D", colour = "white",
+           size = 3.2, hjust = 0, label.size = 0,
+           label.padding = unit(0.3, "lines")) +
+  scale_y_continuous(limits = ylims) +
+  labs(
+    title    = "High variance — new data",
+    subtitle = "Errors are large and unpredictable.\nModel learned noise, not signal.",
+    x = "Methylation (PC1)", y = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title    = element_text(face = "bold", colour = "#457B9D", size = 12),
+    plot.subtitle = element_text(colour = "grey40", size = 9)
+  )
+
+# ---- Combine ----
+(p1 + p2) / (p3 + p4) +
+  plot_annotation(
+    title   = "The two ways a model can be wrong",
+    subtitle = "▲ Training data    ● Actual test values    ○ Model predictions on test data\nDotted line = true underlying relationship",
+    caption = "Simulated data for illustration — not the bat methylation dataset",
+    theme   = theme(
+      plot.title    = element_text(face = "bold", size = 14, hjust = 0.5),
+      plot.subtitle = element_text(colour = "grey40", size = 9, hjust = 0.5),
+      plot.caption  = element_text(colour = "grey50", size = 8, hjust = 0.5)
+    )
+  )
+
+```
+
 ## The Bias-Variance Trade-off
 
 Every modelling decision involves a trade-off between two sources of error
@@ -605,16 +855,29 @@ tibble(complexity, bias, variance, total) |>
   pivot_longer(-complexity, names_to = "component", values_to = "error") |>
   mutate(component = factor(component,
                             levels = c("bias", "variance", "total"),
-                            labels = c("Bias²", "Variance", "Total error"))) |>
+                            labels = c(
+                              "Bias — model too simple,\nmisses real pattern",
+                              "Variance — model too complex,\nfollows noise",
+                              "Total prediction error"
+                            ))) |>
   ggplot(aes(x = complexity, y = error, colour = component)) +
   geom_line(linewidth = 1.2) +
-  scale_colour_manual(values = c("Bias²"      = "#E63946",
-                                 "Variance"   = "#457B9D",
-                                 "Total error" = "grey30")) +
-  labs(x = "Model complexity", y = "Prediction error",
-       title = "The bias-variance trade-off",
-       subtitle = "The optimal model minimises total error — not bias or variance alone",
-       colour = NULL) +
+  geom_vline(xintercept = 3.5, linetype = "dashed", colour = "grey40") +
+  annotate("text", x = 3.7, y = 2.2,
+           label = "Sweet spot:\nright level\nof complexity",
+           colour = "grey30", size = 3.2, hjust = 0, lineheight = 1.2) +
+  scale_colour_manual(values = c(
+    "Bias — model too simple,\nmisses real pattern"     = "#E63946",
+    "Variance — model too complex,\nfollows noise"      = "#457B9D",
+    "Total prediction error"                            = "grey30"
+  )) +
+  labs(
+    x        = "Model complexity →",
+    y        = "Prediction error on new data",
+    title    = "The bias-variance trade-off",
+    subtitle = "The optimal model sits at the minimum of total error",
+    colour   = NULL
+  ) +
   theme_minimal(base_size = 13) +
   theme(legend.position = "bottom")
 ```
@@ -629,17 +892,21 @@ Machine learning offers increasingly complex alternatives — random forests, gr
 
 :::{.incremental}
 
-**Biological interpretability**
-A logistic regression coefficient tells you which SNP increases the odds of cleft lip and by how much. A random forest gives a prediction with no such mechanistic insight. In biology, understanding *why* often matters as much as predicting *what*.
+- **Biological interpretability**
+    
+    A logistic regression coefficient tells you which SNP increases the odds of cleft lip and by how much. A random forest gives a prediction with no such mechanistic insight. In biology, understanding *why* often matters as much as predicting *what*.
 
-**Reliability with small samples**
-Biology frequently involves small, hard-won datasets. Complex models overfit aggressively in this regime. A simple model that generalises is more useful than a complex one that does not.
+- **Reliability with small samples**
+    
+    Biology frequently involves small, hard-won datasets. Complex models overfit aggressively in this regime. A simple model that generalises is more useful than a complex one that does not.
 
-**Auditability and accountability**
-In clinical, conservation, or regulatory contexts, decisions based on model predictions must be explainable. A logistic regression coefficient is defensible to a regulator. A neural network layer is not.
+- **Auditability and accountability**
+    
+    In clinical, conservation, or regulatory contexts, decisions based on model predictions must be explainable. A logistic regression coefficient is defensible to a regulator. A neural network layer is not.
 
-**A genuine baseline**
-A simple model that performs well is evidence the problem does not require complexity. If a complex model cannot beat linear regression, the additional machinery is unjustified. Always establish the simple baseline first.
+- **A genuine baseline**
+    
+    A simple model that performs well is evidence the problem does not require complexity. If a complex model cannot beat linear regression, the additional machinery is unjustified. Always establish the simple baseline first.
 
 :::
 
@@ -668,73 +935,12 @@ For each scenario, decide with your neighbour: **which model, and why?**
 
 **Scenario 2:** Predicting whether a woodland patch will be occupied by red squirrels (yes/no) from area, connectivity, and surrounding land use. You have survey data for 85 patches.
 
-**Scenario 3:** Building an epigenetic clock for a species with no prior data. You have methylation at 300 CpG sites for 35 individuals of known age.
+**Scenario 3:** Building an epigenetic clock for a species. You have methylation at 300 CpG sites for 35 individuals of known age.
 
 **Scenario 4:** You want to know whether a rewilding intervention significantly increased invertebrate species richness at treated sites compared with controls. You have 20 sites.
 
 *Scenario 4 is a trap — discuss why before you answer*
 
-# What You Should Know {background-color="#D9DBDB"}
-
-## Concepts Covered in the Workshops
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-tibble(
-  Concept = c(
-    "Train/test split",
-    "Cross-validation",
-    "RMSE and MAE",
-    "Ridge penalty (lambda)",
-    "Predicted vs. actual plot",
-    "Residual plot",
-    "Confusion matrix",
-    "Sensitivity and specificity",
-    "ROC-AUC",
-    "Predicted probability distributions",
-    "Coefficient plots"
-  ),
-  Workshop = c(
-    "Both", "Workshop 1", "Workshop 1",
-    "Workshop 1", "Both", "Both",
-    "Workshop 2", "Workshop 2", "Workshop 2",
-    "Workshop 2", "Both"
-  ),
-  Purpose = c(
-    "Honest evaluation on unseen data",
-    "Stable lambda selection without using test set",
-    "Quantify average prediction error in outcome units",
-    "Control overfitting with many correlated predictors",
-    "Identify systematic bias across the outcome range",
-    "Check error structure and assumption violations",
-    "Summarise the four classification outcomes",
-    "Understand the cost trade-off between error types",
-    "Evaluate discrimination across all thresholds",
-    "Assess model confidence and separation between classes",
-    "Identify which predictors drive model predictions"
-  )
-) |>
-  knitr::kable()
-```
-
-## Concepts the Workshops Did Not Cover Explicitly
-
-These appeared implicitly or were noted as gaps. You should be aware of them.
-
-:::{.incremental}
-
-**Odds ratios**
-Logistic regression coefficients are on the log-odds scale. Exponentiating them gives odds ratios — the standard currency of genetics and epidemiology papers. A coefficient of 0.7 becomes an odds ratio of $e^{0.7} = 2.01$: each unit increase in the predictor roughly doubles the odds of the outcome.
-
-**Calibration**
-A model can discriminate well (high AUC) while being miscalibrated — predicting probabilities of 0.8 for cases that are actually positive only 50% of the time. Calibration curves and the Brier score assess this. If you will use predicted probabilities to make decisions — rather than just classifications — calibration matters.
-
-**The 0.5 threshold**
-A predicted probability above 0.5 is classified as positive by default. This is a choice, not a statistical requirement. The optimal threshold depends on the relative costs of false positives and false negatives in your specific application. The ROC curve shows the full range of trade-offs.
-
-**Assumption checking**
-The `performance` package runs `check_model()` on models extracted from tidymodels workflows. It checks linearity, homoscedasticity, normality of residuals, and influential observations on the training data — complementing the test-set diagnostics in the workshops.
-
-:::
 
 # Key Takeaways {background-color="#D9DBDB"}
 
@@ -742,20 +948,23 @@ The `performance` package runs `check_model()` on models extracted from tidymode
 
 :::{.incremental}
 
-**1. Machine learning is not a separate discipline**
-Linear and logistic regression are the same models you used in statistics. The question being asked, and how the answer is evaluated, is what changes.
+- **1. Machine learning is not a separate discipline**
 
-**2. Honest evaluation requires data the model has never seen**
-Evaluating any model on its training data is not a test of generalisation. The train/test split and cross-validation are not bureaucratic requirements — they are the only way to know whether a model will work on new observations.
+    Linear and logistic regression are the same models you used in statistics. The question being asked, and how the answer is evaluated, is what changes.
 
-**3. Simple models are not inferior models**
-Interpretability, reliability with small samples, and auditability are genuine advantages in biological research. Complexity requires justification from improved predictive performance.
+- **2. Honest evaluation requires data the model has never seen**
 
-**4. Metrics summarise — plots diagnose**
-RMSE and AUC tell you how a model performs on average. Predicted versus actual plots, residual plots, and probability distributions tell you how and where it fails. Always use both.
+    Evaluating any model on its training data is not a test of generalisation. The train/test split and cross-validation are not bureaucratic requirements — they are the only way to know whether a model will work on new observations.
 
-**5. The threshold and the metric are biological decisions**
-Whether to optimise sensitivity or specificity, and what error level is acceptable, depends on the application — not on a statistical convention. These are scientific judgements, not default settings.
+- **3. Simple models are not inferior models**
+
+    Interpretability, reliability with small samples, and auditability are genuine advantages in biological research. Complexity requires justification from improved predictive performance.
+
+- **4. Metrics summarise — plots diagnose**
+
+    RMSE and AUC tell you how a model performs on average. Predicted versus actual plots, residual plots, and probability distributions tell you how and where it fails. Always use both.
+
+
 
 :::
 

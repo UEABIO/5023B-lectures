@@ -136,8 +136,8 @@ Responsible AI use for R programming
 :::
 :::
 
-::: {.card .card-disabled}
-<span class="status-badge badge-coming-soon">Coming Soon</span>
+::: {.card}
+<span class="status-badge badge-available">Available</span>
 
 ### Week 10
 
@@ -146,7 +146,7 @@ Responsible AI use for R programming
 Linear and Logistic Regression as Machine Learning Tools
 
 ::: {.card-footer}
-<button class="btn btn-primary btn-disabled" disabled aria-disabled="true">Coming Soon</button>
+[View Slides](lecture_ml_regression_v2.html){.btn .btn-primary}
 :::
 :::
 
