@@ -1,0 +1,2001 @@
+---
+title: "From Trees to Forests"
+subtitle: "Random Forests and When Complex Models Are Worth It"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: "2026-05-10"
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(patchwork)
+library(tidymodels)
+library(tidyverse)
+library(ranger)
+library(vip)
+library(rpart)
+library(rpart.plot)
+```
+
+# What We Have Learned So Far {background-color="#D9DBDB"}
+
+## The Story So Far
+
+In the previous two workshops you built models that produce a single equation:
+
+:::{.incremental}
+**Linear regression:**
+$$\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+
+**Logistic regression:**
+$$\log\frac{p}{1-p} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+
+- Both assume a **linear relationship** between predictors and outcome
+- Both produce **interpretable coefficients** you can read and explain
+- Both struggle when that linear assumption does not hold
+- Both can **overfit** when predictors are many and correlated
+:::
+
+:::{.fragment}
+Today we build something completely different — and ask whether the trade-offs are worth it
+:::
+
+# Classification Trees {background-color="#D9DBDB"}
+
+## Learning Objectives
+
+By the end of this lecture, you should be able to:
+
+:::{.incremental}
+1. Explain how a decision tree works
+
+2. Define impurity and explain how trees choose which predictor to split on
+
+3. Explain what a random forest model is
+
+4. Understand model complexity and trade-offs
+:::
+
+
+
+## The Simplest Possible Classifier
+
+Imagine you want to predict whether a dog will develop cleft lip. You have one piece of information: its genotype at one SNP — coded 0, 1, or 2.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+set.seed(42)
+n <- 60
+genotype <- sample(0:2, n, replace = TRUE, prob = c(0.3, 0.5, 0.2))
+prob_affected <- case_when(
+  genotype == 0 ~ 0.1,
+  genotype == 1 ~ 0.35,
+  genotype == 2 ~ 0.75
+)
+affected <- rbinom(n, 1, prob_affected)
+
+df <- tibble(genotype, affected = factor(affected,
+                                          labels = c("Unaffected", "Affected")))
+
+df |>
+  ggplot(aes(x = factor(genotype), fill = affected)) +
+  geom_bar(position = "fill", alpha = 0.85) +
+  scale_fill_manual(values = c("Unaffected" = "#457B9D",
+                               "Affected"   = "#E63946")) +
+  labs(
+    x        = "Genotype (copies of reference allele)",
+    y        = "Proportion",
+    fill     = NULL,
+    title    = "Cleft lip by genotype at one SNP",
+    subtitle = "Dogs with genotype 2 are much more likely to be affected"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom")
+```
+
+:::{.fragment}
+The simplest rule: **if genotype = 2, predict affected; otherwise predict unaffected**
+
+This is a decision tree
+:::
+
+
+
+## What makes Decision Trees useful
+
+Most machine learning algorithms have a preference — they work best with continuous numbers, or best with categories, but rarely both equally well.
+
+:::{.incremental}
+
+Decision trees handle everything:
+
+- Continuous predictors: age, methylation level, body mass
+
+- Categorical predictors: genotype (0/1/2), sex (male/female), species
+
+- Mixed datasets: some continuous, some categorical, in any combination
+
+- Missing values: can be handled without imputation
+
+- Non-linear relationships: no assumption about the shape of the relationship
+
+:::
+
+:::{.fragment}
+This makes decision trees one of the most flexible tools in biology — where your dataset almost always contains a mixture of measurement types
+:::
+
+## Example
+
+```{r}
+
+library(tidyverse)
+
+dogs <- tibble(
+  dog       = paste0("Dog ", LETTERS[1:8]),
+  chr27     = c(0, 1, 2, 1, 0, 2, 1, 0),
+  age_years = c(3, 5, 7, 2, 6, 4, 8, 1),
+  sex       = c("M","F","M","F","M","F","F","M"),
+  affected  = c("No","No","Yes","No","No","Yes","Yes","No")
+)
+
+knitr::kable(dogs,
+             col.names = c("Dog", "chr27 genotype", "Age (years)",
+                           "Sex", "Affected"),
+             align = "c")
+
+```
+
+:::{.fragment}
+We have:
+
+A continuous predictor: age in years
+An ordinal predictor: genotype coded 0/1/2
+A categorical predictor: sex (M/F)
+A binary outcome: affected (Yes/No)
+
+The decision tree will use all of them — no preprocessing required
+:::
+
+## Building a Tree — Step 1: What Goes at the Top?
+
+The root node is the **most important question we can ask**. It is the single predictor and threshold that best separates affected from unaffected dogs.
+
+
+```{r}
+library(tidyverse)
+library(patchwork)
+
+dogs <- tibble(
+  chr27     = c(0, 1, 2, 1, 0, 2, 1, 0),
+  age_years = c(3, 5, 7, 2, 6, 4, 8, 1),
+  sex       = c("M","F","M","F","M","F","F","M"),
+  affected  = c("No","No","Yes","No","No","Yes","Yes","No")
+)
+
+p1 <- dogs |>
+  count(chr27, affected) |>
+  ggplot(aes(x = factor(chr27), y = n, fill = affected)) +
+  geom_col(position = "fill", alpha = 0.85, width = 0.6) +
+  scale_fill_manual(values = c("No" = "#457B9D", "Yes" = "#E63946")) +
+  labs(title = "Split by chr27 genotype",
+       x = "Genotype", y = "Proportion", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+p2 <- dogs |>
+  mutate(age_group = if_else(age_years >= 5, "≥ 5 yrs", "< 5 yrs")) |>
+  count(age_group, affected) |>
+  ggplot(aes(x = age_group, y = n, fill = affected)) +
+  geom_col(position = "fill", alpha = 0.85, width = 0.6) +
+  scale_fill_manual(values = c("No" = "#457B9D", "Yes" = "#E63946")) +
+  labs(title = "Split by age ≥ 5 years",
+       x = "Age group", y = "Proportion", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+p3 <- dogs |>
+  count(sex, affected) |>
+  ggplot(aes(x = sex, y = n, fill = affected)) +
+  geom_col(position = "fill", alpha = 0.85, width = 0.6) +
+  scale_fill_manual(values = c("No" = "#457B9D", "Yes" = "#E63946")) +
+  labs(title = "Split by sex",
+       x = "Sex", y = "Proportion", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+p1 + p2 + p3 +
+  plot_annotation(
+    title    = "Which split separates affected from unaffected dogs best?",
+    subtitle = "The tree tries every possible split on every predictor and picks the best one"
+  )
+
+```
+
+
+:::{.fragment}
+chr27 genotype ≥ 2 looks promising — dogs with two copies of the reference allele are mostly affected. The tree will quantify exactly how good each split is using impurity — more on this shortly.
+:::
+
+
+## Building the Tree — The Root Node
+
+Let us say the tree chooses chr27 ≥ 2 as the best first split.
+
+:::{.column width = "60%"}
+```{r}
+library(tidyverse)
+
+# Root node diagram
+root_data <- tibble(
+  x     = c(0.5, 0.2, 0.8),
+  y     = c(0.85, 0.4, 0.4),
+  label = c("chr27 ≥ 2?",
+            "Dogs A, B, D, E, G, H\n(genotype 0 or 1)\n5 No, 1 Yes",
+            "Dogs C, F\n(genotype 2)\n0 No, 2 Yes"),
+  fill  = c("question", "mixed", "mostly_yes")
+)
+
+edges <- tibble(
+  x    = c(0.5, 0.5),
+  xend = c(0.2, 0.8),
+  y    = c(0.85, 0.85),
+  yend = c(0.55, 0.55),
+  label = c("No (genotype 0 or 1)", "Yes (genotype 2)")
+)
+
+ggplot() +
+  geom_segment(data = edges,
+               aes(x = x, xend = xend, y = y, yend = yend),
+               colour = "grey50", linewidth = 1,
+               arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  geom_label(data = root_data,
+             aes(x = x, y = y, label = label, fill = fill),
+             colour = "white", fontface = "bold",
+             size = 3.5, label.size = 0,
+             label.padding = unit(0.5, "lines")) +
+  geom_text(data = edges,
+            aes(x = (x + xend)/2 + c(-0.08, 0.08),
+                y = (y + yend)/2,
+                label = label),
+            size = 3.2, colour = "grey30", fontface = "italic") +
+  scale_fill_manual(values = c(
+    "question"   = "#457B9D",
+    "mixed"      = "#E9C46A",
+    "mostly_yes" = "#E63946"
+  )) +
+  scale_y_continuous(limits = c(0.2, 1.0)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  labs(
+    title    = "After the first split",
+    subtitle = "Right leaf is pure — all affected. Left leaf is mixed — we need another split."
+  ) +
+  theme_void(base_size = 13) +
+  theme(
+    legend.position = "none",
+    plot.title      = element_text(face = "bold", hjust = 0.5, size = 14),
+    plot.subtitle   = element_text(hjust = 0.5, colour = "grey40")
+  )
+
+```
+
+:::
+
+:::{.column width = "40%"}
+
+:::{.fragment}
+The right leaf is **pure** — both dogs with genotype 2 are affected. We are done on that side.
+
+The left leaf is **impure** — 5 unaffected and 1 affected dog are mixed together. We need to split again.
+:::
+
+:::
+
+## Building the Tree — The Second Split
+
+Now the tree looks only at the left group — dogs with chr27 genotype 0 or 1. It asks: what is the best way to separate the one affected dog from the five unaffected dogs?
+
+```{r}
+
+left_dogs <- tibble(
+  dog       = c("A","B","D","E","G","H"),
+  chr27     = c(0, 1, 1, 0, 1, 0),
+  age_years = c(3, 5, 2, 6, 8, 1),
+  sex       = c("M","F","F","M","F","M"),
+  affected  = c("No","No","No","No","Yes","No")
+)
+
+p1 <- left_dogs |>
+  mutate(age_group = if_else(age_years > 6, "> 6 yrs", "<= 6 yrs")) |>
+  count(age_group, affected) |>
+  ggplot(aes(x = age_group, y = n, fill = affected)) +
+  geom_col(position = "fill", alpha = 0.85, width = 0.55) +
+  scale_fill_manual(values = c("No" = "#457B9D", "Yes" = "#E63946")) +
+  labs(title = "Age ≥ 6 years?",
+       x = NULL, y = "Proportion", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+p2 <- left_dogs |>
+  count(sex, affected) |>
+  ggplot(aes(x = sex, y = n, fill = affected)) +
+  geom_col(position = "fill", alpha = 0.85, width = 0.55) +
+  scale_fill_manual(values = c("No" = "#457B9D", "Yes" = "#E63946")) +
+  labs(title = "Sex?",
+       x = NULL, y = "Proportion", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+p1 + p2 +
+  plot_annotation(
+    title    = "Trying splits on the left group only (Dogs A, B, D, E, G, H)",
+    subtitle = "Age > 6 years perfectly separates the one affected dog (Dog G, age 8)"
+  )
+
+```
+
+## The Finished Tree
+
+```{r,  fig.height = 7}
+nodes <- tibble(
+  x     = c(0.5, 0.25, 0.75, 0.12, 0.38, 0.75),
+  y     = c(0.90, 0.60, 0.60, 0.25, 0.25, 0.25),
+  label = c(
+    "chr27 ≥ 2?",
+    "Age ≥ 6 years?",
+    "✓ AFFECTED\n(Dogs C, F)",
+    "✓ AFFECTED\n(Dog G)",
+    "✓ UNAFFECTED\n(Dogs A,B,D,E,H)",
+    "✓ AFFECTED\n(Dogs C, F)"
+  ),
+  fill  = c("question", "question", "yes_leaf", "yes_leaf", "no_leaf", "yes_leaf"),
+  show  = c(TRUE, TRUE, FALSE, TRUE, TRUE, TRUE)
+)
+
+nodes_show <- tibble(
+  x     = c(0.5, 0.25, 0.75, 0.12, 0.38),
+  y     = c(0.90, 0.60, 0.60, 0.25, 0.25),
+  label = c(
+    "chr27 ≥ 2?",
+    "Age ≥ 6 years?",
+    "AFFECTED\n(Dogs C, F)\n2 Yes, 0 No ✓",
+    "AFFECTED\n(Dog G)\n1 Yes, 0 No ✓",
+    "UNAFFECTED\n(Dogs A,B,D,E,H)\n0 Yes, 5 No ✓"
+  ),
+  fill  = c("question", "question", "yes_leaf", "yes_leaf", "no_leaf")
+)
+
+edges2 <- tibble(
+  x    = c(0.5,  0.5,  0.25, 0.25),
+  xend = c(0.25, 0.75, 0.12, 0.38),
+  y    = c(0.90, 0.90, 0.60, 0.60),
+  yend = c(0.70, 0.70, 0.38, 0.38),
+  label = c("No", "Yes", "Yes\n(age ≥ 6)", "No\n(age < 6)")
+)
+
+ggplot() +
+  geom_segment(data = edges2,
+               aes(x = x, xend = xend, y = y, yend = yend),
+               colour = "grey50", linewidth = 1,
+               arrow = arrow(length = unit(0.2, "cm"), type = "closed")) +
+  geom_label(data = nodes_show,
+             aes(x = x, y = y, label = label, fill = fill),
+             colour = "white", fontface = "bold",
+             size = 3.2, label.size = 0,
+             label.padding = unit(0.45, "lines")) +
+  geom_text(data = edges2,
+            aes(x = (x + xend)/2 + c(-0.06, 0.06, -0.07, 0.07),
+                y = (y + yend)/2,
+                label = label),
+            size = 3, colour = "grey30", lineheight = 1.1) +
+  scale_fill_manual(values = c(
+    "question" = "#457B9D",
+    "yes_leaf" = "#E63946",
+    "no_leaf"  = "#2a9d8f"
+  )) +
+  scale_y_continuous(limits = c(0.1, 1.0)) +
+  scale_x_continuous(limits = c(0, 1)) +
+  labs(
+    title    = "The finished decision tree — all leaves are pure",
+    subtitle = "Two questions correctly classify all 8 dogs in the training data"
+  ) +
+  theme_void(base_size = 13) +
+  theme(
+    legend.position = "none",
+    plot.title      = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle   = element_text(hjust = 0.5, colour = "grey40")
+  )
+
+```
+
+# ✋ Stop and Think {background-color="#D9DBDB"}
+
+## Build Your Own Decision Tree
+
+```{r}
+countdown::countdown(
+  minutes = 5L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+**On paper, in pairs — build a decision tree for this problem:**
+
+You are trying to predict whether a bat is young (under 5 years) or old (5 years or over) using two measurements: methylation at CpG site A (high or low) and methylation at CpG site B (high or low).
+
+:::{.column}
+You observe:
+
+```{r}
+library(tidyverse)
+library(knitr)
+
+bats <- tibble(
+  Bat        = paste0("Bat ", LETTERS[1:8]),
+  `CpG site A` = c("High", "High", "Low", "Low",
+                    "High", "Low", "High", "Low"),
+  `CpG site B` = c("High", "Low",  "High", "Low",
+                    "Low",  "High", "High", "Low"),
+  `Age group`  = c("Old", "Old", "Young", "Young",
+                    "Old",  "Old",  "Young", "Young")
+)
+
+kable(bats, align = "c") |>
+  kableExtra::kable_styling(font_size = 18)
+
+```
+
+:::
+
+:::{.column}
+
+::: {style="font-size: 70%;"}
+
+In pairs, on paper:
+
+- Step 1 — Look at CpG site A alone
+Sort the eight bats into two groups: High and Low. How many Old and Young bats are in each group? Does CpG site A do a good job of separating them?
+
+- Step 2 — Look at CpG site B alone
+Repeat Step 1 for site B
+
+- Step 3 — Pick your first question
+Which predictor — makes cleaner groups? That one goes at the top of your tree.
+
+- Step 4 — Draw your tree
+Draw a box at the top with your chosen question. Draw two branches — one for High, one for Low. Write which bats end up in each group.
+
+- Step 5 — Check your leaves
+Are all bats in each group the same age category? If not, can you add a second question to clean it up?
+:::
+
+:::
+
+
+## But How Did the Tree Choose?
+
+The tree did not guess. At every step it tried every possible split on every predictor and picked the one that reduced impurity the most.
+
+:::{.incremental}
+Impurity measures how mixed the classes are in a group:
+
+- A group containing only affected dogs → perfectly pure — impurity = 0
+
+- A group with equal numbers of affected and unaffected → maximally impure
+
+- Every split we make should reduce impurity — move groups towards purity
+
+The tree is doing a greedy search: at each node, find the single best split. Then repeat.
+:::
+
+:::{.fragment}
+The formal measure used is called Gini impurity
+:::
+
+## Measuring a Split — Gini Impurity
+
+```{r}
+p_affected <- seq(0, 1, by = 0.01)
+gini <- 1 - p_affected^2 - (1 - p_affected)^2
+
+tibble(p = p_affected, gini = gini) |>
+  ggplot(aes(x = p, y = gini)) +
+  geom_line(colour = "#457B9D", linewidth = 1.5) +
+  geom_point(data = tibble(
+    p    = c(0, 0.5, 1),
+    gini = c(0, 0.5, 0),
+    label = c("Pure\n(all unaffected)\nGini = 0",
+              "Most impure\n(50/50 split)\nGini = 0.5",
+              "Pure\n(all affected)\nGini = 0")
+  ), aes(x = p, y = gini), colour = "#E63946", size = 4) +
+  geom_text(data = tibble(
+    p    = c(0.1,    0.5,  0.9),
+    gini = c(0.06, 0.4, 0.06),
+    label = c("Pure\n(all unaffected)\nGini = 0",
+              "Most impure\n(50/50 split)\nGini = 0.5",
+              "Pure\n(all affected)\nGini = 0")
+  ), aes(x = p, y = gini, label = label),
+  size = 3.2, lineheight = 1.1, colour = "#E63946") +
+  scale_x_continuous(labels = scales::percent,
+                     breaks = seq(0, 1, by = 0.25)) +
+  labs(
+    x        = "Proportion of affected dogs in the group",
+    y        = "Gini impurity",
+    title    = "Gini impurity across all possible class proportions",
+    subtitle = "Zero means pure — all one class. Maximum at 50/50 split."
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
+
+## Gini Impurity — What You Need to Remember
+You will never calculate Gini impurity by hand in practice. R does it for every possible split automatically.
+
+:::{.incremental}
+What you do need to understand:
+
+- The tree is always asking: which split makes the groups most homogeneous?
+
+- A split is good if the groups it creates are mostly one class or the other
+
+- A split is bad if both groups are still a mixture
+
+- The tree repeats this process at every node until the groups are pure — or until a stopping criterion is reached
+
+:::
+
+## What about Continuous Predictors?
+
+```{r}
+left_dogs <- tibble(
+  age      = c(3, 5, 2, 6, 8, 1),
+  affected = c("No","No","No","No","Yes","No")
+)
+
+thresholds <- seq(1.5, 8.5, by = 0.5)
+
+gini_by_threshold <- map_dfr(thresholds, function(t) {
+  left  <- left_dogs |> filter(age < t)
+  right <- left_dogs |> filter(age >= t)
+
+  if (nrow(left) == 0 | nrow(right) == 0) return(NULL)
+
+  gini_node <- function(df) {
+    p <- mean(df$affected == "Yes")
+    1 - p^2 - (1-p)^2
+  }
+
+  weighted <- (nrow(left)/nrow(left_dogs)) * gini_node(left) +
+    (nrow(right)/nrow(left_dogs)) * gini_node(right)
+
+  tibble(threshold = t, weighted_gini = weighted)
+})
+
+gini_by_threshold |>
+  ggplot(aes(x = threshold, y = weighted_gini)) +
+  geom_line(colour = "#457B9D", linewidth = 1.2) +
+  geom_point(colour = "#457B9D", size = 3) +
+  geom_point(data = gini_by_threshold |>
+               slice_min(weighted_gini, n = 1),
+             colour = "#E63946", size = 5) +
+  labs(
+    x        = "Age threshold (years)",
+    y        = "Weighted Gini impurity after split",
+    title    = "The tree tries every possible age threshold",
+    subtitle = "Red dot = the threshold chosen. The tree picks whichever value\n minimises Gini impurity."
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+## The Overfitting Problem
+
+A tree that is allowed to grow deep enough will perfectly classify every training observation
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 6}
+library(tidyverse)
+library(patchwork)
+library(rpart)
+
+# Recreate df3 and grid with the same seed as the earlier chunk
+set.seed(42)
+n <- 150
+x1   <- rnorm(n)
+x2   <- rnorm(n)
+prob <- plogis(-0.5 + 1.5 * x1 + x2 - 0.8 * x1 * x2)
+y    <- factor(rbinom(n, 1, prob), labels = c("Unaffected", "Affected"))
+df3  <- tibble(x1, x2, y)
+
+# Fit shallow tree
+tree_fit <- rpart(y ~ x1 + x2, data = df3, method = "class",
+                  control = rpart.control(maxdepth = 3, minsplit = 10))
+
+# Prediction grid
+x1_range <- seq(min(x1) - 0.5, max(x1) + 0.5, length.out = 200)
+x2_range <- seq(min(x2) - 0.5, max(x2) + 0.5, length.out = 200)
+grid     <- expand.grid(x1 = x1_range, x2 = x2_range)
+grid$pred <- predict(tree_fit, grid, type = "class")
+
+# Fit deep tree and add to grid
+tree_deep      <- rpart(y ~ x1 + x2, data = df3, method = "class",
+                        control = rpart.control(maxdepth = 10,
+                                                minsplit  = 2,
+                                                minbucket = 1))
+grid$pred_deep <- predict(tree_deep, grid, type = "class")
+
+# Plots
+p1 <- ggplot() +
+  geom_tile(data = grid,
+            aes(x = x1, y = x2, fill = pred),
+            alpha = 0.3) +
+  geom_point(data = df3,
+             aes(x = x1, y = x2, colour = y),
+             size = 2, alpha = 0.9) +
+  scale_fill_manual(values = c("Unaffected" = "#457B9D",
+                               "Affected"   = "#E63946")) +
+  scale_colour_manual(values = c("Unaffected" = "#457B9D",
+                                 "Affected"   = "#E63946")) +
+  labs(title    = "Shallow tree (depth 3)",
+       subtitle = "Generalises — misses some training points",
+       x = "Predictor 1", y = "Predictor 2") +
+  theme_minimal(base_size = 12) +
+  guides(fill = "none", colour = "none")
+
+p2 <- ggplot() +
+  geom_tile(data = grid,
+            aes(x = x1, y = x2, fill = pred_deep),
+            alpha = 0.3) +
+  geom_point(data = df3,
+             aes(x = x1, y = x2, colour = y),
+             size = 2, alpha = 0.9) +
+  scale_fill_manual(values = c("Unaffected" = "#457B9D",
+                               "Affected"   = "#E63946")) +
+  scale_colour_manual(values = c("Unaffected" = "#457B9D",
+                                 "Affected"   = "#E63946")) +
+  labs(title    = "Deep tree (depth 10)",
+       subtitle = "Overfits — memorises every training point",
+       x = "Predictor 1", y = "Predictor 2") +
+  theme_minimal(base_size = 12) +
+  guides(fill = "none", colour = "none")
+
+p1 + p2
+```
+
+:::{.fragment}
+The deep tree has zero training error but will perform poorly on new data. This is the same overfitting problem from Workshops 1 and 2 — but more extreme because a tree has so much flexibility.
+:::
+
+
+
+
+
+
+
+# From Trees to Forests {background-color="#D9DBDB"}
+
+## Why One Tree Is Not Enough
+
+A single decision tree is **unstable** — small changes in the training data produce very different trees
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE,  fig.height = 7}
+set.seed(1)
+n <- 40
+
+make_tree_boundary <- function(seed, n = 40) {
+  set.seed(seed)
+  x1 <- rnorm(n)
+  x2 <- rnorm(n)
+  prob <- plogis(-0.3 + 1.2 * x1 + 0.8 * x2)
+  y <- factor(rbinom(n, 1, prob), labels = c("Unaffected", "Affected"))
+  df_temp <- tibble(x1, x2, y)
+  tree_temp <- rpart(y ~ x1 + x2, data = df_temp, method = "class",
+                     control = rpart.control(maxdepth = 3, minsplit = 5))
+  grid_temp <- expand.grid(
+    x1 = seq(-3, 3, length.out = 100),
+    x2 = seq(-3, 3, length.out = 100)
+  )
+  grid_temp$pred <- predict(tree_temp, grid_temp, type = "class")
+  grid_temp$seed <- paste("Training set", seed - 41)
+  grid_temp
+}
+
+boundary_data <- map_dfr(42:45, make_tree_boundary)
+
+ggplot(boundary_data, aes(x = x1, y = x2, fill = pred)) +
+  geom_tile(alpha = 0.4) +
+  scale_fill_manual(values = c("Unaffected" = "#457B9D",
+                               "Affected"   = "#E63946")) +
+  facet_wrap(~seed, nrow = 2) +
+  labs(
+    title    = "Four trees fitted on four different training samples",
+    subtitle = "Same model, same data-generating process — completely different boundaries",
+    fill     = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom",
+        strip.text = element_text(face = "bold"))
+```
+
+## The Bootstrap Solution
+
+**Bootstrapping** creates many training sets from the original data by sampling with replacement
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE,  fig.height = 7}
+set.seed(42)
+
+bats <- paste0("Bat ", LETTERS[1:8])
+
+make_boot <- function(original, seed) {
+  set.seed(seed)
+  samp <- sample(original, length(original), replace = TRUE)
+  tibble(bat = original) |>
+    mutate(
+      count = map_int(bat, ~ sum(samp == .x)),
+      label = case_when(
+        count == 0 ~ "OOB\n(not selected)",
+        count == 1 ~ "×1",
+        count == 2 ~ "×2",
+        TRUE       ~ paste0("×", count)
+      ),
+      status = case_when(
+        count == 0 ~ "Out-of-bag",
+        count == 1 ~ "Selected once",
+        count >= 2 ~ "Selected twice"
+      )
+    )
+}
+
+boot1 <- make_boot(bats, 42) |> mutate(sample = "Bootstrap 1")
+boot2 <- make_boot(bats, 7)  |> mutate(sample = "Bootstrap 2")
+boot3 <- make_boot(bats, 99) |> mutate(sample = "Bootstrap 3")
+
+orig <- tibble(
+  bat    = bats,
+  count  = 1,
+  label  = "✓",
+  status = "Original",
+  sample = "Original data"
+)
+
+bind_rows(orig, boot1, boot2, boot3) |>
+  mutate(
+    sample = factor(sample,
+                    levels = c("Original data",
+                               "Bootstrap 1",
+                               "Bootstrap 2",
+                               "Bootstrap 3")),
+    bat = factor(bat, levels = bats)
+  ) |>
+  ggplot(aes(x = bat, y = sample, fill = status, label = label)) +
+  geom_tile(colour = "white", linewidth = 1.5) +
+  geom_text(colour = "white", fontface = "bold", size = 3.8) +
+  scale_fill_manual(
+    values = c(
+      "Original"       = "#457B9D",
+      "Selected once"  = "#2a9d8f",
+      "Selected twice" = "#E9C46A",
+      "Out-of-bag"     = "#E63946"
+    ),
+    name = NULL
+  ) +
+  labs(
+    x        = NULL,
+    y        = NULL,
+    title    = "Bootstrap sampling — with replacement",
+    subtitle = "Red = out-of-bag (not selected — used to evaluate the tree)\nYellow = selected twice (same bat used twice for training)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid   = element_blank(),
+    legend.position = "bottom",
+    axis.text.x  = element_text(face = "bold"),
+    axis.text.y  = element_text(face = "bold"),
+    plot.subtitle = element_text(colour = "grey40", lineheight = 1.3)
+  )
+```
+
+:::{.fragment}
+Dogs not selected in a bootstrap sample are **out-of-bag (OOB)** observations. Each tree can be evaluated on its OOB dogs without touching the test set — a built-in validation mechanism.
+:::
+
+## Bagging — Averaging Many Trees
+
+**B**ootstrap **agg**regating: fit many trees, each on a different bootstrap sample, and combine their votes
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE,  fig.height = 7}
+set.seed(42)
+n_obs <- 100
+x1 <- rnorm(n_obs)
+x2 <- rnorm(n_obs)
+prob_true <- plogis(-0.3 + 1.2 * x1 + 0.7 * x2)
+y <- factor(rbinom(n_obs, 1, prob_true), labels = c("Unaffected", "Affected"))
+df_bag <- tibble(x1, x2, y)
+
+grid_bag <- expand.grid(
+  x1 = seq(-3, 3, length.out = 150),
+  x2 = seq(-3, 3, length.out = 150)
+)
+
+# Bagged prediction: average of 50 trees
+set.seed(42)
+pred_matrix <- map(1:50, function(i) {
+  idx <- sample(n_obs, n_obs, replace = TRUE)
+  tree_i <- rpart(y ~ x1 + x2, data = df_bag[idx, ], method = "class",
+                  control = rpart.control(maxdepth = 4, minsplit = 5))
+  predict(tree_i, grid_bag, type = "prob")[, "Affected"]
+}) |>
+  do.call(cbind, args = _)
+
+grid_bag$prob_affected <- rowMeans(pred_matrix)
+grid_bag$pred_bagged   <- factor(
+  ifelse(grid_bag$prob_affected > 0.5, "Affected", "Unaffected")
+)
+
+ggplot() +
+  geom_tile(data = grid_bag,
+            aes(x = x1, y = x2, fill = prob_affected),
+            alpha = 0.7) +
+  geom_point(data = df_bag,
+             aes(x = x1, y = x2, colour = y),
+             size = 2, alpha = 0.9) +
+  scale_fill_gradient2(low = "#457B9D", mid = "white", high = "#E63946",
+                       midpoint = 0.5, name = "P(affected)") +
+  scale_colour_manual(values = c("Unaffected" = "#457B9D",
+                                 "Affected"   = "#E63946"),
+                      guide = "none") +
+  labs(
+    title    = "Bagged prediction — average of 50 trees",
+    subtitle = "Smooth probability gradient rather than hard rectangular boundaries"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+## The Random Forest Twist
+
+Bagging still has a problem: if one predictor is much more informative than the others, every tree starts with the same split — they become correlated
+
+:::{.incremental}
+**The random forest solution:**
+
+At each split, consider only a **random subset of predictors** — not all of them
+
+- For classification: try $\sqrt{p}$ predictors at each split by default
+- This forces trees to find different paths through the data
+- Averaging **different** errors cancels out far better than averaging **similar** errors
+
+:::
+
+:::{.fragment}
+**An analogy:** Asking 500 people the same question gets you one opinion repeated 500 times. Asking 500 people different questions and combining their answers gets you genuine diversity of information.
+:::
+
+
+## Bagging vs Random Forest
+
+```{r,  fig.height = 7}
+
+library(tidyverse)
+library(patchwork)
+
+# Helper to draw a simple tree node diagram
+draw_tree <- function(nodes_df, edges_df, title, subtitle = "") {
+  ggplot() +
+    geom_segment(data = edges_df,
+                 aes(x = x, xend = xend, y = y, yend = yend),
+                 colour = "grey60", linewidth = 0.8) +
+    geom_label(data = nodes_df,
+               aes(x = x, y = y, label = label, fill = fill),
+               colour = "white", fontface = "bold",
+               size = 2.6, label.size = 0,
+               label.padding = unit(0.35, "lines")) +
+    scale_fill_manual(values = c(
+      "strong"  = "#E63946",   # the dominant predictor
+      "weak"    = "#457B9D",   # a less dominant predictor
+      "random1" = "#E9C46A",   # randomly assigned predictor
+      "random2" = "#2a9d8f",   # randomly assigned predictor
+      "leaf"    = "grey70"
+    )) +
+    scale_y_continuous(limits = c(0.1, 1.05)) +
+    scale_x_continuous(limits = c(0.0, 1.0)) +
+    labs(title = title, subtitle = subtitle) +
+    theme_void(base_size = 9) +
+    theme(
+      legend.position = "none",
+      plot.title      = element_text(face = "bold", hjust = 0.5, size = 9),
+      plot.subtitle   = element_text(hjust = 0.5, colour = "grey50", size = 8)
+    )
+}
+
+# ── BAGGING trees — all use the dominant predictor at root ──────────────────
+
+bag_edges <- tibble(
+  x    = c(0.5, 0.5, 0.25, 0.25, 0.75, 0.75),
+  xend = c(0.25, 0.75, 0.12, 0.38, 0.62, 0.88),
+  y    = c(0.90, 0.90, 0.62, 0.62, 0.62, 0.62),
+  yend = c(0.68, 0.68, 0.35, 0.35, 0.35, 0.35)
+)
+
+make_bag_nodes <- function(root, left, right, ll, lr, rl, rr) {
+  tibble(
+    x     = c(0.5,  0.25, 0.75, 0.12, 0.38, 0.62, 0.88),
+    y     = c(0.90, 0.62, 0.62, 0.35, 0.35, 0.35, 0.35),
+    label = c(root, left, right, ll, lr, rl, rr),
+    fill  = c("strong", "weak", "weak", "leaf","leaf","leaf","leaf")
+  )
+}
+
+b1 <- draw_tree(
+  make_bag_nodes("chr27\n(best predictor)", "chr26", "chr28",
+                 "Old","Young","Old","Young"),
+  bag_edges, "Bagging — Tree 1", "chr27 wins again"
+)
+b2 <- draw_tree(
+  make_bag_nodes("chr27\n(best predictor)", "age", "sex",
+                 "Young","Old","Old","Young"),
+  bag_edges, "Bagging — Tree 2", "chr27 wins again"
+)
+b3 <- draw_tree(
+  make_bag_nodes("chr27\n(best predictor)", "chr26", "age",
+                 "Old","Young","Young","Old"),
+  bag_edges, "Bagging — Tree 3", "chr27 wins again"
+)
+
+# ── RANDOM FOREST trees — different predictors forced at root ───────────────
+
+make_rf_nodes <- function(root, rootfill, left, leftfill,
+                          right, rightfill, ll, lr, rl, rr) {
+  tibble(
+    x     = c(0.5,  0.25, 0.75, 0.12, 0.38, 0.62, 0.88),
+    y     = c(0.90, 0.62, 0.62, 0.35, 0.35, 0.35, 0.35),
+    label = c(root, left, right, ll, lr, rl, rr),
+    fill  = c(rootfill, leftfill, rightfill,
+              "leaf","leaf","leaf","leaf")
+  )
+}
+
+r1 <- draw_tree(
+  make_rf_nodes("chr27\n(randomly available)", "strong",
+                "chr26\n(randomly available)", "weak",
+                "age\n(randomly available)", "random2",
+                "Old","Young","Young","Old"),
+  bag_edges, "Random Forest — Tree 1",
+  "Available predictors: chr27, chr26, age"
+)
+
+r2 <- draw_tree(
+  make_rf_nodes("age\n(randomly available)", "random2",
+                "sex\n(randomly available)", "random1",
+                "chr27\n(randomly available)", "strong",
+                "Young","Old","Old","Young"),
+  bag_edges, "Random Forest — Tree 2",
+  "Available predictors: age, sex, chr27"
+)
+
+r3 <- draw_tree(
+  make_rf_nodes("chr26\n(randomly available)", "weak",
+                "chr27\n(randomly available)", "strong",
+                "sex\n(randomly available)", "random1",
+                "Old","Young","Old","Young"),
+  bag_edges, "Random Forest — Tree 3",
+  "Available predictors: chr26, chr27, sex"
+)
+
+# ── Correlation annotation panels ────────────────────────────────────────────
+
+corr_bag <- ggplot() +
+  annotate("rect",
+           xmin = 0, xmax = 1, ymin = 0, ymax = 1,
+           fill = "#E63946", alpha = 0.15) +
+  annotate("text", x = 0.5, y = 0.65,
+           label = "⚠ Highly correlated trees",
+           fontface = "bold", colour = "#E63946", size = 3.8) +
+  annotate("text", x = 0.5, y = 0.35,
+           label = "Same root split every time\n→ similar errors\n→ averaging helps little",
+           colour = "grey30", size = 3.2, lineheight = 1.3) +
+  theme_void()
+
+corr_rf <- ggplot() +
+  annotate("rect",
+           xmin = 0, xmax = 1, ymin = 0, ymax = 1,
+           fill = "#2a9d8f", alpha = 0.15) +
+  annotate("text", x = 0.5, y = 0.65,
+           label = "✓ Decorrelated trees",
+           fontface = "bold", colour = "#2a9d8f", size = 3.8) +
+  annotate("text", x = 0.5, y = 0.35,
+           label = "Different root splits\n→ different errors\n→ averaging cancels mistakes",
+           colour = "grey30", size = 3.2, lineheight = 1.3) +
+  theme_void()
+
+# ── Combine ──────────────────────────────────────────────────────────────────
+
+top_label_bag <- ggplot() +
+  annotate("rect",
+           xmin = 0, xmax = 1, ymin = 0, ymax = 1,
+           fill = "#E63946", alpha = 0.8) +
+  annotate("text", x = 0.5, y = 0.5,
+           label = "BAGGING\nAll predictors available at every split",
+           colour = "white", fontface = "bold",
+           size = 4, lineheight = 1.3) +
+  theme_void()
+
+top_label_rf <- ggplot() +
+  annotate("rect",
+           xmin = 0, xmax = 1, ymin = 0, ymax = 1,
+           fill = "#2a9d8f", alpha = 0.8) +
+  annotate("text", x = 0.5, y = 0.5,
+           label = "RANDOM FOREST\nRandom subset of predictors at each split",
+           colour = "white", fontface = "bold",
+           size = 4, lineheight = 1.3) +
+  theme_void()
+
+layout <- "
+AABBBB
+CCDDEE
+FFGGGG
+HHIIJJ
+KKLLLL
+"
+
+wrap_plots(
+  A = top_label_bag,
+  B = plot_spacer(),
+  C = b1, D = b2, E = b3,
+  F = plot_spacer(),
+  G = corr_bag,
+  H = top_label_rf,
+  I = plot_spacer(),
+  J = plot_spacer(),
+  K = r1,
+  L = r2,
+  design = layout
+)
+
+```
+
+
+
+## Bagging vs Random Forest
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 7}
+set.seed(42)
+n_trees <- 1:100
+
+# Simulate decreasing error as n_trees increases
+# RF decorrelates more so drops faster
+bagging_error <- 0.32 + 0.15 * exp(-0.05 * n_trees) + rnorm(100, 0, 0.005)
+rf_error      <- 0.28 + 0.10 * exp(-0.07 * n_trees) + rnorm(100, 0, 0.004)
+single_error  <- rep(0.38, 100)
+
+tibble(
+  n_trees,
+  `Single tree`    = single_error,
+  `Bagging`        = bagging_error,
+  `Random forest`  = rf_error
+) |>
+  pivot_longer(-n_trees, names_to = "method", values_to = "error") |>
+  mutate(method = factor(method,
+                         levels = c("Single tree", "Bagging", "Random forest"))) |>
+  ggplot(aes(x = n_trees, y = error, colour = method)) +
+  geom_line(linewidth = 1.1) +
+  scale_colour_manual(values = c(
+    "Single tree"   = "grey60",
+    "Bagging"       = "#457B9D",
+    "Random forest" = "#E63946"
+  )) +
+  labs(
+    x        = "Number of trees",
+    y        = "Test error rate",
+    colour   = NULL,
+    title    = "Error rate as trees are added",
+    subtitle = "Random forests outperform bagging by decorrelating trees \nthrough random feature selection"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom")
+```
+
+
+
+
+## Forest votes
+
+```{r}
+library(tidyverse)
+library(knitr)
+
+tibble(
+  Bat          = "Bat X",
+  `CpG site A` = "High",
+  `CpG site B` = "Low",
+  `Age group`  = "???"
+) |>
+  kable(align = "c") |>
+  kableExtra::kable_styling(font_size = 24)
+
+
+```
+
+## Five trees
+
+```{r}
+countdown::countdown(
+  minutes = 5L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+```{r}
+library(tidyverse)
+library(knitr)
+
+tibble(
+  Bat          = "Bat X",
+  `CpG site A` = "High",
+  `CpG site B` = "Low",
+  `Age group`  = "???"
+) |>
+  kable(align = "c") |>
+  kableExtra::kable_styling(font_size = 24)
+
+
+```
+
+
+
+```{r}
+library(tidyverse)
+library(patchwork)
+
+make_tree_plot <- function(title, root_q, left_label, right_label,
+                           correct) {
+
+
+  nodes <- tibble(
+    x     = c(0.5, 0.25, 0.75),
+    y     = c(0.80, 0.35, 0.35),
+    label = c(root_q, left_label, right_label),
+    fill  = c("question", "leaf", "pred")
+  )
+
+  edges <- tibble(
+    x    = c(0.5, 0.5),
+    xend = c(0.25, 0.75),
+    y    = c(0.80, 0.80),
+    yend = c(0.52, 0.52),
+    lab  = c("High", "Low")
+  )
+
+  ggplot() +
+    geom_segment(data = edges,
+                 aes(x = x, xend = xend, y = y, yend = yend),
+                 colour = "grey50", linewidth = 0.9) +
+    geom_label(data = nodes,
+               aes(x = x, y = y, label = label, fill = fill),
+               colour = "white", fontface = "bold",
+               size = 2.8, label.size = 0,
+               label.padding = unit(0.4, "lines")) +
+    geom_text(data = edges,
+              aes(x = (x + xend)/2 + c(-0.07, 0.07),
+                  y = (y + yend)/2,
+                  label = lab),
+              size = 2.8, colour = "grey40") +
+    scale_fill_manual(values = c(
+      "question" = "#457B9D",
+      "leaf"     = "grey60"
+    )) +
+    scale_y_continuous(limits = c(0.1, 1.0)) +
+    scale_x_continuous(limits = c(0, 1)) +
+    labs(title = title) +
+    theme_void(base_size = 10) +
+    theme(
+      legend.position  = "none",
+      plot.title       = element_text(face = "bold", hjust = 0.5, size = 10)
+    )
+}
+
+p1 <- make_tree_plot(
+  title       = "Tree 1\n(trained on Bats A, B, C, D, E)",
+  root_q      = "CpG site A?",
+  left_label  = "Old\n(Bats A, B, E)",
+  right_label = "Young\n(Bats C, D)",
+  correct     = TRUE
+)
+
+p2 <- make_tree_plot(
+  title       = "Tree 2\n(trained on Bats B, C, E, F, H)",
+  root_q      = "CpG site B?",
+  left_label  = "Old\n(Bats F)",
+  right_label = "Young\n(Bats C, H)",
+  correct     = FALSE
+)
+
+p3 <- make_tree_plot(
+  title       = "Tree 3\n(trained on Bats A, C, D, F, G)",
+  root_q      = "CpG site A?",
+  left_label  = "Old\n(Bats A)",
+  right_label = "Young\n(Bats C, D, G)",
+  correct     = TRUE
+)
+
+p4 <- make_tree_plot(
+  title       = "Tree 4\n(trained on Bats B, D, E, G, H)",
+  root_q      = "CpG site B?",
+  left_label  = "Old\n(Bats E, G)",
+  right_label = "Young\n(Bats B, D, H)",
+  correct     = FALSE
+)
+
+p5 <- make_tree_plot(
+  title       = "Tree 5\n(trained on Bats A, B, C, E, F)",
+  root_q      = "CpG site A?",
+  left_label  = "Old\n(Bats A, B, E, F)",
+  right_label = "Young\n(Bats C)",
+  correct     = TRUE
+)
+
+(p1 + p2 + p3) / (p4 + p5 + plot_spacer()) +
+  plot_annotation(
+    title    = "Five trees — each trained on a different subset of bats",
+    subtitle = "Bat X has CpG site A = High, CpG site B = Low",
+    theme    = theme(
+      plot.title    = element_text(face = "bold", hjust = 0.5, size = 13),
+      plot.subtitle = element_text(hjust = 0.5, colour = "grey40", size = 11)
+    )
+  )
+
+
+```
+
+
+# Comparing Models {background-color="#D9DBDB"}
+
+## Random Forests vs Logistic Regression
+
+:::: {.columns}
+::: {.column}
+
+### Logistic Regression
+
+**What it produces:**
+
+A single equation with one coefficient per predictor
+
+**What you can read from it:**
+
+Direction, magnitude, and significance of each predictor's effect
+
+**When it works well:**
+
+Linear relationships, interpretability required, small datasets, regulated contexts
+
+**When it struggles:**
+
+Non-linear relationships, complex interactions between predictors
+
+:::
+::: {.column}
+
+### Random Forest
+
+**What it produces:**
+
+Votes from hundreds of trees — no readable equation
+
+**What you can read from it:**
+
+Which predictors mattered most — not in which direction
+
+**When it works well:**
+
+Non-linear relationships, many correlated predictors, large datasets
+
+**When it struggles:**
+
+Small datasets, when you need to explain individual predictions, extrapolation beyond training data
+
+:::
+::::
+
+## Decision trees vs logistic regression
+
+```{r, warning = FALSE, echo = FALSE,  fig.height = 8}
+library(tidyverse)
+library(patchwork)
+library(rpart)
+
+set.seed(42)
+n <- 300
+
+# ── Data generating processes ─────────────────────────────────────────────────
+
+# 1. Linear — both models handle this fine
+x_lin  <- runif(n, -3, 3)
+p_lin  <- plogis(2 * x_lin)
+y_lin  <- factor(rbinom(n, 1, p_lin), labels = c("Unaffected", "Affected"))
+df_lin <- tibble(x = x_lin, y = y_lin)
+
+# 2. Non-linear (U-shaped) — logistic regression misses it
+x_nl   <- runif(n, -3, 3)
+p_nl   <- plogis(-4 + 3 * x_nl^2)
+y_nl   <- factor(rbinom(n, 1, p_nl), labels = c("Unaffected", "Affected"))
+df_nl  <- tibble(x = x_nl, y = y_nl)
+
+# 3. Categorical interaction — logistic regression needs explicit terms
+breed   <- sample(c("Breed A", "Breed B"), n, replace = TRUE)
+age_cat <- sample(c("Young", "Old"),       n, replace = TRUE)
+
+p_cat <- case_when(
+    breed == "Breed A" & age_cat == "Old"   ~ 0.85,
+    breed == "Breed B" & age_cat == "Young" ~ 0.75,
+    TRUE                                     ~ 0.10
+)
+y_cat  <- factor(rbinom(n, 1, p_cat), labels = c("Unaffected", "Affected"))
+df_cat <- tibble(breed, age_cat, y = y_cat)
+
+# ── Prediction grids ──────────────────────────────────────────────────────────
+grid_1d <- tibble(x = seq(-3, 3, length.out = 300))
+
+# Linear models
+glm_lin  <- glm(y ~ x,    data = df_lin, family = binomial)
+tree_lin <- rpart(y ~ x,  data = df_lin, method = "class",
+                  control = rpart.control(maxdepth = 3, minsplit = 20))
+
+glm_nl   <- glm(y ~ x,    data = df_nl,  family = binomial)
+tree_nl  <- rpart(y ~ x,  data = df_nl,  method = "class",
+                  control = rpart.control(maxdepth = 4, minsplit = 15))
+
+grid_1d <- grid_1d |>
+    mutate(
+        glm_lin  = plogis(predict(glm_lin,  grid_1d)),
+        tree_lin = predict(tree_lin, grid_1d, type = "prob")[, "Affected"],
+        glm_nl   = plogis(predict(glm_nl,   grid_1d)),
+        tree_nl  = predict(tree_nl,  grid_1d, type = "prob")[, "Affected"]
+    )
+
+# Categorical
+glm_cat  <- glm(y ~ breed + age_cat,          data = df_cat, family = binomial)
+glm_cat2 <- glm(y ~ breed * age_cat,          data = df_cat, family = binomial)
+tree_cat <- rpart(y ~ breed + age_cat,         data = df_cat, method = "class",
+                  control = rpart.control(maxdepth = 3, minsplit = 10))
+
+grid_cat <- expand.grid(
+    breed   = c("Breed A", "Breed B"),
+    age_cat = c("Young", "Old")
+) |>
+    as_tibble() |>
+    mutate(
+        glm_no_int  = plogis(predict(glm_cat,  newdata = cur_data())),
+        glm_int     = plogis(predict(glm_cat2, newdata = cur_data())),
+        tree_pred   = predict(tree_cat, newdata = cur_data(),
+                              type = "prob")[, "Affected"],
+        combo       = paste(breed, age_cat, sep = "\n")
+    )
+
+# ── Colour palette ────────────────────────────────────────────────────────────
+col_pts  <- c("Unaffected" = "#457B9D", "Affected" = "#E63946")
+col_glm  <- "#457B9D"
+col_tree <- "#E63946"
+
+# ── Plot 1: Linear — logistic regression ─────────────────────────────────────
+p1 <- ggplot() +
+    geom_jitter(data = df_lin,
+                aes(x = x, y = as.numeric(y == "Affected"), colour = y),
+                height = 0.03, alpha = 0.35, size = 1.5) +
+    geom_line(data = grid_1d,
+              aes(x = x, y = glm_lin),
+              colour = col_glm, linewidth = 1.4) +
+    scale_colour_manual(values = col_pts, guide = "none") +
+    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 1.05)) +
+    annotate("label", x = -2.5, y = 0.85,
+             label = "✓ Fits well",
+             fill = col_glm, colour = "white",
+             fontface = "bold", size = 3.5, label.size = 0,
+             label.padding = unit(0.35, "lines")) +
+    labs(title    = "Logistic regression",
+         subtitle = "Linear relationship",
+         x = "Methylation level", y = "P(affected)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title    = element_text(face = "bold", hjust = 0.5,
+                                       colour = col_glm),
+          plot.subtitle = element_text(hjust = 0.5, colour = "grey40"))
+
+# ── Plot 2: Non-linear — logistic regression ──────────────────────────────────
+p2 <- ggplot() +
+    geom_jitter(data = df_nl,
+                aes(x = x, y = as.numeric(y == "Affected"), colour = y),
+                height = 0.03, alpha = 0.35, size = 1.5) +
+    geom_line(data = grid_1d,
+              aes(x = x, y = glm_nl),
+              colour = col_glm, linewidth = 1.4) +
+    scale_colour_manual(values = col_pts, guide = "none") +
+    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 1.05)) +
+    annotate("label", x = 0, y = 0.85,
+             label = "✗ Misses U-shape",
+             fill = "#E63946", colour = "white",
+             fontface = "bold", size = 3.5, label.size = 0,
+             label.padding = unit(0.35, "lines")) +
+    labs(subtitle = "Non-linear (U-shaped) relationship",
+         x = "Age (years)", y = "P(affected)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title    = element_blank(),
+          plot.subtitle = element_text(hjust = 0.5, colour = "grey40"))
+
+# ── Plot 3: Categorical — logistic regression without interaction ──────────────
+p3 <- grid_cat |>
+    ggplot(aes(x = breed, y = glm_no_int,
+               fill = age_cat, label = scales::percent(glm_no_int, 1))) +
+    geom_col(position = "dodge", alpha = 0.85, width = 0.6) +
+    geom_text(position = position_dodge(width = 0.6),
+              vjust = -0.5, fontface = "bold", size = 3) +
+    scale_fill_manual(values = c("Young" = "#457B9D", "Old" = "#2a9d8f"),
+                      name = NULL) +
+    scale_y_continuous(labels = scales::percent, limits = c(0, 1.1)) +
+    annotate("label", x = 1.5, y = 1.0,
+             label = "✗ Misses interaction\n(no Breed A+Old spike)",
+             fill = "#E63946", colour = "white",
+             fontface = "bold", size = 3, label.size = 0,
+             label.padding = unit(0.35, "lines")) +
+    labs(subtitle = "Categorical interaction",
+         x = NULL, y = "P(affected)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title    = element_blank(),
+          plot.subtitle = element_text(hjust = 0.5, colour = "grey40"),
+          legend.position = "bottom")
+
+# ── Plot 4: Linear — decision tree ────────────────────────────────────────────
+p4 <- ggplot() +
+    geom_jitter(data = df_lin,
+                aes(x = x, y = as.numeric(y == "Affected"), colour = y),
+                height = 0.03, alpha = 0.35, size = 1.5) +
+    geom_line(data = grid_1d,
+              aes(x = x, y = tree_lin),
+              colour = col_tree, linewidth = 1.4) +
+    scale_colour_manual(values = col_pts, guide = "none") +
+    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 1.05)) +
+    annotate("label", x = -2.5, y = 0.85,
+             label = "✓ Fits well\n(stepped)",
+             fill = col_tree, colour = "white",
+             fontface = "bold", size = 3.5, label.size = 0,
+             label.padding = unit(0.35, "lines")) +
+    labs(title    = "Decision tree",
+         subtitle = "Linear relationship",
+         x = "Methylation level", y = "P(affected)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title    = element_text(face = "bold", hjust = 0.5,
+                                       colour = col_tree),
+          plot.subtitle = element_text(hjust = 0.5, colour = "grey40"))
+
+# ── Plot 5: Non-linear — decision tree ───────────────────────────────────────
+p5 <- ggplot() +
+    geom_jitter(data = df_nl,
+                aes(x = x, y = as.numeric(y == "Affected"), colour = y),
+                height = 0.03, alpha = 0.35, size = 1.5) +
+    geom_line(data = grid_1d,
+              aes(x = x, y = tree_nl),
+              colour = col_tree, linewidth = 1.4) +
+    scale_colour_manual(values = col_pts, guide = "none") +
+    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 1.05)) +
+    annotate("label", x = 0, y = 0.85,
+             label = "✓ Captures U-shape",
+             fill = col_tree, colour = "white",
+             fontface = "bold", size = 3.5, label.size = 0,
+             label.padding = unit(0.35, "lines")) +
+    labs(subtitle = "Non-linear (U-shaped) relationship",
+         x = "Age (years)", y = "P(affected)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title    = element_blank(),
+          plot.subtitle = element_text(hjust = 0.5, colour = "grey40"))
+
+# ── Plot 6: Categorical — decision tree ──────────────────────────────────────
+p6 <- grid_cat |>
+    ggplot(aes(x = breed, y = tree_pred,
+               fill = age_cat, label = scales::percent(tree_pred, 1))) +
+    geom_col(position = "dodge", alpha = 0.85, width = 0.6) +
+    geom_text(position = position_dodge(width = 0.6),
+              vjust = -0.5, fontface = "bold", size = 3) +
+    scale_fill_manual(values = c("Young" = "#457B9D", "Old" = "#2a9d8f"),
+                      name = NULL) +
+    scale_y_continuous(labels = scales::percent, limits = c(0, 1.1)) +
+    annotate("label", x = 1.5, y = 1.0,
+             label = "✓ Finds interaction\nautomatically",
+             fill = col_tree, colour = "white",
+             fontface = "bold", size = 3, label.size = 0,
+             label.padding = unit(0.35, "lines")) +
+    labs(subtitle = "Categorical interaction",
+         x = NULL, y = "P(affected)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title    = element_blank(),
+          plot.subtitle = element_text(hjust = 0.5, colour = "grey40"),
+          legend.position = "bottom")
+
+# ── Assemble ──────────────────────────────────────────────────────────────────
+(p1 + p2 + p3) / (p4 + p5 + p6) +
+    plot_annotation(
+        title   = "Logistic regression assumes linearity — decision trees do not",
+        subtitle = str_wrap(
+            "Top row: logistic regression. Bottom row: decision tree.
+       Both handle linear relationships well. Only the tree handles non-linear
+       and categorical interactions without extra specification.",
+            width = 90
+        ),
+        theme = theme(
+            plot.title    = element_text(face = "bold", hjust = 0.5, size = 14),
+            plot.subtitle = element_text(hjust = 0.5, colour = "grey40",
+                                         size = 10, lineheight = 1.3)
+        )
+    )
+
+
+```
+
+
+## The Interpretability Trade-off
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+tibble(
+  model         = c("Linear\nregression",
+                    "Logistic\nregression", "Random\nforest",
+                    "Neural\nnetwork"),
+  complexity    = c(1, 2, 3, 4),
+  interpretability = c(3, 3, 2, 1),
+  performance   = c(3,  3, 3, 3)
+) |>
+  ggplot(aes(x = complexity, y = interpretability,
+             size = performance, colour = model, label = model)) +
+  geom_point(alpha = 0.8) +
+  geom_text(nudge_y = 0.65, size = 3.5, fontface = "bold",
+            show.legend = FALSE) +
+  scale_size_continuous(range = c(6, 16), name = "Typical\nperformance") +
+  scale_colour_manual(values = c(
+    "Linear\nregression"  = "#2a9d8f",
+    "Logistic\nregression" = "#457B9D",
+    "Random\nforest"      = "#E9C46A",
+    "Neural\nnetwork"     = "#E63946"
+  ), guide = "none") +
+  scale_x_continuous(breaks = 1:4,
+                     labels = c("Very simple",  "Moderate", "Complex", "Very complex"),
+                     limits = c(0.5, 4.5)) +
+  scale_y_continuous(breaks = 1:3,
+                     labels = c("Black box",  "Moderate",  "Fully readable"),
+                     limits = c(0.5, 4.5)) +
+  labs(
+    x        = "Model complexity →",
+    y        = "Interpretability →",
+    title    = "The complexity-interpretability trade-off",
+    subtitle = "Bubble size represents typical predictive performance"
+  ) +
+  theme_minimal(base_size = 13)+
+  theme(legend.position = "none")
+```
+
+# Feature Importance {background-color="#D9DBDB"}
+
+## What We Can Extract — Feature Importance
+
+We cannot read coefficients from a random forest. But we can ask: **which predictors did the forest rely on most heavily?**
+
+:::{.incremental}
+**Permutation importance:**
+
+1. Fit the random forest and record prediction accuracy
+2. Take one predictor and randomly shuffle its values across all observations
+3. Record how much accuracy drops
+4. Restore the predictor and repeat for the next one
+5. Importance = average accuracy drop across all trees
+
+**Intuition:** if scrambling a predictor barely changes accuracy, the model was not relying on it. If accuracy collapses, that predictor was critical.
+:::
+
+:::{.fragment}
+**What importance cannot tell you:**
+
+- The direction of the effect (positive or negative)
+- Whether the predictor is biologically causal
+- How the predictor interacts with others
+:::
+
+## Feature Importance vs Logistic Regression Coefficients
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+library(tidyverse)
+library(patchwork)
+
+# Simulate the permutation process visually
+set.seed(42)
+n_dogs <- 12
+
+df_demo <- tibble(
+  dog      = paste0("Dog ", 1:n_dogs),
+  snp1     = c(0,1,2,1,0,2,1,0,2,1,0,1),
+  snp1_perm = sample(c(0,1,2,1,0,2,1,0,2,1,0,1)),
+  outcome  = c("U","U","A","U","U","A","A","U","A","U","U","A")
+)
+
+col_geno <- c("0" = "#d4e6f1", "1" = "#85c1e9", "2" = "#2471a3")
+col_out  <- c("A" = "#E63946", "U" = "#457B9D")
+
+p_orig <- df_demo |>
+  select(dog, snp1, outcome) |>
+  pivot_longer(-c(dog, outcome)) |>
+  ggplot(aes(x = name, y = fct_rev(dog),
+             fill = factor(value), label = value)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(colour = "white", fontface = "bold", size = 3.5) +
+  scale_fill_manual(values = c("0" = "#85c1e9",
+                               "1" = "#2471a3",
+                               "2" = "#1a5276"),
+                    guide = "none") +
+  scale_x_discrete(labels = "SNP 1\n(original)") +
+  labs(title = "Step 1\nOriginal data",
+       x = NULL, y = NULL) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid  = element_blank(),
+        plot.title  = element_text(face = "bold", hjust = 0.5),
+        axis.text.x = element_text(face = "bold"))
+
+p_perm <- df_demo |>
+  select(dog, snp1_perm, outcome) |>
+  pivot_longer(-c(dog, outcome)) |>
+  ggplot(aes(x = name, y = fct_rev(dog),
+             fill = factor(value), label = value)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(colour = "white", fontface = "bold", size = 3.5) +
+  scale_fill_manual(values = c("0" = "#f0b27a",
+                               "1" = "#e67e22",
+                               "2" = "#ca6f1e"),
+                    guide = "none") +
+  scale_x_discrete(labels = "SNP 1\n(shuffled)") +
+  labs(title = "Step 2\nShuffle SNP 1",
+       x = NULL, y = NULL) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid  = element_blank(),
+        plot.title  = element_text(face = "bold", hjust = 0.5,
+                                   colour = "#E63946"),
+        axis.text.x = element_text(face = "bold"))
+
+p_out <- df_demo |>
+  ggplot(aes(x = "Outcome", y = fct_rev(dog),
+             fill = outcome, label = outcome)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(colour = "white", fontface = "bold", size = 3.5) +
+  scale_fill_manual(values = col_out, guide = "none") +
+  labs(title = "True\noutcome",
+       x = NULL, y = NULL) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid  = element_blank(),
+        plot.title  = element_text(face = "bold", hjust = 0.5),
+        axis.text.x = element_text(face = "bold"))
+
+p_drop <- tibble(
+  step     = c("Original\ndata", "SNP 1\nshuffled"),
+  accuracy = c(0.83, 0.61)
+) |>
+  ggplot(aes(x = step, y = accuracy, fill = step)) +
+  geom_col(width = 0.5, alpha = 0.85) +
+  geom_text(aes(label = scales::percent(accuracy)),
+            vjust = -0.5, fontface = "bold", size = 4) +
+  geom_segment(aes(x = 1, xend = 2, y = 0.83, yend = 0.83),
+               linetype = "dashed", colour = "grey50") +
+  annotate("segment",
+           x = 1.5, xend = 1.5,
+           y = 0.83, yend = 0.61,
+           colour = "#E63946", linewidth = 1.2,
+           arrow = arrow(length = unit(0.3, "cm"),
+                         type = "closed")) +
+  annotate("label",
+           x = 1.75, y = 0.72,
+           label = "Drop = 22%\nImportance\nof SNP 1",
+           fill = "#E63946", colour = "white",
+           fontface = "bold", size = 3.2,
+           label.size = 0,
+           label.padding = unit(0.4, "lines")) +
+  scale_fill_manual(values = c("Original\ndata"  = "#457B9D",
+                               "SNP 1\nshuffled" = "#E9C46A"),
+                    guide = "none") +
+  scale_y_continuous(labels = scales::percent,
+                     limits = c(0, 1)) +
+  labs(title = "Step 3\nMeasure accuracy drop",
+       x = NULL, y = "Accuracy") +
+  theme_minimal(base_size = 10) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+p_orig + p_perm + p_out + p_drop +
+  plot_layout(widths = c(1, 1, 1, 2)) +
+  plot_annotation(
+    title    = "Permutation importance — how it works",
+    subtitle = "Shuffle one predictor at a time and measure how much accuracy suffers",
+    theme    = theme(
+      plot.title    = element_text(face = "bold", hjust = 0.5, size = 13),
+      plot.subtitle = element_text(hjust = 0.5, colour = "grey40", size = 11)
+    )
+  )
+```
+
+## Feature importance
+
+```{r, fig.cap = "Does not tell you: direction of effect, biological mechanism, or whether the predictor is causally involved"}
+library(ranger)
+
+set.seed(42)
+n <- 200
+x1 <- rnorm(n)
+x2 <- rnorm(n)
+x3 <- rnorm(n)
+x4 <- rnorm(n)
+x5 <- rnorm(n)
+
+prob <- plogis(-0.5 + 1.5*x1 + sin(2*x2) + 0.8*x1*x3 +
+                 0.1*x4 + 0.05*x5)
+y <- factor(rbinom(n, 1, prob), labels = c("Unaffected", "Affected"))
+df_imp <- tibble(x1, x2, x3, x4, x5, y)
+
+rf_imp <- ranger(y ~ x1 + x2 + x3 + x4 + x5,
+                 data     = df_imp,
+                 num.trees  = 500,
+                 importance = "permutation",
+                 probability = TRUE)
+
+tibble(
+  snp  = c("SNP 1\nStrong linear effect",
+            "SNP 2\nNon-linear effect",
+            "SNP 3\nInteraction effect",
+            "SNP 4\nNoise predictor",
+            "SNP 5\nNoise predictor"),
+  importance = rf_imp$variable.importance,
+  type = c("signal", "signal", "signal", "noise", "noise")
+) |>
+  ggplot(aes(x = importance,
+             y = reorder(snp, importance),
+             fill = type)) +
+  geom_col(alpha = 0.85) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_label(aes(label = type, x = importance / 2),
+             colour = "white", fontface = "bold",
+             size = 3.2, label.size = 0) +
+  scale_fill_manual(values = c("signal" = "#457B9D",
+                               "noise"  = "grey70"),
+                    guide = "none") +
+  annotate("label",
+           x    = max(rf_imp$variable.importance) * 0.75,
+           y    = 1.5,
+           label = "Noise predictors score near zero\nor negative — the forest ignored them",
+           fill = "grey70", colour = "white",
+           fontface = "bold", size = 3,
+           label.size = 0,
+           label.padding = unit(0.4, "lines")) +
+  labs(
+    x        = "Permutation importance\n(accuracy drop when predictor is shuffled)",
+    y        = NULL,
+    title    = "Random forest correctly identifies all three informative predictors",
+    subtitle = "Regardless of whether the effect is linear, non-linear, or an interaction"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title    = element_text(face = "bold"),
+        plot.subtitle = element_text(colour = "grey40"))
+
+
+```
+
+
+
+# ✋ Stop and Think {background-color="#D9DBDB"}
+
+## Which Model Would You Choose?
+
+```{r}
+countdown::countdown(
+  minutes = 4L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0,
+  margin = ".5em",
+  font_size = "2em"
+)
+```
+
+For each scenario below, decide with your neighbour: **logistic regression, or random forest — and why?**
+
+**Scenario 1:** You are predicting whether a woodland patch is occupied by red squirrels from three environmental variables — area, connectivity, and canopy cover. You have 120 sites. You need to advise a conservation charity on which variable to prioritise.
+
+**Scenario 2:** You are predicting antibiotic resistance (resistant/susceptible) from 5,000 SNPs across 300 bacterial isolates. You do not need to know which SNPs are responsible — you need an accurate classifier to deploy in a clinical lab.
+
+**Scenario 3:** You are building an epigenetic clock from methylation at 300 CpG sites in 45 individuals. You want to understand which sites change most with age.
+
+**Scenario 4:** You are predicting cancer diagnosis (malignant/benign) from 9 cell morphology measurements in 699 patients. The model will be used to flag cases for pathologist review. The pathologist needs to know why cases were flagged.
+
+# Complexity Must Be Justified {background-color="#D9DBDB"}
+
+## The Case for Simplicity
+
+It is tempting to reach for the most complex available model. This is almost always wrong.
+
+:::{.incremental}
+
+**A simple model that generalises is always preferable to a complex model that does not**
+
+**Complexity requires justification:**
+
+- Does the random forest outperform logistic regression on the test set?
+- Is the improvement large enough to matter for the application?
+- Does the loss of interpretability cause a problem for this specific use case?
+- Is the dataset large enough for the random forest to find reliable patterns?
+
+**If the answer to any of these is no, use the simpler model**
+
+:::
+
+:::{.fragment}
+In the cleft lip workshop you saw this directly — the random forest and logistic regression produced similar AUC. The additional complexity of the random forest was not justified by its performance on that dataset.
+:::
+
+## The Costs of Complexity
+
+:::: {.columns}
+::: {.column}
+
+**Statistical costs**
+
+- Requires more data to fit reliably
+- Harder to tune — more hyperparameters
+- Performance estimates less stable on small datasets
+- Can overfit in unexpected ways
+
+**Practical costs**
+
+- Slower to fit and predict
+- Larger models to store and deploy
+- Harder to update when new data arrives
+
+:::
+::: {.column}
+
+**Scientific costs**
+
+- Cannot explain individual predictions to a clinician or regulator
+- Cannot identify which predictors matter biologically
+- Cannot extrapolate beyond the range of training data reliably
+- Harder to detect when the model is wrong in a systematic way
+
+**Ethical costs**
+
+- Algorithmic decisions affecting individuals are increasingly subject to regulation
+- "The model said so" is not a defensible explanation in many contexts
+
+:::
+::::
+
+:::{.fragment}
+**The best model is the simplest one that solves the problem well enough for the application**
+:::
+
+## Key Takeaways
+
+:::{.incremental}
+
+**1. Decision trees split data on whichever predictor best reduces impurity at each step**
+
+They are interpretable but highly unstable — small changes in training data produce very different trees
+
+**2. Random forests stabilise predictions by averaging many trees fitted on bootstrapped samples**
+
+Random feature selection at each split decorrelates the trees, making the average more effective
+
+**3. Feature importance tells you which predictors mattered — not in which direction**
+
+This is less informative than a logistic regression coefficient but works for any relationship shape
+
+**4. Random forests win when relationships are non-linear or involve complex interactions**
+
+When the relationship is linear, logistic regression is simpler, more interpretable, and often equally accurate
+
+**5. Complexity must be justified by test-set performance, not assumed**
+
+A model that cannot beat logistic regression on the test set is not worth the loss of interpretability
+
+:::
+
+## What Comes Next
+
+**Workshop 3 — Random Forests**
+
+Apply everything from today to the cleft lip dataset. Compare directly with your logistic regression results from Workshop 2. Examine which SNPs the forest considers most important and ask whether this matches what the logistic regression found.
+
+**Workshop 4 — Dimensionality Reduction**
+
+PCA and UMAP — a completely different kind of question. No outcome variable, no prediction, no accuracy metric. Making high-dimensional biological data visible.
+
+::: {.callout-note}
+## Further Reading
+
+- James et al. (2021) *An Introduction to Statistical Learning*, Chapter 8 — Tree-based methods: [https://www.statlearning.com/](https://www.statlearning.com/)
+
+- Breiman (2001) *Random Forests*. Machine Learning, 45, 5–32 — the original paper, more accessible than most methods papers
+
+- StatQuest with Josh Starmer — Decision Trees and Random Forests: [https://www.youtube.com/c/joshstarmer](https://www.youtube.com/c/joshstarmer) — the clearest visual explanation of these concepts available, highly recommended before or after this lecture
+:::
+
+---
+
+# Backup Slides
+
+## Gini Impurity — Worked Example (Backup 1)
+
+At the root node of a tree, 40 dogs are affected and 80 are unaffected. Gini impurity:
+
+$$G = 1 - \left(\frac{40}{120}\right)^2 - \left(\frac{80}{120}\right)^2 = 1 - 0.111 - 0.444 = 0.444$$
+
+After splitting on SNP A ≥ 1:
+
+- Left node (SNP A = 0): 5 affected, 50 unaffected → $G = 1 - (5/55)^2 - (50/55)^2 = 0.165$
+- Right node (SNP A ≥ 1): 35 affected, 30 unaffected → $G = 1 - (35/65)^2 - (30/65)^2 = 0.498$
+
+Weighted average impurity after split:
+
+$$G_{split} = \frac{55}{120} \times 0.165 + \frac{65}{120} \times 0.498 = 0.076 + 0.270 = 0.346$$
+
+Impurity reduction = 0.444 − 0.346 = **0.098**
+
+The tree tries this for every predictor and every possible threshold, and picks the combination with the largest impurity reduction.
+
+## Out-of-Bag Error (Backup 2)
+
+Because each bootstrap sample leaves out approximately one third of the training observations, we can evaluate each tree on its OOB observations without touching the test set.
+
+For each training observation:
+
+1. Identify which trees did not include it in their bootstrap sample
+2. Collect predictions from those trees only
+3. Take the majority vote
+4. Compare with the true class
+
+OOB error is the proportion of training observations incorrectly classified by this procedure. It provides an honest estimate of generalisation error during training — which is why random forests do not strictly require a separate validation set for hyperparameter tuning, though cross-validation is still preferable for comparing across different model types.
+
+## The mtry Default (Backup 3)
+
+The default value of `mtry` — the number of predictors considered at each split — is $\sqrt{p}$ for classification and $p/3$ for regression, where $p$ is the total number of predictors.
+
+With 45 SNP predictors: $\sqrt{45} \approx 7$
+
+This means at each split, 7 randomly chosen SNPs are considered — the remaining 38 are ignored for that split. This seems wasteful but is the key to decorrelating the trees.
+
+In practice the optimal `mtry` varies by dataset and should be tuned. In the workshop you searched from 2 to 40 — the lower bound corresponds to maximum decorrelation and the upper bound approaches bagging with almost no random feature selection. The optimal value for most biological classification problems tends to sit between $\sqrt{p}$ and $p/2$.

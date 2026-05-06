@@ -595,6 +595,11 @@ tibble(x, prob = 1 / (1 + exp(-2 * x))) |>
 
 :::
 
+## Evaluating a Classification Model
+
+
+
+
 ## The Threshold Is a Biological Decision
 
 The default 0.5 threshold is not optimal for all applications. Changing it trades sensitivity against specificity.
