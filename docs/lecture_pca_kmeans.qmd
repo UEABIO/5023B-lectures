@@ -1,0 +1,797 @@
+---
+title: "From Reads to Structure"
+subtitle: "RNA Sequencing, PCA, and K-means Clustering"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: today
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 7
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(here)
+
+# ── Data — Ceratitis capitata RNAseq, experiment 1 ───────────────────────────
+rna_raw <- read_csv(here("data", "count_matrix.csv"),
+                    show_col_types = FALSE)
+meta    <- read_csv(here("data", "ccap_metadata.csv"),
+                    show_col_types = FALSE)
+
+# Experiment 1: adult tissues, 33 samples
+meta1   <- meta |> filter(experiment == 1)
+rna1    <- rna_raw |> select(Name, all_of(meta1$id))
+
+# Log transform (TPM → log1p)
+rna1_log <- rna1 |>
+  mutate(across(where(is.numeric), log1p))
+
+# Filter to top 500 genes by mean log-expression
+rna1_filtered <- rna1_log |>
+  mutate(mean_expr = rowMeans(across(where(is.numeric)))) |>
+  slice_max(order_by = mean_expr, n = 500) |>
+  select(-mean_expr)
+
+# Reshape: samples as rows, genes as columns
+rna1_wide <- rna1_filtered |>
+  pivot_longer(-Name, names_to = "id", values_to = "log_tpm") |>
+  pivot_wider(names_from = Name, values_from = log_tpm)
+
+# ── PCA ───────────────────────────────────────────────────────────────────────
+pca_rec <- recipe(~., data = rna1_wide |> select(-id)) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_pca(all_numeric_predictors(), num_comp = 10)
+
+pca_prep <- prep(pca_rec)
+
+pca_scores <- juice(pca_prep) |>
+  bind_cols(rna1_wide |> select(id)) |>
+  left_join(meta1, by = "id") |>
+  mutate(
+    tissue_label = case_when(
+      tissue == "YO" ~ "Young ovary",
+      tissue == "OO" ~ "Old ovary",
+      tissue == "AB" & sex == "F" ~ "Abdomen (F)",
+      tissue == "AB" & sex == "M" ~ "Abdomen (M)",
+      tissue == "TE" ~ "Testis",
+      tissue == "AG" ~ "Accessory gland",
+      tissue == "EG" ~ "Egg",
+      TRUE ~ tissue
+    ),
+    mating_label = if_else(mating_status == "M", "Mated", "Virgin")
+  )
+
+pca_var <- tidy(pca_prep, 2, type = "variance") |>
+  filter(terms == "percent variance", component <= 10)
+
+pc1_pct <- round(pca_var$value[1], 1)
+pc2_pct <- round(pca_var$value[2], 1)
+
+# ── K-means ───────────────────────────────────────────────────────────────────
+set.seed(99)
+elbow_df <- tibble(k = 1:8) |>
+  mutate(
+    km  = map(k, ~kmeans(pca_scores |> select(PC01, PC02, PC03),
+                         centers = .x, nstart = 25)),
+    wss = map_dbl(km, ~.x$tot.withinss)
+  )
+
+set.seed(99)
+km_fit <- pca_scores |>
+  select(PC01, PC02, PC03) |>
+  kmeans(centers = 5, nstart = 25)
+
+pca_scores <- pca_scores |>
+  mutate(cluster = factor(km_fit$cluster))
+
+# ── Palettes ──────────────────────────────────────────────────────────────────
+pal_tissue <- c(
+  "Young ovary"     = "#E63946",
+  "Old ovary"       = "#F4A261",
+  "Abdomen (F)"     = "#E9C46A",
+  "Abdomen (M)"     = "#2a9d8f",
+  "Testis"          = "#457B9D",
+  "Accessory gland" = "#1D3557",
+  "Egg"             = "#8338EC"
+)
+
+pal_cluster <- c(
+  "1" = "#457B9D", "2" = "#E63946", "3" = "#2a9d8f",
+  "4" = "#E9C46A", "5" = "#8338EC"
+)
+```
+
+## A question about the medfly
+
+*Ceratitis capitata* — the Mediterranean fruit fly — is one of the world's most destructive agricultural pests.
+
+We have measured gene expression in **seven distinct tissues** from adult flies, across mated and virgin individuals.
+
+::: {.fragment}
+> **23,268 genes. 33 samples. How do you find structure in that?**
+:::
+
+::: {.fragment}
+This session covers the tools that make the question answerable: **RNA sequencing**, **PCA**, and **k-means clustering**.
+:::
+
+# What is RNA Sequencing? {background-color="#D9DBDB"}
+
+## Gene activity leaves a molecular trace
+
+Gene expression — which genes are switched on and at what level — defines what a cell is and what it does.
+
+:::: {.columns}
+::: {.column}
+
+### The central dogma
+
+DNA → **mRNA** → Protein
+
+Measuring mRNA abundance tells us which genes are active in a tissue at a given moment. It is the most direct large-scale readout of gene activity currently available.
+
+:::
+::: {.column}
+
+### Why sequence?
+
+- A neuron and a liver cell carry identical DNA but express completely different genes
+- Mating, stress, and disease all change which genes are active
+- You cannot know in advance which genes matter — so you measure all of them
+
+:::
+::::
+
+::: {.fragment}
+RNA sequencing (RNAseq) does exactly this: it counts the mRNA molecules from every gene in a sample simultaneously.
+:::
+
+## From tissue to reads
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 3.5}
+steps_bio <- tibble(
+  x     = c(1, 3, 5, 7),
+  label = c("Tissue\nsample", "Total RNA\nextraction", "cDNA library\npreparation", "High-throughput\nsequencer"),
+  fill  = c("#E9C46A", "#E9C46A", "#E63946", "#457B9D")
+)
+arrows_bio <- tibble(x = c(1.72, 3.72, 5.72), xend = c(2.28, 4.28, 6.28))
+
+ggplot() +
+  geom_rect(data = steps_bio,
+            aes(xmin = x - 0.65, xmax = x + 0.65,
+                ymin = -0.38, ymax = 0.38, fill = fill),
+            colour = "white", linewidth = 1) +
+  scale_fill_identity() +
+  geom_text(data = steps_bio, aes(x = x, y = 0, label = label),
+            colour = "white", fontface = "bold", size = 4,
+            lineheight = 0.9) +
+  geom_segment(data = arrows_bio,
+               aes(x = x, xend = xend, y = 0, yend = 0),
+               arrow = arrow(length = unit(0.3, "cm"), type = "closed"),
+               colour = "grey40", linewidth = 1.2) +
+  coord_cartesian(xlim = c(0.2, 7.8), ylim = c(-0.9, 0.9)) +
+  theme_void(base_size = 14)
+```
+
+::: {.incremental}
+- mRNA is chemically unstable — it is first converted to stable **cDNA** by reverse transcription
+- cDNA molecules are fragmented and tagged with sequencing adapters to form a **library**
+- The sequencer reads millions of short **sequence reads** (~150 bp each) from the library
+:::
+
+## From reads to the count matrix
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 3.5}
+steps_info <- tibble(
+  x     = c(1, 3, 5, 7),
+  label = c("Raw reads\n(FASTQ)", "Quality\ncontrol", "Align to\nreference\ngenome", "Count\nmatrix"),
+  fill  = c("#457B9D", "#2a9d8f", "#2a9d8f", "#E63946")
+)
+arrows_info <- tibble(x = c(1.72, 3.72, 5.72), xend = c(2.28, 4.28, 6.28))
+
+ggplot() +
+  geom_rect(data = steps_info,
+            aes(xmin = x - 0.65, xmax = x + 0.65,
+                ymin = -0.38, ymax = 0.38, fill = fill),
+            colour = "white", linewidth = 1) +
+  scale_fill_identity() +
+  geom_text(data = steps_info, aes(x = x, y = 0, label = label),
+            colour = "white", fontface = "bold", size = 4,
+            lineheight = 0.9) +
+  geom_segment(data = arrows_info,
+               aes(x = x, xend = xend, y = 0, yend = 0),
+               arrow = arrow(length = unit(0.3, "cm"), type = "closed"),
+               colour = "grey40", linewidth = 1.2) +
+  coord_cartesian(xlim = c(0.2, 7.8), ylim = c(-0.9, 0.9)) +
+  theme_void(base_size = 14)
+```
+
+::: {.incremental}
+- Reads are checked for quality and adapters are trimmed
+- Reads are **aligned** to a reference genome — each read is matched to the gene it came from
+- The number of reads mapping to each gene in each sample is counted
+- The result is a **count matrix**: rows are genes, columns are samples, values are read counts (or TPM after normalisation)
+:::
+
+## The count matrix — our starting point
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 4}
+# Illustrate structure of count matrix using top expressed genes
+top_genes_demo <- rna1_log |>
+  mutate(mean_expr = rowMeans(across(where(is.numeric)))) |>
+  slice_max(order_by = mean_expr, n = 15) |>
+  select(-mean_expr) |>
+  select(Name, RN1:RN9) |>   # first 9 samples (3 YO, 3 OO, 3 AB-F)
+  pivot_longer(-Name, names_to = "sample", values_to = "log_tpm") |>
+  mutate(Name = str_remove(Name, "CCAP1982_"))
+
+top_genes_demo |>
+  ggplot(aes(x = sample, y = fct_rev(Name), fill = log_tpm)) +
+  geom_tile(colour = "white", linewidth = 0.5) +
+  scale_fill_gradient(low = "grey95", high = "#457B9D",
+                      name = "log(TPM+1)") +
+  labs(x = "Sample", y = "Gene",
+       title = "Top 15 expressed genes — first 9 samples (log-transformed TPM)",
+       subtitle = "Each cell is one gene × one sample measurement") +
+  theme_minimal(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_text(size = 9))
+```
+
+This experiment: **23,268 genes × 33 samples**. The question is what structure these numbers contain.
+
+
+Many genes are strongly correlated with one another — they rise and fall together across samples. This shared variation is the signal PCA is designed to extract.
+
+# The Dimensionality Problem {background-color="#D9DBDB"}
+
+## 23,268 genes: too many to plot
+
+To compare every gene against every other gene across 33 samples you would need:
+
+$$\binom{23{,}268}{2} = 270{,}676{,}278 \text{ scatterplots}$$
+
+::: {.fragment}
+Even restricting to pairwise **sample** comparisons:
+
+$$\binom{33}{2} = 528 \text{ plots}$$
+
+Most would show noise, not biology.
+:::
+
+::: {.fragment}
+High-dimensional data is the norm in modern biology — not the exception.
+:::
+
+## Genes do not vary independently
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+library(corrplot)
+
+# Correlation matrix of top 40 genes across experiment 1 samples
+cor_mat <- rna1_wide |>
+  select(-id) |>
+  select(1:40) |>
+  cor()
+
+# Shorten gene names for the plot
+colnames(cor_mat) <- str_remove(colnames(cor_mat), "CCAP1982_") |>
+                     str_replace("LOCUS", "L")
+rownames(cor_mat) <- colnames(cor_mat)
+
+corrplot(cor_mat,
+         method  = "ellipse",
+         type    = "upper",
+         col     = colorRampPalette(c( "#457B9D","white","#E63946"))(200),
+         tl.col  = "grey30",
+         tl.cex  = 0.55,
+         cl.cex  = 0.7,
+         diag    = FALSE)
+```
+
+
+## High dimensionality is everywhere in biology
+
+:::{.incremental}
+- **Genomics (GWAS)** — millions of SNPs per individual; which variants associate with disease?
+- **Metabolomics** — ~1,000 plasma metabolites; which shift with illness or treatment?
+- **Ecology** — species × site abundance matrices; what drives community composition?
+- **Single-cell RNAseq** — thousands of genes in thousands of individual cells simultaneously
+- **Imaging** — millions of pixels per image; what features distinguish disease states?
+:::
+
+::: {.fragment}
+In every case, the question is the same: **where is the signal among all this noise, and what does the structure mean biologically?**
+:::
+
+# ✋ Stop and Think {background-color="#D9DBDB"}
+
+## What sources of variation do you expect?
+
+```{r, echo = FALSE}
+countdown::countdown(
+  minutes = 3L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0, margin = ".5em", font_size = "2em"
+)
+```
+
+We have gene expression data from **seven tissues** in adult medflies: ovary (young and old), abdomen, testis, accessory gland, and eggs.
+
+In pairs, discuss:
+
+1. Which biological factor do you predict will most strongly separate samples — **tissue type**, **sex**, or **mating status**? Rank your predictions.
+2. Would you expect the ovary and testis to have more similar or more different expression profiles than, say, two ovary samples from different individuals?
+3. Write your prediction down — you will test it against the PCA shortly.
+
+# Principal Component Analysis {background-color="#D9DBDB"}
+
+## Variance is information
+
+A gene with identical expression across all samples tells you nothing about what makes samples different from one another.
+
+:::: {.columns}
+::: {.column}
+### No variation → no information
+
+If every sample had the same value for a gene, that gene cannot explain any difference between samples.
+:::
+::: {.column}
+### High variation → high information
+
+A gene whose expression differs strongly between tissues is doing something biologically important — or at least something detectable.
+:::
+::::
+
+::: {.fragment}
+**PCA finds the linear combinations of genes that capture maximum variance** — the axes along which samples differ most.
+
+*(Saccenti, 2024)*
+:::
+
+## PCA rotates the coordinate system
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 6}
+# Use top two PCs from a simplified 2-gene example for geometry illustration
+set.seed(42)
+n <- 40
+x <- rnorm(n, 0, 1.5)
+y <- x * 0.8 + rnorm(n, 0, 0.6)
+df2 <- tibble(Gene1 = scale(x)[,1], Gene2 = scale(y)[,1])
+pr  <- prcomp(df2)
+pc1 <- pr$rotation[, 1]
+pc2 <- pr$rotation[, 2]
+sc  <- 2.0
+
+df2 |>
+  ggplot(aes(Gene1, Gene2)) +
+  geom_point(colour = "grey50", size = 2.5, alpha = 0.7) +
+  geom_hline(yintercept = 0, colour = "grey80", linetype = "dashed") +
+  geom_vline(xintercept = 0, colour = "grey80", linetype = "dashed") +
+  geom_segment(aes(x = 0, y = 0,
+                   xend = pc1[1] * sc, yend = pc1[2] * sc),
+               arrow = arrow(length = unit(0.35, "cm"), type = "closed"),
+               colour = "#E63946", linewidth = 1.6) +
+  geom_segment(aes(x = 0, y = 0,
+                   xend = pc2[1] * sc, yend = pc2[2] * sc),
+               arrow = arrow(length = unit(0.35, "cm"), type = "closed"),
+               colour = "#457B9D", linewidth = 1.6) +
+  annotate("label", x = pc1[1] * sc * 1.22, y = pc1[2] * sc * 1.22,
+           label = "PC1 — maximum variance",
+           fill = "#E63946", colour = "white", fontface = "bold",
+           size = 3.8, label.size = 0, label.padding = unit(0.35, "lines")) +
+  annotate("label", x = pc2[1] * sc * 1, y = pc2[2] * sc * 1.4,
+           label = "PC2 — remaining variance",
+           fill = "#457B9D", colour = "white", fontface = "bold",
+           size = 3.8, label.size = 0, label.padding = unit(0.35, "lines")) +
+  labs(x = "Gene 1 (standardised)", y = "Gene 2 (standardised)",
+       title = "PCA finds new axes aligned with the spread of the data") +
+  coord_equal(xlim = c(-3, 3), ylim = c(-3, 3)) +
+  theme_minimal(base_size = 14)
+```
+
+PC1 and PC2 are **orthogonal** — they capture independent axes of variation.
+
+## Three outputs from every PCA
+
+:::: {.columns}
+::: {.column}
+
+### What you get
+
+1. **Variance explained** — how much of the total variation does each PC capture?
+2. **Loadings** — which genes drive each PC?
+3. **Scores** — where does each sample sit in PC space?
+
+:::
+::: {.column}
+
+### Key properties of PCA
+
+- PCs are **ordered** by variance explained
+- PCs are **orthogonal** (uncorrelated with each other)
+- The analysis is **unsupervised** — no tissue labels are used
+- Typically only the first two or three PCs are interpreted
+
+:::
+::::
+
+## Variance explained by each PC
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 4.5}
+pca_var |>
+  mutate(component = factor(component)) |>
+  ggplot(aes(x = component, y = value)) +
+  geom_col(fill = "#457B9D", alpha = 0.85, width = 0.65) +
+  geom_text(aes(label = paste0(round(value, 1), "%")),
+            vjust = -0.4, fontface = "bold", size = 3.8) +
+  labs(x = "Principal component",
+       y = "Variance explained (%)",
+       title = "Scree plot: medfly RNAseq, experiment 1\n (33 samples, 500 genes)") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+::: {.fragment}
+PC1 alone captures the majority of the variation — a strong signal that samples differ along one dominant axis.
+:::
+
+## Which genes drive PC1?
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+tidy(pca_prep, 2) |>
+  filter(component == "PC1") |>
+  slice_max(order_by = abs(value), n = 10) |>
+  mutate(
+    terms     = str_remove(terms, "CCAP1982_") |>
+                str_replace("LOCUS", "L") |>
+                fct_reorder(value),
+    direction = if_else(value >= 0, "positive", "negative")
+  ) |>
+  ggplot(aes(x = value, y = terms, fill = direction)) +
+  geom_col(width = 0.7, alpha = 0.85) +
+  geom_vline(xintercept = 0, colour = "grey30", linewidth = 0.8) +
+  geom_text(aes(label = round(value, 3),
+                hjust = if_else(value >= 0, -0.15, 1.15)),
+            size   = 3.2,
+            colour = "grey20") +
+  scale_fill_manual(
+    values = c("positive" = "darkred", "negative" = "skyblue"),
+    guide  = "none"
+  ) +
+  scale_x_continuous(expand = expansion(mult = 0.2)) +
+  labs(x        = "Correlation with PC1",
+       y        = NULL,
+       title    = "Top 10 gene loadings on PC1",
+       subtitle = "Values are correlations between each gene's expression and PC1") +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor   = element_blank(),
+    axis.text.y        = element_text(size = 10, colour = "grey30"),
+    plot.title         = element_text(face = "bold")
+  )
+```
+
+# ✋ Stop and Think {background-color="#D9DBDB"}
+
+## Where are the samples — and why?
+
+```{r, echo = FALSE}
+countdown::countdown(
+  minutes = 2L,
+  color_border = "#00AEEF",
+  color_text = "#00AEEF",
+  color_running_text = "white",
+  color_running_background = "#00AEEF",
+  color_finished_text = "#00AEEF",
+  color_finished_background = "white",
+  top = 0, margin = ".5em", font_size = "2em"
+)
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 4}
+pca_scores |>
+  ggplot(aes(x = PC01, y = PC02)) +
+  geom_point(colour = "#457B9D", size = 3.5, alpha = 0.85) +
+  labs(x = paste0("PC1 (", pc1_pct, "% variance)"),
+       y = paste0("PC2 (", pc2_pct, "% variance)"),
+       title = "PCA biplot — 33 medfly samples",
+       subtitle = "Points are samples. No group labels shown yet.") +
+  theme_minimal(base_size = 14)
+```
+
+What biological factor do you think separates the clusters? Revisit your prediction from the first stop.
+
+## The reveal — tissue type dominates
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+pca_scores |>
+  ggplot(aes(x = PC01, y = PC02, colour = tissue_label)) +
+  geom_point(size = 3.5, alpha = 0.9) +
+  scale_colour_manual(values = pal_tissue, name = "Tissue") +
+  labs(x = paste0("PC1 (", pc1_pct, "% variance)"),
+       y = paste0("PC2 (", pc2_pct, "% variance)"),
+       title = "PCA biplot coloured by tissue type",
+       subtitle = "Tissue type was not used to compute the PCA") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "right")
+```
+
+::: {.fragment}
+The dominant axis of transcriptomic variation is **tissue identity**, not replicate effects.
+:::
+
+## What PCA cannot tell you
+
+:::: {.columns}
+::: {.column}
+
+### What it reveals
+
+- Which samples are transcriptomically similar
+- Which genes drive the main axes of variation
+- Whether biological groupings exist in the data
+
+:::
+::: {.column}
+
+### What it does not reveal
+
+- **Why** tissues cluster together
+- Whether differences are **statistically significant**
+- Whether the structure would **generalise** to new samples
+
+:::
+::::
+
+::: {.fragment}
+PCA is a descriptive technique. It reveals correlation structure without establishing cause, and requires no train–test split because no prediction claim is being made.
+:::
+
+# K-means Clustering {background-color="#D9DBDB"}
+
+## From continuous positions to discrete groups
+
+The biplot shows seven tissue clusters but we assigned those labels ourselves. K-means asks: **could we have recovered those groups from the data alone?**
+
+:::{.incremental}
+- K-means assigns each sample to one of $k$ clusters by minimising total within-cluster variance
+- Run on the **PC scores** rather than the raw 23,268 genes — the PCA has already removed noise
+- Every sample belongs to **exactly one** cluster — hard assignment
+- The number of clusters $k$ must be specified in advance
+:::
+
+
+
+## K-means clusters vs tissue labels
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 5}
+p_cluster <- pca_scores |>
+  ggplot(aes(x = PC01, y = PC02, colour = cluster)) +
+  geom_point(size = 3.5, alpha = 0.9) +
+  scale_colour_manual(values = pal_cluster, name = "Cluster") +
+  labs(x = paste0("PC1 (", pc1_pct, "% var)"),
+       y = paste0("PC2 (", pc2_pct, "% var)"),
+       title = "K-means (k = 5)") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "right")
+
+p_tissue <- pca_scores |>
+  ggplot(aes(x = PC01, y = PC02, colour = tissue_label)) +
+  geom_point(size = 3.5, alpha = 0.9) +
+  scale_colour_manual(values = pal_tissue, name = "Tissue") +
+  labs(x = paste0("PC1 (", pc1_pct, "% var)"),
+       y = paste0("PC2 (", pc2_pct, "% var)"),
+       title = "Known tissue groups") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "right")
+
+p_cluster + p_tissue
+```
+
+At $k = 5$, k-means partially recovers the tissue structure without having access to the tissue labels.
+
+## How K-means works
+
+```{r}
+set.seed(7)
+toy <- bind_rows(
+    tibble(x = rnorm(18, -2.2, 0.45), y = rnorm(18,  1.8, 0.45)),
+    tibble(x = rnorm(18,  2.2, 0.45), y = rnorm(18,  1.8, 0.45)),
+    tibble(x = rnorm(18,  0.0, 0.45), y = rnorm(18, -1.8, 0.45))
+)
+xy_mat <- as.matrix(toy[, c("x", "y")])
+pal3   <- c("1" = "#457B9D", "2" = "#2a9d8f", "3" = "#E63946")
+lims   <- list(
+    coord_cartesian(xlim = c(-3.8, 3.8), ylim = c(-3.2, 3.2)),
+    theme_minimal(base_size = 11),
+    theme(
+        plot.title = element_text(face = "bold", size = 11),
+        axis.text  = element_blank(),
+        axis.ticks = element_blank()
+    )
+)
+
+# Manually set clearly suboptimal initial centroids
+init_c <- tibble(
+    x = c(-1.0,  0.6,  1.6),
+    y = c( 0.4,  1.4, -0.4),
+    k = as.character(1:3)
+)
+
+# One Lloyd iteration from those centroids
+km_1 <- kmeans(xy_mat,
+               centers  = as.matrix(init_c[, c("x", "y")]),
+               iter.max = 1, nstart = 1, algorithm = "Lloyd")
+
+# New centroid positions after step 2, with old positions stored for arrows
+step1_c <- as_tibble(km_1$centers) |>
+    mutate(k     = as.character(1:3),
+           x_old = init_c$x,
+           y_old = init_c$y)
+
+# Converged solution
+km_f    <- kmeans(xy_mat, centers = 3, nstart = 25)
+final_c <- as_tibble(km_f$centers) |>
+    mutate(k = as.character(1:3))
+
+# ── Panel 1: unassigned points, suboptimal centroids ─────────────────────────
+p1 <- ggplot(toy, aes(x, y)) +
+    geom_point(colour = "grey60", size = 2.5, alpha = 0.75) +
+    geom_point(data = init_c, aes(fill = k),
+               shape = 23, size = 7, colour = "black", stroke = 1.5) +
+    scale_fill_manual(values = pal3, guide = "none") +
+    labs(x = NULL, y = NULL,
+         title = "1. Place k centroids at random") +
+    lims
+
+# ── Panel 2: one step — colour points, show centroid movement with arrows ─────
+p2 <- toy |>
+    mutate(k = as.character(km_1$cluster)) |>
+    ggplot(aes(x, y, colour = k)) +
+   geom_point(size = 2.5, alpha = 0.8) +     
+   geom_point(data = step1_c,
+              aes(x = x, y = y, fill = k),
+                  shape = 23, size = 7 , colour = "black", stroke = 1.5,
+                  inherit.aes = FALSE)+
+    geom_segment(data = step1_c,
+                 aes(x = x_old, y = y_old, xend = x, yend = y),
+                 colour      = "black",
+                 linewidth   = 0.8,
+                 linetype    = "dashed",
+                 arrow       = arrow(length = unit(0.22, "cm"), type = "closed"),
+                 inherit.aes = FALSE) +
+ 
+    scale_colour_manual(values = pal3, guide = "none") +
+    scale_fill_manual(values   = pal3, guide = "none") +
+    labs(x = NULL, y = NULL,
+         title = "2. Assign each point to its nearest centroid;\n    move centroid to group mean (↗)") +
+    lims
+
+# ── Panel 3: converged ────────────────────────────────────────────────────────
+p3 <- toy |>
+    mutate(k = as.character(km_f$cluster)) |>
+    ggplot(aes(x, y, colour = k)) +
+    geom_point(size = 2.5, alpha = 0.8) +
+    geom_point(data = final_c,
+               aes(x = x, y = y, fill = k),
+               shape = 23, size = 7, colour = "black", stroke = 1.5,
+               inherit.aes = FALSE) +
+    scale_colour_manual(values = pal3, guide = "none") +
+    scale_fill_manual(values   = pal3, guide = "none") +
+    labs(x = NULL, y = NULL,
+         title = "3. Repeat until no assignment changes") +
+    lims
+
+p1 + p2 + p3
+```
+
+## What k-means minimises
+At convergence, k-means has found the assignments that minimise the total within-cluster sum of squares:
+$$
+WSS=∑(distance~from~point~to~centroid)^2
+$$
+This is the same objective as OLS regression, which minimises:
+
+$$
+RSS=∑(distance~from~point~to~fitted~value)^2
+$$
+:::{.incremental}
+
+- In OLS, each observation is compared to its fitted value — the closest point on the regression line
+
+- In k-means, each observation is compared to its cluster centroid — the closest reference point in PC space
+
+- Both methods find the assignment that minimises total squared distance; only the geometry differs
+
+:::
+
+## Key takeaways
+
+:::{.incremental}
+- **RNAseq** converts mRNA abundance into a count matrix: genes × samples
+- The count matrix is high-dimensional — direct inspection is impossible
+- **PCA** rotates the variable space to find axes of maximum variance; tissue identity dominates PC1 in this medfly dataset
+- Loadings identify which genes drive each PC; scores show where each sample sits
+- **K-means** partitions PC space into discrete clusters; at $k = 5$ it partially recovers the known tissue groupings
+:::
+
+::: {.fragment}
+Structure discovered without labels — confirmed with labels. This is how unsupervised analysis should work.
+:::
+
+---
+
+# Backup Slides
+
+## Why log-transform TPM values? (Backup 1)
+
+Although TPM normalises for sequencing depth, the distribution of TPM values remains highly skewed: a small number of genes are expressed at thousands of TPM while most genes sit below 10.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.height = 4}
+sample_vals <- rna1 |>
+  select(RN1) |>
+  rename(raw_tpm = RN1) |>
+  mutate(log_tpm = log1p(raw_tpm)) |>
+  filter(raw_tpm > 0)
+
+p_raw <- ggplot(sample_vals, aes(x = raw_tpm)) +
+  geom_histogram(bins = 60, fill = "#E63946", alpha = 0.8) +
+  labs(x = "TPM", y = "Count", title = "Raw TPM (sample RN1)") +
+  theme_minimal(base_size = 12)
+
+p_log <- ggplot(sample_vals, aes(x = log_tpm)) +
+  geom_histogram(bins = 40, fill = "#457B9D", alpha = 0.8) +
+  labs(x = "log(TPM+1)", y = "Count", title = "After log1p transformation") +
+  theme_minimal(base_size = 12)
+
+p_raw + p_log
+```
+
+Log transformation compresses the upper tail and stabilises variance — genes across the full expression range then contribute more equally to the PCA.
+
+## Why standardise genes before PCA? (Backup 2)
+
+Even after log transformation, genes differ in their variance across samples. Without standardisation, the genes with the largest absolute variance dominate PC1 regardless of biological importance.
+
+`step_normalize()` transforms each gene to zero mean and unit variance across samples before the eigendecomposition. This ensures that all 500 retained genes contribute to the PCA on equal footing.
+
+For community ecology data where all species are measured in the same units, standardisation is sometimes omitted. For transcriptomics data, it is always applied.
+
+## K-means limitations in transcriptomics (Backup 3)
+
+:::{.incremental}
+- **K-means assumes spherical clusters** — elongated or nested structures (e.g., developmental time courses) are partitioned poorly. Hierarchical clustering or UMAP may be more informative for continuous trajectories.
+- **The elbow is often ambiguous** in real transcriptomic data. Consider the silhouette width or gap statistic as supplements.
+- **Local minima** — always use `nstart = 25` or higher. The optimal solution from multiple random starts is more stable than any single run.
+- **K-means on PC scores excludes information** in lower-order PCs. If biologically relevant structure is captured by PC4 or PC5, running k-means on only the first three PCs will miss it.
+- **Cluster labels are arbitrary** — the numbering changes between runs without `set.seed()`. Always set a seed before any `kmeans()` call in a reproducible document.
+:::

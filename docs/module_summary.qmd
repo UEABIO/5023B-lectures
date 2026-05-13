@@ -1,0 +1,257 @@
+---
+title: "Data Science for Biologists"
+subtitle: "Module Summary & What Comes Next"
+author: "[Philip Leftwich](mailto:p.leftwich@uea.ac.uk)"
+institute: "University of East Anglia"
+date: today
+format:
+    LUstyle-revealjs:
+      self-contained: true
+      auto-stretch: false
+      always_allow_html: yes
+      logo: images/UEA.jpg
+      slide-number: true
+      preview-links: auto
+      chalkboard: false
+      code-line-numbers: false
+      highlight-style: github
+      navigation-mode: vertical
+      controls: true
+      progress: true
+      fig-width: 9
+      fig-height: 6
+      menu:
+        side: left
+        width: normal
+execute:
+  cache: true
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+# How Far You Have Come {background-color="#D9DBDB"}
+
+## When You Started This Module...
+
+:::: {.columns}
+
+::: {.column}
+
+### Then
+
+- Could fit data to a spreadsheet and run a t-test
+- Produced plots to describe a dataset
+- Understood statistical significance in an inferential framework
+- Worked entirely within a single script with no version history
+
+:::
+
+::: {.column}
+
+### Now
+
+- Build reproducible, documented analysis pipelines in R
+- Evaluate predictive models on held-out test data
+- Version control your work with GitHub
+- Critically assess whether a complex model is justified
+- Use AI tools as a thinking partner, not an answer machine
+
+:::
+
+::::
+
+::: {.fragment}
+**The shift is not in the software. It is in how you think about data.**
+:::
+
+
+# What You Have Covered {background-color="#D9DBDB"}
+
+## Topics Across the Module
+
+| Theme | Topics |
+|---|---|
+| **Foundations** | Coding practice, code review & readability, GitHub for version control, AI pair programming |
+| **Data & Design** | Data visualisation, experimental design, power analysis, introduction to causal inference |
+| **Statistical Modelling** | Linear models, generalised linear models, mixed models |
+| **Machine Learning** | Ridge regression, logistic regression, random forests, PCA, k-means clustering |
+
+
+# The Thinking Behind It All {background-color="#D9DBDB"}
+
+## How Good Data Science Works
+
+These are habits, not just skills.
+
+:::{.incremental}
+
+- **Write code for the next person** — including future you; clarity is not optional
+
+- **Evaluate before you interpret** — never report a coefficient without checking model assumptions first
+
+- **Complexity requires justification** — a simpler model that performs equally well is always preferable
+
+- **Be honest about poor performance** — a modest result from a limited dataset is a result, not a failure
+
+- **Document and version everything** — reproducibility is a scientific standard, not a courtesy
+
+:::
+
+::: {.fragment}
+Science that cannot be reproduced is not science.
+:::
+
+
+# How It All Connects {background-color="#D9DBDB"}
+
+## One Workflow. Every Question.
+
+```{r fig-connections, fig.height=7, fig.width=10}
+
+pal <- c(
+  foundations = "#D9DBDB",
+  data_design = "#E9C46A",
+  stats       = "#457B9D",
+  ml          = "#2a9d8f"
+)
+
+nodes <- tribble(
+  ~label,                          ~x,    ~y,    ~group,
+  "Coding &\ncode review",          1.0,   4.5,   "foundations",
+  "Version control\n(GitHub)",      2.5,   4.5,   "foundations",
+  "AI pair\nprogramming",           4.0,   4.5,   "foundations",
+  "Data\nvisualisation",            1.0,   3.0,   "data_design",
+  "Experimental design\n& power",   2.5,   3.0,   "data_design",
+  "Causal\ninference",              4.0,   3.0,   "data_design",
+  "Linear\nmodels",                 1.0,   1.5,   "stats",
+  "GLMs",                           2.5,   1.5,   "stats",
+  "Mixed\nmodels",                  4.0,   1.5,   "stats",
+  "Ridge\nregression",              0.5,   0.0,   "ml",
+  "Logistic\nregression",           1.9,   0.0,   "ml",
+  "Random\nforests",                3.2,   0.0,   "ml",
+  "PCA &\nclustering",              4.6,   0.0,   "ml"
+) |>
+  mutate(
+    fill     = pal[group],
+    text_col = if_else(group %in% c("stats", "ml"), "white", "grey20")
+  )
+
+hw <- 0.55
+hh <- 0.38
+
+ggplot() +
+  annotate("rect", xmin = -0.2, xmax = 5.4,
+           ymin =  4.05, ymax = 4.95, fill = "#D9DBDB", alpha = 0.35) +
+  annotate("rect", xmin = -0.2, xmax = 5.4,
+           ymin =  2.55, ymax = 3.45, fill = "#E9C46A", alpha = 0.35) +
+  annotate("rect", xmin = -0.2, xmax = 5.4,
+           ymin =  1.05, ymax = 1.95, fill = "#457B9D", alpha = 0.25) +
+  annotate("rect", xmin = -0.2, xmax = 5.4,
+           ymin = -0.45, ymax = 0.45, fill = "#2a9d8f", alpha = 0.25) +
+  annotate("segment",
+           x = 2.5, xend = 2.5, y = 4.05, yend = 3.45,
+           arrow = arrow(length = unit(0.25, "cm"), type = "closed"),
+           colour = "grey50", linewidth = 0.7) +
+  annotate("segment",
+           x = 2.5, xend = 2.5, y = 2.55, yend = 1.95,
+           arrow = arrow(length = unit(0.25, "cm"), type = "closed"),
+           colour = "grey50", linewidth = 0.7) +
+  annotate("segment",
+           x = 2.5, xend = 2.5, y = 1.05, yend = 0.45,
+           arrow = arrow(length = unit(0.25, "cm"), type = "closed"),
+           colour = "grey50", linewidth = 0.7) +
+  geom_rect(data = nodes,
+            aes(xmin = x - hw, xmax = x + hw,
+                ymin = y - hh, ymax = y + hh,
+                fill = fill),
+            colour = "white", linewidth = 0.6) +
+  scale_fill_identity() +
+  geom_text(data = nodes,
+            aes(x = x, y = y, label = label, colour = text_col),
+            size = 2.8, fontface = "bold", lineheight = 0.85) +
+  scale_colour_identity() +
+  annotate("text", x = 5.5, y = 4.5, label = "FOUNDATIONS",
+           hjust = 0, size = 2.8, fontface = "bold", colour = "grey40") +
+  annotate("text", x = 5.5, y = 3.0, label = "DATA & DESIGN",
+           hjust = 0, size = 2.8, fontface = "bold", colour = "grey40") +
+  annotate("text", x = 5.5, y = 1.5, label = "STATISTICAL\nMODELLING",
+           hjust = 0, size = 2.8, fontface = "bold", colour = "grey40",
+           lineheight = 0.85) +
+  annotate("text", x = 5.5, y = 0.0, label = "MACHINE\nLEARNING",
+           hjust = 0, size = 2.8, fontface = "bold", colour = "grey40",
+           lineheight = 0.85) +
+  coord_fixed(ratio = 1, xlim = c(-0.3, 8.0), ylim = c(-0.7, 5.2)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "white", colour = NA),
+    plot.margin     = margin(15, 15, 15, 15)
+  )
+```
+
+
+# Where Could This Take You? {background-color="#D9DBDB"}
+
+## Pathways From Here
+
+| Pathway | What it involves |
+|---|---|
+| **Your final year research project** | Apply these tools directly to your own data — talk to your supervisor about where ML or reproducible pipelines could strengthen your project |
+| **BIO6XXX Bioinformatics (Level 6)** | Builds on GLMs, PCA, and ML to add sequence analysis, genome assembly, and Bioconductor tools including DESeq2 and limma |
+| **MSc Computational Biology / Bioinformatics** | Full pipeline from raw sequencing data to biological inference; the modelling and reproducibility skills from this module are direct entry requirements |
+| **Independent learning** | See Blackboard |
+
+
+# Keep Learning {background-color="#D9DBDB"}
+
+## Resources to Take Away
+
+**Modelling & machine learning**
+
+- [Tidy Modelling with R](https://www.tmwr.org) — Kuhn & Silge; open access; direct extension of this module
+- [An Introduction to Statistical Learning](https://www.statlearning.com) — James et al.; R edition; free PDF
+- [StatQuest with Josh Starmer](https://www.youtube.com/@statquest) — conceptual foundations without assumed mathematics background
+
+**Bioinformatics**
+
+- [Bioconductor workflows](https://bioconductor.org/packages/release/workflows) — curated end-to-end pipelines for RNA-seq, single-cell, and more
+
+
+
+# One Thing to Take Away {background-color="#2a9d8f"}
+
+## 
+
+::: {style="font-size: 1.6em; text-align: center; padding-top: 1em; color: white; line-height: 1.5;"}
+You now have a workflow that transfers to any biological question.
+
+The tools will change.
+
+The thinking will not.
+:::
+
+---
+
+# Before You Go {background-color="#D9DBDB"}
+
+## Module Evaluation
+
+Your feedback directly shapes how this module runs next year.
+
+::: {style="text-align: center; padding-top: 1em;"}
+
+![QRCode](../data/QRCode.png){width=600}
+
+
+:::
+
+::: {.fragment}
+If anything on this module worked well — or did not — this is the place to say so.
+:::
+
+
+
